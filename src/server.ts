@@ -2,11 +2,68 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import express from "express";
 import { AIMessage, AIMessageChunk, ToolMessage } from "@langchain/core/messages";
-import { agent } from "./agent.js";
+import { createModel, getAgent, resetAgent } from "./agent.js";
 import { config } from "./config.js";
+import { getSettings, isConfigured, mergeSettings, publicSettings, saveSettings } from "./settings.js";
 
 const app = express();
 app.use(express.json());
+
+const errorMessage = (err: unknown) => (err instanceof Error ? err.message : String(err));
+
+// ── 模型設定 ────────────────────────────────────────────────
+
+// 取得目前設定（API Key 只回傳末四碼）
+app.get("/api/settings", (_req, res) => {
+  res.json(publicSettings());
+});
+
+// 儲存設定；apiKey 留空代表沿用原本的 Key
+app.put("/api/settings", (req, res) => {
+  const next = mergeSettings(req.body ?? {});
+  if (!isConfigured(next)) {
+    res.status(400).json({ error: "Base URL、API Key 與模型名稱都必須填寫。" });
+    return;
+  }
+  saveSettings(next);
+  resetAgent();
+  res.json(publicSettings());
+});
+
+// 用表單上的設定（尚未儲存）實際呼叫一次模型
+app.post("/api/settings/test", async (req, res) => {
+  const candidate = mergeSettings(req.body ?? {});
+  if (!isConfigured(candidate)) {
+    res.json({ ok: false, error: "Base URL、API Key 與模型名稱都必須填寫。" });
+    return;
+  }
+  const started = Date.now();
+  try {
+    const reply = await createModel(candidate).invoke("Reply with OK.", { signal: AbortSignal.timeout(20_000) });
+    res.json({ ok: true, latencyMs: Date.now() - started, reply: String(reply.content).slice(0, 100) });
+  } catch (err) {
+    res.json({ ok: false, error: errorMessage(err) });
+  }
+});
+
+// 取得供應商的模型清單（GET {baseURL}/models），不支援的服務就回傳錯誤，前端改手動輸入
+app.post("/api/settings/models", async (req, res) => {
+  const candidate = mergeSettings(req.body ?? {});
+  try {
+    const response = await fetch(`${candidate.baseURL}/models`, {
+      headers: candidate.apiKey ? { Authorization: `Bearer ${candidate.apiKey}` } : {},
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const body = (await response.json()) as { data?: { id: string }[] };
+    const models = (body.data ?? []).map((m) => m.id).sort();
+    res.json({ models });
+  } catch (err) {
+    res.json({ models: [], error: errorMessage(err) });
+  }
+});
+
+// ── 對話 ────────────────────────────────────────────────────
 
 // POST /api/chat  { threadId, message }  →  Server-Sent Events
 //   event: token  — 模型逐字輸出
@@ -30,7 +87,7 @@ app.post("/api/chat", async (req, res) => {
   res.on("close", () => abort.abort());
 
   try {
-    const stream = await agent.stream(
+    const stream = await getAgent().stream(
       { messages: [{ role: "user", content: message }] },
       {
         configurable: { thread_id: threadId },
@@ -67,7 +124,7 @@ app.post("/api/chat", async (req, res) => {
   } catch (err) {
     if (!abort.signal.aborted) {
       console.error(err);
-      send("error", { message: err instanceof Error ? err.message : String(err) });
+      send("error", { message: errorMessage(err) });
     }
   } finally {
     res.end();
@@ -81,7 +138,8 @@ if (existsSync(webDist)) {
   app.get("/{*path}", (_req, res) => res.sendFile(path.join(webDist, "index.html")));
 }
 
-app.listen(config.port, () => {
-  console.log(`🤖 Roko API 已啟動：http://localhost:${config.port}`);
-  console.log(`   模型 ${config.model} @ ${config.baseURL}`);
+app.listen(config.port, config.host, () => {
+  const s = getSettings();
+  console.log(`🤖 Roko 已啟動：http://localhost:${config.port}`);
+  console.log(isConfigured(s) ? `   模型 ${s.model} @ ${s.baseURL}` : "   尚未設定模型，請在網頁右上角的「模型設定」填入 API 資訊");
 });

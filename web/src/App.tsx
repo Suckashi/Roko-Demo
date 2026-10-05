@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { RotateCcw, Send, Square } from "lucide-react";
+import { RotateCcw, Send, Settings2, Square } from "lucide-react";
 import { AgentStep } from "@/components/chat/agent-step";
 import { MessageBubble } from "@/components/chat/message-bubble";
+import { SettingsDialog } from "@/components/settings/settings-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useAgentChat } from "@/hooks/use-agent-chat";
+import { fetchSettings, type PublicSettings } from "@/lib/settings";
 import { RokoSprite } from "@/roko/roko-sprite";
 import { useRokoState } from "@/roko/use-roko-state";
 
@@ -19,6 +21,18 @@ export default function App() {
   const [showSteps, setShowSteps] = useState(true);
   const viewportRef = useRef<HTMLDivElement>(null);
   const roko = useRokoState(items, loading);
+  const [settings, setSettings] = useState<PublicSettings | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // 載入模型設定；尚未設定就直接打開設定視窗
+  useEffect(() => {
+    fetchSettings()
+      .then((s) => {
+        setSettings(s);
+        if (!s.configured) setSettingsOpen(true);
+      })
+      .catch(() => {});
+  }, []);
 
   // 有新內容就捲到底
   useEffect(() => {
@@ -28,6 +42,10 @@ export default function App() {
   const submit = (text = input) => {
     const message = text.trim();
     if (!message || loading) return;
+    if (!settings?.configured) {
+      setSettingsOpen(true);
+      return;
+    }
     setInput("");
     send(message);
   };
@@ -45,13 +63,17 @@ export default function App() {
             <p className="text-xs text-muted-foreground">{roko.label}</p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <Label className="text-xs text-muted-foreground">
-            <Switch checked={showSteps} onCheckedChange={setShowSteps} />
-            顯示 Agent 步驟
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Label className="text-xs text-muted-foreground" title="顯示 Agent 步驟">
+            <Switch checked={showSteps} onCheckedChange={setShowSteps} aria-label="顯示 Agent 步驟" />
+            <span className="hidden sm:inline">顯示 Agent 步驟</span>
           </Label>
-          <Button variant="outline" size="sm" onClick={reset}>
-            <RotateCcw /> 新對話
+          <Button variant="outline" size="sm" onClick={() => setSettingsOpen(true)} title="模型設定">
+            <Settings2 />
+            <span className="max-w-24 truncate sm:max-w-40">{settings?.configured ? settings.model : "設定模型"}</span>
+          </Button>
+          <Button variant="outline" size="sm" onClick={reset} title="新對話">
+            <RotateCcw /> <span className="hidden sm:inline">新對話</span>
           </Button>
         </div>
       </header>
@@ -122,6 +144,8 @@ export default function App() {
           </Button>
         )}
       </form>
+
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} settings={settings} onSaved={setSettings} />
     </div>
   );
 }
