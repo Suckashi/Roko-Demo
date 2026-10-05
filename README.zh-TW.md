@@ -12,7 +12,7 @@ Roko 由 Deep Agents 執行環境與網頁聊天介面組成。伺服器負責�
 
 - **不綁定模型供應商**：支援任何實作 OpenAI Chat Completions API 的服務，例如 OpenAI、OpenRouter、Groq、DeepSeek、vLLM 或 Ollama。
 - **介面內設定模型**：可直接在網頁上設定端點、API 金鑰與模型，儲存前可先取得模型清單並測試連線；變更立即生效，不需重新啟動。
-- **Deep Agents 執行環境**：內建任務規劃（`write_todos`）、虛擬檔案系統（`ls`、`read_file`、`write_file`、`edit_file`）與子代理委派（`task`）。
+- **Deep Agents 執行環境**：內建任務規劃（`write_todos`）、虛擬檔案系統（`ls`、`read_file`、`write_file`、`edit_file`）與子代理委派（`task`）。虛擬檔案存放在對話狀態（記憶體）中，不會寫入硬碟，伺服器重新啟動後即清除。
 - **自訂工具**：以 [Zod](https://zod.dev) schema 宣告工具，集中在單一模組註冊。
 - **即時串流介面**：回覆文字、工具活動與待辦清單會在產生的同時顯示。
 - **對話記憶**：透過 LangGraph checkpointer 依對話串（thread）保存上下文。
@@ -39,7 +39,7 @@ flowchart TB
         Static["靜態檔案<br/>web/dist"]
         subgraph Agent["Deep Agent"]
             Runtime["createDeepAgent"]
-            Builtin["內建工具<br/>待辦 · 檔案 · 子代理"]
+            Builtin["內建工具<br/>待辦 · 虛擬檔案（記憶體）· 子代理"]
             Custom["自訂工具<br/>src/tools.ts"]
             Memory[("MemorySaver<br/>依 thread_id 保存")]
             Runtime --> Builtin

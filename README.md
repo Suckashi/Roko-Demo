@@ -12,7 +12,7 @@ Roko pairs a Deep Agents runtime with a web chat interface. The server runs the 
 
 - **Provider-agnostic models.** Works with any service that implements the OpenAI Chat Completions API, such as OpenAI, OpenRouter, Groq, DeepSeek, vLLM, or Ollama.
 - **In-app model settings.** Configure the endpoint, API key, and model from the web interface. You can list available models and test the connection before saving. Changes apply without a restart.
-- **Deep Agents runtime.** Includes task planning (`write_todos`), a virtual file system (`ls`, `read_file`, `write_file`, `edit_file`), and sub-agent delegation (`task`).
+- **Deep Agents runtime.** Includes task planning (`write_todos`), a virtual file system (`ls`, `read_file`, `write_file`, `edit_file`), and sub-agent delegation (`task`). Virtual files live in the conversation's state in memory; they are not written to disk and are cleared when the server restarts.
 - **Custom tools.** Tools are declared with a [Zod](https://zod.dev) schema and registered in a single module.
 - **Streaming UI.** Tokens, tool activity, and task lists render as they happen.
 - **Conversation memory.** Context is kept per thread through a LangGraph checkpointer.
@@ -39,7 +39,7 @@ flowchart TB
         Static["Static files<br/>web/dist"]
         subgraph Agent["Deep Agent"]
             Runtime["createDeepAgent"]
-            Builtin["Built-in tools<br/>todos · files · sub-agents"]
+            Builtin["Built-in tools<br/>todos · virtual files (in memory) · sub-agents"]
             Custom["Custom tools<br/>src/tools.ts"]
             Memory[("MemorySaver<br/>per thread_id")]
             Runtime --> Builtin
