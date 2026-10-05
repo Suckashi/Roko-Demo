@@ -4,7 +4,8 @@
 
 - **底層**：[Deep Agents](https://github.com/langchain-ai/deepagentsjs)（`deepagents`）— 內建規劃（`write_todos`）、虛擬檔案系統、子代理（`task`）
 - **模型**：任何 **OpenAI 相容 API**（OpenAI、OpenRouter、Groq、DeepSeek、Together、vLLM、Ollama…）
-- **介面**：單頁 Web 聊天室，串流顯示回覆，並可即時看到 Agent 的工具呼叫與待辦清單
+- **後端**：Express，`/api/chat` 以 SSE 串流 Agent 的每一步
+- **前端**：React + Vite + Tailwind + [shadcn/ui](https://ui.shadcn.com)，串流顯示回覆，並可即時看到 Agent 的工具呼叫與待辦清單
 
 ## 快速開始
 
@@ -13,7 +14,14 @@
 ```bash
 npm install
 cp .env.example .env   # 填入 API Key / Base URL / 模型名稱
-npm run dev            # 開啟 http://localhost:3000
+npm run dev            # 同時啟動 Express(:3000) 與 Vite(:5173)，打開 http://localhost:5173
+```
+
+正式／展示模式（只開一個 port）：
+
+```bash
+npm run build          # 打包 React 到 web/dist
+npm start              # Express 同時提供 API 與前端：http://localhost:3000
 ```
 
 `.env` 範例：
@@ -31,20 +39,25 @@ npm run dev            # 開啟 http://localhost:3000
 ## 專案結構
 
 ```
-src/
-  config.ts   讀取 .env
-  tools.ts    自訂工具（取得時間、計算機）← Workshop 可以從這裡加工具
-  agent.ts    建立 Deep Agent：模型 + 工具 + system prompt + 記憶
-  server.ts   Hono 伺服器，/api/chat 以 SSE 串流 Agent 的每一步
-public/
-  index.html  聊天頁面（純 HTML + JS，無建置步驟）
+src/                         後端（Express）
+  config.ts                  讀取 .env
+  tools.ts                   自訂工具（取得時間、計算機）← Workshop 可以從這裡加工具
+  agent.ts                   建立 Deep Agent：模型 + 工具 + system prompt + 記憶
+  server.ts                  Express：/api/chat 以 SSE 串流 Agent 的每一步
+web/                         前端（React + shadcn/ui，npm workspace）
+  src/hooks/use-agent-chat.ts  呼叫 /api/chat、解析 SSE → 訊息列表
+  src/components/chat/       MessageBubble（對話泡泡）、AgentStep（工具／待辦卡片）
+  src/components/ui/         shadcn/ui 元件（button、card、badge、switch…）
+  src/App.tsx                聊天頁面
 ```
+
+要加更多 shadcn 元件：`cd web && npx shadcn@latest add dialog`。
 
 ## Workshop 可以示範的點
 
 1. **換模型**：只改 `.env`，同一份程式接不同供應商。
 2. **加工具**：在 `src/tools.ts` 用 `tool()` + zod schema 新增，加進 `tools` 陣列即可。
-3. **觀察 Agent loop**：勾選「顯示 Agent 步驟」，可看到 🔧 工具呼叫、📦 工具結果、📝 待辦清單。
+3. **觀察 Agent loop**：打開「顯示 Agent 步驟」開關，可看到 🔧 工具呼叫、📦 工具結果、📝 待辦清單。
    試試：「幫我規劃三天台南旅遊，並把行程寫進 trip.md」→ 會看到 `write_todos`、`write_file`。
 4. **記憶**：同一個對話（thread）會記得上下文；按「新對話」換一個 `threadId` 就重新開始。
 5. **子代理**：在 `agent.ts` 的 `createDeepAgent` 加上 `subagents: [...]`，示範任務委派。
