@@ -22,3 +22,14 @@ or redistributing the artwork; do not infer an MIT/Apache grant from the code li
 No trademark or character-rights clearance is asserted. The manifest's historical
 verification flag describes the import pack, not current Rocky test results.
 See `docs/implementation/roko.md` for integration evidence.
+
+## Use in Suckashi/Roko-Demo
+
+On 2026-10-05 the artwork owner (the author of both repositories) authorized
+copying this asset pack unchanged from `Suckashi/Rocky` into
+`Suckashi/Roko-Demo` (`web/src/roko/`) for use as the demo chat bot's mascot.
+The licensing terms above still apply: the artwork remains excluded from any
+code license, and no separate reuse license is granted. `roko-manifest.json`
+is kept byte-identical to the Rocky copy, so its `rights.authorizedRepository`
+field still names only `Suckashi/Rocky`; this section records the additional
+authorization.

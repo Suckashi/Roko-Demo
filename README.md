@@ -79,7 +79,7 @@ Roko 的素材來自 [Suckashi/Rocky](https://github.com/Suckashi/Rocky) 的 `as
 
 對應邏輯在 `web/src/roko/use-roko-state.ts`。系統設定「減少動態效果」時只顯示靜態畫格。
 
-> 🎨 **素材授權**：Roko 美術素材不適用本專案程式碼的授權，未另行授權再利用；詳見 [`web/src/roko/README.md`](web/src/roko/README.md)。
+> 🎨 **素材授權**：Roko 美術素材不適用本專案程式碼的授權，作者已授權用於本專案，但未另行授權他人再利用；詳見 [`web/src/roko/README.md`](web/src/roko/README.md)。
 
 ## API
 
