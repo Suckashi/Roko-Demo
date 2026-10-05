@@ -48,6 +48,7 @@ web/                         前端（React + shadcn/ui，npm workspace）
   src/hooks/use-agent-chat.ts  呼叫 /api/chat、解析 SSE → 訊息列表
   src/components/chat/       MessageBubble（對話泡泡）、AgentStep（工具／待辦卡片）
   src/components/ui/         shadcn/ui 元件（button、card、badge、switch…）
+  src/roko/                  Roko 吉祥物：sprite sheet、動畫 manifest、<RokoSprite> 元件
   src/App.tsx                聊天頁面
 ```
 
@@ -61,6 +62,24 @@ web/                         前端（React + shadcn/ui，npm workspace）
    試試：「幫我規劃三天台南旅遊，並把行程寫進 trip.md」→ 會看到 `write_todos`、`write_file`。
 4. **記憶**：同一個對話（thread）會記得上下文；按「新對話」換一個 `threadId` 就重新開始。
 5. **子代理**：在 `agent.ts` 的 `createDeepAgent` 加上 `subagents: [...]`，示範任務委派。
+
+## Roko 吉祥物
+
+Roko 的素材來自 [Suckashi/Rocky](https://github.com/Suckashi/Rocky) 的 `assets/roko/`（原檔照搬，SHA-256 與 manifest 相同）。
+畫面左上角的 Roko 會跟著 Agent 狀態換動畫：
+
+| Agent 狀態 | 動畫 |
+| --- | --- |
+| 待命 | `idle` |
+| 等模型回應 | `waiting` |
+| 呼叫工具中 | `running` |
+| 正在輸出回覆 | `review` |
+| 完成一輪 | `jumping`（播一次） |
+| 出錯 | `failed` |
+
+對應邏輯在 `web/src/roko/use-roko-state.ts`。系統設定「減少動態效果」時只顯示靜態畫格。
+
+> 🎨 **素材授權**：Roko 美術素材不適用本專案程式碼的授權，未另行授權再利用；詳見 [`web/src/roko/README.md`](web/src/roko/README.md)。
 
 ## API
 

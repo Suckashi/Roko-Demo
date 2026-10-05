@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Bot, RotateCcw, Send, Square } from "lucide-react";
+import { RotateCcw, Send, Square } from "lucide-react";
 import { AgentStep } from "@/components/chat/agent-step";
 import { MessageBubble } from "@/components/chat/message-bubble";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useAgentChat } from "@/hooks/use-agent-chat";
+import { RokoSprite } from "@/roko/roko-sprite";
+import { useRokoState } from "@/roko/use-roko-state";
 
 const examples = ["現在台北幾點？", "(1234 + 5678) * 9 等於多少？", "幫我規劃三天台南旅遊，並把行程寫進 trip.md"];
 
@@ -16,6 +18,7 @@ export default function App() {
   const [input, setInput] = useState("");
   const [showSteps, setShowSteps] = useState(true);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const roko = useRokoState(items, loading);
 
   // 有新內容就捲到底
   useEffect(() => {
@@ -36,10 +39,10 @@ export default function App() {
     <div className="mx-auto flex h-dvh max-w-3xl flex-col px-4">
       <header className="flex items-center justify-between border-b py-3">
         <div className="flex items-center gap-2">
-          <Bot className="size-6" />
+          <RokoSprite clip={roko.clip} mode={roko.mode} width={44} />
           <div>
             <h1 className="font-semibold leading-tight">Roko</h1>
-            <p className="text-xs text-muted-foreground">Deep Agents × OpenAI 相容 API</p>
+            <p className="text-xs text-muted-foreground">{roko.label}</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -56,9 +59,10 @@ export default function App() {
       <ScrollArea className="min-h-0 flex-1" viewportRef={viewportRef}>
         <div className="flex flex-col gap-3 py-4">
           {items.length === 0 && (
-            <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
-              <Bot className="size-10" />
+            <div className="flex flex-col items-center gap-3 py-12 text-center text-muted-foreground">
+              <RokoSprite clip="waving" width={140} />
               <p>嗨，我是 Roko！試試看：</p>
+              <p className="-mt-2 text-xs">Deep Agents × OpenAI 相容 API</p>
               <div className="flex flex-wrap justify-center gap-2">
                 {examples.map((ex) => (
                   <Button key={ex} variant="secondary" size="sm" onClick={() => submit(ex)}>
@@ -79,7 +83,12 @@ export default function App() {
                 return <AgentStep key={i} step={item} />;
             }
           })}
-          {waiting && <p className="self-start text-sm text-muted-foreground animate-pulse">思考中…</p>}
+          {waiting && (
+            <div className="flex items-center gap-2 self-start text-sm text-muted-foreground">
+              <RokoSprite clip="waiting" width={32} />
+              <span className="animate-pulse">{roko.label}</span>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
