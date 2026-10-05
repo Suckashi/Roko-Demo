@@ -124,7 +124,18 @@ Open <http://localhost:3000>.
 | `npm run dev` | Starts the API (with file watching) and the Vite dev server |
 | `npm run build` | Builds the web client |
 | `npm start` | Starts the server and serves the built client |
+| `npm run lint` | Lints the server and the client with ESLint |
 | `npm run typecheck` | Type-checks the server and the client |
+| `npm test` | Runs the server and client test suites once |
+| `npm run test:watch -w web` | Runs the client tests in watch mode (use `npx vitest` for the server) |
+| `npm run check` | Runs lint, type checks, tests, and the build; run it before opening a pull request |
+
+### Testing
+
+Tests use [Vitest](https://vitest.dev).
+
+- **Server** (`src/**/*.test.ts`): unit tests and HTTP tests with [supertest](https://github.com/ladjs/supertest). `src/test-utils.ts` reloads modules with a clean environment and a temporary settings directory, so tests never read your `.env` or `.roko/`.
+- **Client** (`web/src/**/*.test.{ts,tsx}`): component and hook tests with [Testing Library](https://testing-library.com) in jsdom. `web/src/test/fake-api.ts` fakes the backend, including `/api/chat` SSE streams, so tests need neither a server nor a model API.
 
 ## Configuration
 
@@ -175,7 +186,9 @@ Roko uses the Chat Completions endpoint (`useResponsesApi: false`), which most t
 │   ├── settings.ts               Model settings: load, merge, persist
 │   ├── agent.ts                  Deep Agent: model, tools, system prompt, checkpointer
 │   ├── tools.ts                  Custom tool definitions
-│   └── server.ts                 HTTP routes and SSE streaming
+│   ├── app.ts                    HTTP routes and SSE streaming
+│   ├── server.ts                 Entry point: starts the HTTP server
+│   └── *.test.ts                 Server tests
 └── web/                          Client (npm workspace)
     ├── components.json           shadcn/ui configuration
     └── src/
@@ -184,7 +197,8 @@ Roko uses the Chat Completions endpoint (`useResponsesApi: false`), which most t
         ├── components/chat/      Message bubbles and agent step cards
         ├── components/settings/  Model settings dialog
         ├── components/ui/        shadcn/ui components
-        └── roko/                 Mascot sprite sheet, manifest, and component
+        ├── roko/                 Mascot sprite sheet, manifest, and component
+        └── test/                 Test setup and the fake backend
 ```
 
 ## Customization

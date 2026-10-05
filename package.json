@@ -8,7 +8,10 @@
     "dev": "concurrently -n api,web -c blue,magenta \"tsx watch src/server.ts\" \"npm run dev -w web\"",
     "build": "npm run build -w web",
     "start": "tsx src/server.ts",
-    "typecheck": "tsc --noEmit && tsc -b web"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit && tsc -b web",
+    "test": "vitest run && npm test -w web",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
     "@langchain/core": "^1.2.14",
@@ -24,11 +27,19 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.4",
+    "@types/supertest": "^7.2.1",
     "concurrently": "^10.0.5",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "supertest": "^7.3.1",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.3"
   },
   "workspaces": [
     "web"

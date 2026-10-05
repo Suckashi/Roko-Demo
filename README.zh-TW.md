@@ -124,7 +124,18 @@ npm start               # 以單一埠提供 API 與前端
 | `npm run dev` | 啟動 API（監看檔案變更）與 Vite 開發伺服器 |
 | `npm run build` | 打包前端 |
 | `npm start` | 啟動伺服器並提供已打包的前端 |
+| `npm run lint` | 以 ESLint 檢查伺服器與前端 |
 | `npm run typecheck` | 對伺服器與前端進行型別檢查 |
+| `npm test` | 執行伺服器與前端的測試 |
+| `npm run test:watch -w web` | 以監看模式執行前端測試（伺服器請用 `npx vitest`） |
+| `npm run check` | 依序執行 lint、型別檢查、測試與建置；開 Pull Request 前請先執行 |
+
+### 測試
+
+測試使用 [Vitest](https://vitest.dev)。
+
+- **伺服器**（`src/**/*.test.ts`）：單元測試，以及以 [supertest](https://github.com/ladjs/supertest) 進行的 HTTP 測試。`src/test-utils.ts` 會以乾淨的環境變數與暫存的設定目錄重新載入模組，測試不會讀到你的 `.env` 或 `.roko/`。
+- **前端**（`web/src/**/*.test.{ts,tsx}`）：在 jsdom 中以 [Testing Library](https://testing-library.com) 測試元件與 hook。`web/src/test/fake-api.ts` 模擬後端（包括 `/api/chat` 的 SSE 串流），測試不需要啟動伺服器，也不需要模型 API。
 
 ## 設定
 
@@ -175,7 +186,9 @@ Roko 使用 Chat Completions 端點（`useResponsesApi: false`），大多數第
 │   ├── settings.ts               模型設定：讀取、合併、儲存
 │   ├── agent.ts                  Deep Agent：模型、工具、系統提示詞、checkpointer
 │   ├── tools.ts                  自訂工具定義
-│   └── server.ts                 HTTP 路由與 SSE 串流
+│   ├── app.ts                    HTTP 路由與 SSE 串流
+│   ├── server.ts                 進入點：啟動 HTTP 伺服器
+│   └── *.test.ts                 伺服器測試
 └── web/                          前端（npm workspace）
     ├── components.json           shadcn/ui 設定
     └── src/
@@ -184,7 +197,8 @@ Roko 使用 Chat Completions 端點（`useResponsesApi: false`），大多數第
         ├── components/chat/      訊息泡泡與 Agent 步驟卡片
         ├── components/settings/  模型設定視窗
         ├── components/ui/        shadcn/ui 元件
-        └── roko/                 吉祥物 sprite sheet、manifest 與元件
+        ├── roko/                 吉祥物 sprite sheet、manifest 與元件
+        └── test/                 測試設定與模擬後端
 ```
 
 ## 自訂
