@@ -88,7 +88,7 @@ sequenceDiagram
 
 ## 系統需求
 
-- Node.js 20 以上
+- Node.js 20.19 以上或 22.12 以上（Vite 的需求）
 - npm 10 以上
 - OpenAI 相容服務的 API 金鑰，且所用模型須支援 **tool calling**
 

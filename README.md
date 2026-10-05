@@ -88,7 +88,7 @@ sequenceDiagram
 
 ## Requirements
 
-- Node.js 20 or later
+- Node.js 20.19 or later, or 22.12 or later (required by Vite)
 - npm 10 or later
 - An API key for an OpenAI-compatible service whose model supports **tool calling**
 
