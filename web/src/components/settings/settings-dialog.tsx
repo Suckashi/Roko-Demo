@@ -35,14 +35,14 @@ export function SettingsDialog({
   settings: PublicSettings | null;
   onSaved: (settings: PublicSettings) => void;
 }) {
-  const [form, setForm] = useState<SettingsInput>({ baseURL: "", apiKey: "", model: "", temperature: 0.3 });
+  const [form, setForm] = useState<SettingsInput>({ baseURL: "", apiKey: "", model: "" });
   const [models, setModels] = useState<string[]>([]);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   // 每次打開都從目前設定重新填表單（API Key 不回填，留空代表沿用）
   useEffect(() => {
     if (!open || !settings) return;
-    setForm({ baseURL: settings.baseURL, apiKey: "", model: settings.model, temperature: settings.temperature });
+    setForm({ baseURL: settings.baseURL, apiKey: "", model: settings.model });
     setModels([]);
     setStatus({ kind: "idle" });
   }, [open, settings]);
@@ -164,20 +164,6 @@ export function SettingsDialog({
               ))}
             </datalist>
             <p className="text-xs text-muted-foreground">模型必須支援 tool calling（function calling）。</p>
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="temperature">Temperature</Label>
-            <Input
-              id="temperature"
-              type="number"
-              min={0}
-              max={2}
-              step={0.1}
-              value={form.temperature}
-              onChange={(e) => update({ temperature: Number(e.target.value) })}
-              className="w-28"
-            />
           </div>
 
           {status.kind !== "idle" && (

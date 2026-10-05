@@ -11,7 +11,7 @@ Roko pairs a Deep Agents runtime with a web chat interface. The server runs the 
 ### Features
 
 - **Provider-agnostic models.** Works with any service that implements the OpenAI Chat Completions API, such as OpenAI, OpenRouter, Groq, DeepSeek, vLLM, or Ollama.
-- **In-app model settings.** Configure the endpoint, API key, model, and temperature from the web interface. You can list available models and test the connection before saving. Changes apply without a restart.
+- **In-app model settings.** Configure the endpoint, API key, and model from the web interface. You can list available models and test the connection before saving. Changes apply without a restart.
 - **Deep Agents runtime.** Includes task planning (`write_todos`), a virtual file system (`ls`, `read_file`, `write_file`, `edit_file`), and sub-agent delegation (`task`).
 - **Custom tools.** Tools are declared with a [Zod](https://zod.dev) schema and registered in a single module.
 - **Streaming UI.** Tokens, tool activity, and task lists render as they happen.
@@ -138,7 +138,6 @@ Select the model button in the header to open **Model settings**:
 | Base URL | Base URL of the OpenAI-compatible API, for example `https://api.openai.com/v1` |
 | API Key | Key for the provider. Once saved, it is never sent back to the browser; leave it blank to keep the current key |
 | Model | Model identifier. **Fetch list** loads the provider's `GET /models` list, if the provider supports it |
-| Temperature | Sampling temperature (0–2) |
 
 **Test connection** sends a short request with the values in the form, without saving them. **Save** writes the settings to `.roko/settings.json` and applies them to the next message. Existing conversations are kept.
 
@@ -151,7 +150,6 @@ Environment variables, or a `.env` file in the project root (see [`.env.example`
 | `OPENAI_API_KEY` | — | Initial API key |
 | `OPENAI_BASE_URL` | `https://api.openai.com/v1` | Initial Base URL |
 | `MODEL_NAME` | — | Initial model identifier |
-| `TEMPERATURE` | `0.3` | Initial sampling temperature |
 | `PORT` | `3000` | HTTP port for the server |
 | `HOST` | `127.0.0.1` | Network interface the server listens on |
 | `ROKO_DATA_DIR` | `.roko` | Directory for saved settings |
@@ -228,7 +226,7 @@ npx shadcn@latest add dialog
 | Method and path | Description |
 | --- | --- |
 | `GET /api/settings` | Returns the current settings. The API key is returned only as a masked hint |
-| `PUT /api/settings` | Validates and saves `{ baseURL, apiKey, model, temperature }`. A blank `apiKey` keeps the current key |
+| `PUT /api/settings` | Validates and saves `{ baseURL, apiKey, model }`. A blank `apiKey` keeps the current key |
 | `POST /api/settings/test` | Sends a test request with the given settings and returns `{ ok, latencyMs }` or `{ ok, error }` |
 | `POST /api/settings/models` | Returns `{ models }` from the provider's `GET /models` endpoint |
 

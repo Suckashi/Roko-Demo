@@ -11,7 +11,7 @@ Roko 由 Deep Agents 執行環境與網頁聊天介面組成。伺服器負責�
 ### 功能
 
 - **不綁定模型供應商**：支援任何實作 OpenAI Chat Completions API 的服務，例如 OpenAI、OpenRouter、Groq、DeepSeek、vLLM 或 Ollama。
-- **介面內設定模型**：可直接在網頁上設定端點、API 金鑰、模型與溫度，儲存前可先取得模型清單並測試連線；變更立即生效，不需重新啟動。
+- **介面內設定模型**：可直接在網頁上設定端點、API 金鑰與模型，儲存前可先取得模型清單並測試連線；變更立即生效，不需重新啟動。
 - **Deep Agents 執行環境**：內建任務規劃（`write_todos`）、虛擬檔案系統（`ls`、`read_file`、`write_file`、`edit_file`）與子代理委派（`task`）。
 - **自訂工具**：以 [Zod](https://zod.dev) schema 宣告工具，集中在單一模組註冊。
 - **即時串流介面**：回覆文字、工具活動與待辦清單會在產生的同時顯示。
@@ -138,7 +138,6 @@ npm start               # 以單一埠提供 API 與前端
 | Base URL | OpenAI 相容 API 的 Base URL，例如 `https://api.openai.com/v1` |
 | API Key | 供應商的 API 金鑰。儲存後不會再傳回瀏覽器；留空表示沿用目前的金鑰 |
 | 模型 | 模型名稱。「取得清單」會讀取供應商的 `GET /models` 清單（需供應商支援） |
-| Temperature | 取樣溫度（0–2） |
 
 「測試連線」會以表單中的值送出一次簡短請求，但不會儲存；「儲存」會將設定寫入 `.roko/settings.json`，並套用至下一則訊息，既有對話會保留。
 
@@ -151,7 +150,6 @@ npm start               # 以單一埠提供 API 與前端
 | `OPENAI_API_KEY` | — | 初始 API 金鑰 |
 | `OPENAI_BASE_URL` | `https://api.openai.com/v1` | 初始 Base URL |
 | `MODEL_NAME` | — | 初始模型名稱 |
-| `TEMPERATURE` | `0.3` | 初始取樣溫度 |
 | `PORT` | `3000` | 伺服器的 HTTP 埠號 |
 | `HOST` | `127.0.0.1` | 伺服器監聽的網路介面 |
 | `ROKO_DATA_DIR` | `.roko` | 設定檔的儲存目錄 |
@@ -228,7 +226,7 @@ npx shadcn@latest add dialog
 | 方法與路徑 | 說明 |
 | --- | --- |
 | `GET /api/settings` | 回傳目前設定，API 金鑰僅以遮罩提示回傳 |
-| `PUT /api/settings` | 驗證並儲存 `{ baseURL, apiKey, model, temperature }`；`apiKey` 留空表示沿用目前的金鑰 |
+| `PUT /api/settings` | 驗證並儲存 `{ baseURL, apiKey, model }`；`apiKey` 留空表示沿用目前的金鑰 |
 | `POST /api/settings/test` | 以指定設定送出測試請求，回傳 `{ ok, latencyMs }` 或 `{ ok, error }` |
 | `POST /api/settings/models` | 從供應商的 `GET /models` 端點回傳 `{ models }` |
 

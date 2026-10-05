@@ -9,7 +9,6 @@ export function createModel(s: ModelSettings) {
   return new ChatOpenAI({
     model: s.model,
     apiKey: s.apiKey,
-    temperature: s.temperature,
     useResponsesApi: false, // 第三方服務多半只支援 /chat/completions
     configuration: { baseURL: s.baseURL },
   });

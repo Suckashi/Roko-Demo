@@ -3,7 +3,6 @@
 export type PublicSettings = {
   baseURL: string;
   model: string;
-  temperature: number;
   hasApiKey: boolean;
   apiKeyHint: string;
   configured: boolean;
@@ -14,7 +13,6 @@ export type SettingsInput = {
   baseURL: string;
   apiKey: string;
   model: string;
-  temperature: number;
 };
 
 export const providerPresets = [

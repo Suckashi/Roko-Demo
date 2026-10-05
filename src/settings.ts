@@ -6,7 +6,6 @@ export type ModelSettings = {
   baseURL: string;
   apiKey: string;
   model: string;
-  temperature: number;
 };
 
 const file = path.join(config.dataDir, "settings.json");
@@ -17,7 +16,6 @@ function load(): ModelSettings {
     baseURL: process.env.OPENAI_BASE_URL || "https://api.openai.com/v1",
     apiKey: process.env.OPENAI_API_KEY || "",
     model: process.env.MODEL_NAME || "",
-    temperature: Number(process.env.TEMPERATURE ?? 0.3),
   };
   if (!existsSync(file)) return fromEnv;
   try {
@@ -40,7 +38,6 @@ export function mergeSettings(patch: Partial<ModelSettings>): ModelSettings {
     baseURL: (patch.baseURL ?? current.baseURL).trim().replace(/\/+$/, ""),
     apiKey: patch.apiKey?.trim() || current.apiKey,
     model: (patch.model ?? current.model).trim(),
-    temperature: Number.isFinite(Number(patch.temperature)) ? Number(patch.temperature) : current.temperature,
   };
 }
 
@@ -56,7 +53,6 @@ export function publicSettings(s: ModelSettings = current) {
   return {
     baseURL: s.baseURL,
     model: s.model,
-    temperature: s.temperature,
     hasApiKey: Boolean(s.apiKey),
     apiKeyHint: s.apiKey ? `••••${s.apiKey.slice(-4)}` : "",
     configured: isConfigured(s),
