@@ -80,3 +80,27 @@
     font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif;
   }
 }
+
+/* AI 回覆的 Markdown 樣式 */
+@layer components {
+  .markdown > :first-child { @apply mt-0; }
+  .markdown > :last-child { @apply mb-0; }
+  .markdown p, .markdown ul, .markdown ol, .markdown pre, .markdown blockquote, .markdown table { @apply my-2; }
+  .markdown h1, .markdown h2, .markdown h3, .markdown h4 { @apply mt-3 mb-1.5 font-semibold; }
+  .markdown h1 { @apply text-lg; }
+  .markdown h2 { @apply text-base; }
+  .markdown ul { @apply list-disc pl-5; }
+  .markdown ol { @apply list-decimal pl-5; }
+  .markdown li { @apply my-0.5; }
+  .markdown li > ul, .markdown li > ol { @apply my-0.5; }
+  .markdown strong { @apply font-semibold; }
+  .markdown a { @apply underline underline-offset-2; }
+  .markdown blockquote { @apply border-l-2 border-foreground/20 pl-3 text-muted-foreground; }
+  .markdown hr { @apply my-3 border-foreground/15; }
+  .markdown code { @apply rounded bg-foreground/[0.07] px-1 py-0.5 font-mono text-[0.85em]; }
+  .markdown pre { @apply overflow-x-auto rounded-lg bg-foreground/[0.07] p-3 text-xs leading-normal; }
+  .markdown pre code { @apply bg-transparent p-0 text-[inherit]; }
+  .markdown table { @apply block overflow-x-auto border-collapse text-xs; }
+  .markdown th, .markdown td { @apply border border-foreground/15 px-2 py-1 text-left; }
+  .markdown th { @apply bg-foreground/[0.04] font-semibold; }
+}
