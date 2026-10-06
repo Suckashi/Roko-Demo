@@ -30,4 +30,4 @@ Issues 與 PR 使用 GitHub（`Suckashi/Roko-Demo`）。See `docs/agents/issue-t
 
 ### Domain docs
 
-Single-context：根目錄 `CONTEXT.md` ＋ `docs/adr/`。See `docs/agents/domain.md`.
+Single-context：根目錄 `GLOSSARY.md` ＋ `docs/adr/`。See `docs/agents/domain.md`.
