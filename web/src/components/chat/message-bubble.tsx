@@ -1,5 +1,6 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { rehypeCodeHighlight } from "@/lib/rehype-code-highlight";
 import { cn } from "@/lib/utils";
 import { RokoSprite } from "@/roko/roko-sprite";
 
@@ -17,6 +18,7 @@ export function MessageBubble({ role, text }: { role: "user" | "assistant"; text
       ) : (
         <Markdown
           remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeCodeHighlight]}
           components={{ a: ({ node: _node, ...props }) => <a {...props} target="_blank" rel="noreferrer" /> }}
         >
           {text}

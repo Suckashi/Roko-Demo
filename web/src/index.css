@@ -23,6 +23,15 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  /* 程式碼語法上色 */
+  --hl-keyword: oklch(0.5 0.2 300);
+  --hl-string: oklch(0.5 0.13 150);
+  --hl-number: oklch(0.55 0.15 50);
+  --hl-function: oklch(0.5 0.15 250);
+  --hl-type: oklch(0.52 0.12 200);
+  --hl-attr: oklch(0.55 0.15 30);
+  --hl-comment: oklch(0.6 0 0);
+  --hl-deletion: oklch(0.55 0.2 25);
 }
 
 .dark {
@@ -44,6 +53,14 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
+  --hl-keyword: oklch(0.76 0.14 300);
+  --hl-string: oklch(0.78 0.13 150);
+  --hl-number: oklch(0.8 0.12 60);
+  --hl-function: oklch(0.76 0.12 250);
+  --hl-type: oklch(0.78 0.1 200);
+  --hl-attr: oklch(0.78 0.12 40);
+  --hl-comment: oklch(0.62 0 0);
+  --hl-deletion: oklch(0.72 0.17 25);
 }
 
 @theme inline {
@@ -103,4 +120,20 @@
   .markdown table { @apply block overflow-x-auto border-collapse text-xs; }
   .markdown th, .markdown td { @apply border border-foreground/15 px-2 py-1 text-left; }
   .markdown th { @apply bg-foreground/[0.04] font-semibold; }
+
+  /* 程式碼語法上色（rehype-highlight 產生的 hljs-* class） */
+  .markdown .hljs-keyword, .markdown .hljs-built_in, .markdown .hljs-literal,
+  .markdown .hljs-selector-tag, .markdown .hljs-meta .hljs-keyword { color: var(--hl-keyword); }
+  .markdown .hljs-string, .markdown .hljs-regexp, .markdown .hljs-template-tag,
+  .markdown .hljs-addition, .markdown .hljs-symbol { color: var(--hl-string); }
+  .markdown .hljs-number, .markdown .hljs-variable.language_ { color: var(--hl-number); }
+  .markdown .hljs-title, .markdown .hljs-section { color: var(--hl-function); }
+  .markdown .hljs-type, .markdown .hljs-title.class_, .markdown .hljs-name,
+  .markdown .hljs-selector-class, .markdown .hljs-selector-id { color: var(--hl-type); }
+  .markdown .hljs-attr, .markdown .hljs-attribute, .markdown .hljs-property,
+  .markdown .hljs-params, .markdown .hljs-meta { color: var(--hl-attr); }
+  .markdown .hljs-comment, .markdown .hljs-quote { color: var(--hl-comment); font-style: italic; }
+  .markdown .hljs-deletion { color: var(--hl-deletion); }
+  .markdown .hljs-emphasis { font-style: italic; }
+  .markdown .hljs-strong { font-weight: 600; }
 }
