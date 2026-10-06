@@ -39,6 +39,43 @@ describe("App", () => {
     expect(screen.getByText("工具結果")).toBeInTheDocument();
   });
 
+  it("工具卡片預設收合，點標題可展開與收回內容", async () => {
+    const user = userEvent.setup();
+    mockBackend({ chatReplies: [reply] });
+    render(<App />);
+    await screen.findByTitle("模型設定");
+    await user.type(screen.getByPlaceholderText(/輸入訊息/), "1+1？{Enter}");
+    await screen.findByText("答案是 2");
+
+    const toolHeader = screen.getByRole("button", { name: /呼叫工具/ });
+    expect(toolHeader).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText(/"expression": "1\+1"/)).not.toBeInTheDocument();
+
+    await user.click(toolHeader);
+    expect(toolHeader).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText(/"expression": "1\+1"/)).toBeInTheDocument();
+
+    await user.click(toolHeader);
+    expect(screen.queryByText(/"expression": "1\+1"/)).not.toBeInTheDocument();
+
+    const resultHeader = screen.getByRole("button", { name: /工具結果/ });
+    expect(screen.queryByText("2", { selector: "pre" })).not.toBeInTheDocument();
+    await user.click(resultHeader);
+    expect(screen.getByText("2", { selector: "pre" })).toBeInTheDocument();
+  });
+
+  it("待辦清單維持展開", async () => {
+    const user = userEvent.setup();
+    const todos = [{ content: "算出 1+1", status: "in_progress" }];
+    mockBackend({ chatReplies: [[{ event: "todos", data: todos }, ...reply]] });
+    render(<App />);
+    await screen.findByTitle("模型設定");
+    await user.type(screen.getByPlaceholderText(/輸入訊息/), "1+1？{Enter}");
+    await screen.findByText("答案是 2");
+
+    expect(screen.getByText("算出 1+1")).toBeInTheDocument();
+  });
+
   it("關閉「顯示 Agent 步驟」後只留下對話", async () => {
     const user = userEvent.setup();
     mockBackend({ chatReplies: [reply] });
