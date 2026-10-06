@@ -115,7 +115,8 @@ app.post("/api/chat", async (req, res) => {
             if (AIMessage.isInstance(msg)) {
               for (const call of msg.tool_calls ?? []) send("tool", { name: call.name, args: call.args });
             } else if (ToolMessage.isInstance(msg)) {
-              send("result", { name: msg.name, content: String(msg.content).slice(0, 500) });
+              // content 可能是內容區塊陣列（例如 read_file），用 .text 取出其中的文字
+              send("result", { name: msg.name, content: msg.text.slice(0, 500) });
             }
           }
           if (update.todos) send("todos", update.todos);
