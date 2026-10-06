@@ -8,6 +8,12 @@ export default tseslint.config(
   js.configs.recommended,
   tseslint.configs.recommended,
   {
+    rules: {
+      // 允許用解構排除不要的屬性，例如 const { node, ...props } = p
+      "@typescript-eslint/no-unused-vars": ["error", { ignoreRestSiblings: true, argsIgnorePattern: "^_" }],
+    },
+  },
+  {
     // 後端
     files: ["src/**/*.ts", "*.config.ts"],
     languageOptions: { globals: globals.node },
