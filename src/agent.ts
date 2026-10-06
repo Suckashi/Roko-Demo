@@ -1,6 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { MemorySaver } from "@langchain/langgraph";
 import { createDeepAgent } from "deepagents";
+import { todoListMiddleware } from "langchain";
 import { getSettings, isConfigured, type ModelSettings } from "./settings.js";
 import { tools } from "./tools.js";
 
@@ -27,6 +28,8 @@ function buildAgent(s: ModelSettings) {
       "你是 Roko，一個友善的 AI 助理。請用繁體中文回答。",
       "遇到需要多個步驟的任務時，先用 write_todos 規劃，再逐步完成。",
     ].join("\n"),
+    // deepagents 已不再預設附帶 write_todos，需要明確加入
+    middleware: [todoListMiddleware()],
     checkpointer,
   });
 }
