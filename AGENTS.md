@@ -32,17 +32,7 @@ TDD 時先用單檔指令看到測試失敗（Red）再實作；完成後跑 `np
   - 後端：用 `src/test-utils.ts` 的 `freshImport` 載入模組，測試不會讀到本機的 `.env` 或 `.roko/`。
   - 前端：用 `web/src/test/fake-api.ts` 模擬 `/api/settings` 與 `/api/chat` 的 SSE 串流，不需要啟動伺服器或模型。
 - **新增自訂工具**：在 `src/tools.ts` 用 `tool()` 與 zod schema 定義，加進 `tools` 陣列，並在 `src/tools.test.ts` 補測試。
-- **不要改動 `/api/chat` 的串流事件格式**，見 [ADR-0001](docs/adr/0001-chat-stream-contract.md)。
+- **不要改動 `/api/chat` 的串流事件格式**：前後端沒有共用型別，`useAgentChat` 與 `fake-api` 都直接依賴這個格式。
 - **介面元件**用 shadcn/ui（`web/src/components/ui/`），新增元件用 `cd web && npx shadcn@latest add <name>`。
 - **介面文字**使用繁體中文。
 - **不要 commit** `.env` 與 `.roko/`（含 API Key）。
-
-## Agent skills
-
-### Issue tracker
-
-Issues 與 PR 使用 GitHub（`Suckashi/Roko-Demo`）。See `docs/agents/issue-tracker.md`.
-
-### Domain docs
-
-Single-context：根目錄 `GLOSSARY.md` ＋ `docs/adr/`。See `docs/agents/domain.md`.
