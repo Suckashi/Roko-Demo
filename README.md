@@ -145,7 +145,6 @@ Select the model button in the header to open **Model settings**:
 
 | Field | Description |
 | --- | --- |
-| Provider | Presets that fill in the Base URL for common providers |
 | Base URL | Base URL of the OpenAI-compatible API, for example `https://api.openai.com/v1` |
 | API Key | Key for the provider. Once saved, it is never sent back to the browser; leave it blank to keep the current key |
 | Model | Model identifier. **Fetch list** loads the provider's `GET /models` list, if the provider supports it |
@@ -164,6 +163,7 @@ Environment variables, or a `.env` file in the project root (see [`.env.example`
 | `PORT` | `3000` | HTTP port for the server |
 | `HOST` | `127.0.0.1` | Network interface the server listens on |
 | `ROKO_DATA_DIR` | `.roko` | Directory for saved settings |
+| `RECURSION_LIMIT` | `1000` | Maximum agent steps per message (LangGraph `recursionLimit`); each tool call takes about 2–3 steps |
 
 ### Provider examples
 

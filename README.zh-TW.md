@@ -145,7 +145,6 @@ npm start               # 以單一埠提供 API 與前端
 
 | 欄位 | 說明 |
 | --- | --- |
-| 供應商 | 常用供應商的預設值，點選後自動填入 Base URL |
 | Base URL | OpenAI 相容 API 的 Base URL，例如 `https://api.openai.com/v1` |
 | API Key | 供應商的 API 金鑰。儲存後不會再傳回瀏覽器；留空表示沿用目前的金鑰 |
 | 模型 | 模型名稱。「取得清單」會讀取供應商的 `GET /models` 清單（需供應商支援） |
@@ -164,6 +163,7 @@ npm start               # 以單一埠提供 API 與前端
 | `PORT` | `3000` | 伺服器的 HTTP 埠號 |
 | `HOST` | `127.0.0.1` | 伺服器監聽的網路介面 |
 | `ROKO_DATA_DIR` | `.roko` | 設定檔的儲存目錄 |
+| `RECURSION_LIMIT` | `1000` | 每則訊息 Agent 最多執行的步數（LangGraph `recursionLimit`）；每次工具呼叫約佔 2～3 步 |
 
 ### 供應商設定範例
 

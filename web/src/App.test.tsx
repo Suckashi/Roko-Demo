@@ -18,6 +18,16 @@ describe("App", () => {
     expect(await screen.findByRole("dialog", { name: "模型設定" })).toBeInTheDocument();
   });
 
+  it("模型設定只有 OpenAI 相容 API 的欄位，不列出個別供應商", async () => {
+    mockBackend({ settings: { ...configuredSettings, configured: false, hasApiKey: false, apiKeyHint: "", model: "" } });
+    render(<App />);
+    const dialog = await screen.findByRole("dialog", { name: "模型設定" });
+    expect(screen.getByLabelText("Base URL")).toBeInTheDocument();
+    expect(screen.getByLabelText("API Key")).toBeInTheDocument();
+    expect(screen.getByLabelText("模型")).toBeInTheDocument();
+    expect(dialog).not.toHaveTextContent("OpenRouter");
+  });
+
   it("已設定時在標題列顯示模型名稱", async () => {
     mockBackend();
     render(<App />);

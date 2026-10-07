@@ -1,4 +1,5 @@
 import { ToolMessage } from "@langchain/core/messages";
+import { GraphRecursionError } from "@langchain/langgraph";
 import request from "supertest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { freshImport } from "./test-utils.js";
@@ -65,5 +66,29 @@ describe("POST /api/chat", () => {
     const res = await request(app).post("/api/chat").send({ threadId: "t1", message: "hi" }).expect(200);
     const data = res.text.match(/event: result\ndata: (.*)\n/)?.[1];
     expect(JSON.parse(data ?? "null")).toEqual({ name: "read_file", content: "     1\tRoko 測試" });
+  });
+
+  const mockStream = (stream: (...args: unknown[]) => AsyncGenerator<unknown>) =>
+    vi.doMock("./agent.js", () => ({ getAgent: () => ({ stream }), createModel: vi.fn(), resetAgent: vi.fn() }));
+
+  it("recursionLimit 預設為 1000，可用 RECURSION_LIMIT 調整", async () => {
+    const stream = vi.fn<(input: unknown, options: unknown) => AsyncGenerator<never>>(async function* () {});
+    mockStream(stream);
+    await request(await loadApp()).post("/api/chat").send({ threadId: "t1", message: "hi" }).expect(200);
+    expect(stream.mock.calls[0][1]).toMatchObject({ recursionLimit: 1000 });
+
+    mockStream(stream);
+    await request(await loadApp({ RECURSION_LIMIT: "250" })).post("/api/chat").send({ threadId: "t1", message: "hi" });
+    expect(stream.mock.calls[1][1]).toMatchObject({ recursionLimit: 250 });
+  });
+
+  it("超過 recursionLimit 時，error 事件提示如何調整", async () => {
+    mockStream(async function* () {
+      yield ["updates", {}];
+      throw new GraphRecursionError("Recursion limit of 1000 reached");
+    });
+    const res = await request(await loadApp()).post("/api/chat").send({ threadId: "t1", message: "hi" }).expect(200);
+    expect(res.text).toContain("event: error");
+    expect(res.text).toContain("RECURSION_LIMIT");
   });
 });
