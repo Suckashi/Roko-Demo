@@ -3,6 +3,7 @@ import path from "node:path";
 import express from "express";
 import { AIMessage, AIMessageChunk, ToolMessage } from "@langchain/core/messages";
 import { createModel, getAgent, resetAgent } from "./agent.js";
+import { config } from "./config.js";
 import { isConfigured, mergeSettings, publicSettings, saveSettings } from "./settings.js";
 
 export const app = express();
@@ -12,6 +13,12 @@ app.use(express.json());
 type NodeUpdate = { messages?: unknown[]; todos?: unknown };
 
 const errorMessage = (err: unknown) => (err instanceof Error ? err.message : String(err));
+
+// 對話出錯時給使用者看的訊息；步數超過上限時說明怎麼調整
+const chatErrorMessage = (err: unknown) =>
+  err instanceof Error && err.name === "GraphRecursionError"
+    ? `Agent 執行步數超過上限（${config.recursionLimit}），已停止。可以把任務拆小，或在 .env 調高 RECURSION_LIMIT 後重新啟動。`
+    : errorMessage(err);
 
 // ── 模型設定 ────────────────────────────────────────────────
 
@@ -94,7 +101,7 @@ app.post("/api/chat", async (req, res) => {
       {
         configurable: { thread_id: threadId },
         streamMode: ["messages", "updates"],
-        recursionLimit: 100,
+        recursionLimit: config.recursionLimit,
         signal: abort.signal,
       },
     );
@@ -127,7 +134,7 @@ app.post("/api/chat", async (req, res) => {
   } catch (err) {
     if (!abort.signal.aborted) {
       console.error(err);
-      send("error", { message: errorMessage(err) });
+      send("error", { message: chatErrorMessage(err) });
     }
   } finally {
     res.end();

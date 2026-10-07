@@ -6,4 +6,6 @@ export const config = {
   // 預設只聽本機：設定 API 會改寫 API Key，不應暴露在區網上
   host: process.env.HOST || "127.0.0.1",
   dataDir: process.env.ROKO_DATA_DIR || ".roko",
+  // Agent 每輪對話最多執行的步數（LangGraph recursionLimit）；每次工具呼叫大約佔 2～3 步
+  recursionLimit: Number(process.env.RECURSION_LIMIT) || 10000,
 };

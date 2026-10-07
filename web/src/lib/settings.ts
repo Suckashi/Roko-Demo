@@ -15,14 +15,6 @@ export type SettingsInput = {
   model: string;
 };
 
-export const providerPresets = [
-  { name: "OpenAI", baseURL: "https://api.openai.com/v1" },
-  { name: "OpenRouter", baseURL: "https://openrouter.ai/api/v1" },
-  { name: "Groq", baseURL: "https://api.groq.com/openai/v1" },
-  { name: "DeepSeek", baseURL: "https://api.deepseek.com/v1" },
-  { name: "Ollama", baseURL: "http://localhost:11434/v1" },
-];
-
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
     method,

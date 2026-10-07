@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { CheckCircle2, List, Loader2, XCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   listModels,
-  providerPresets,
   saveSettings,
   testSettings,
   type PublicSettings,
@@ -40,7 +38,7 @@ export function SettingsDialog({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>模型設定</DialogTitle>
-          <DialogDescription>連接任何 OpenAI 相容的 API。設定會儲存在伺服器的 .roko/settings.json。</DialogDescription>
+          <DialogDescription>連接 OpenAI 相容的 API。設定會儲存在伺服器的 .roko/settings.json。</DialogDescription>
         </DialogHeader>
         {/* DialogContent 關閉時會卸載，所以每次打開都會用目前設定重新建立表單 */}
         <SettingsForm
@@ -120,24 +118,6 @@ function SettingsForm({
       }}
     >
       <div className="grid gap-2">
-        <Label>供應商</Label>
-        <div className="flex flex-wrap gap-1.5">
-          {providerPresets.map((p) => (
-            <Badge
-              key={p.name}
-              asChild
-              variant={form.baseURL === p.baseURL ? "default" : "outline"}
-              className="cursor-pointer px-2.5 py-1"
-            >
-              <button type="button" onClick={() => update({ baseURL: p.baseURL })}>
-                {p.name}
-              </button>
-            </Badge>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid gap-2">
         <Label htmlFor="baseURL">Base URL</Label>
         <Input
           id="baseURL"
@@ -145,6 +125,9 @@ function SettingsForm({
           onChange={(e) => update({ baseURL: e.target.value })}
           placeholder="https://api.openai.com/v1"
         />
+        <p className="text-xs text-muted-foreground">
+          任何 OpenAI 相容 API 的網址，通常以 /v1 結尾。
+        </p>
       </div>
 
       <div className="grid gap-2">
