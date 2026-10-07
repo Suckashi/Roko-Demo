@@ -71,11 +71,11 @@ describe("POST /api/chat", () => {
   const mockStream = (stream: (...args: unknown[]) => AsyncGenerator<unknown>) =>
     vi.doMock("./agent.js", () => ({ getAgent: () => ({ stream }), createModel: vi.fn(), resetAgent: vi.fn() }));
 
-  it("recursionLimit 預設為 1000，可用 RECURSION_LIMIT 調整", async () => {
+  it("recursionLimit 預設為 10000，可用 RECURSION_LIMIT 調整", async () => {
     const stream = vi.fn<(input: unknown, options: unknown) => AsyncGenerator<never>>(async function* () {});
     mockStream(stream);
     await request(await loadApp()).post("/api/chat").send({ threadId: "t1", message: "hi" }).expect(200);
-    expect(stream.mock.calls[0][1]).toMatchObject({ recursionLimit: 1000 });
+    expect(stream.mock.calls[0][1]).toMatchObject({ recursionLimit: 10000 });
 
     mockStream(stream);
     await request(await loadApp({ RECURSION_LIMIT: "250" })).post("/api/chat").send({ threadId: "t1", message: "hi" });

@@ -163,7 +163,7 @@ Environment variables, or a `.env` file in the project root (see [`.env.example`
 | `PORT` | `3000` | HTTP port for the server |
 | `HOST` | `127.0.0.1` | Network interface the server listens on |
 | `ROKO_DATA_DIR` | `.roko` | Directory for saved settings |
-| `RECURSION_LIMIT` | `1000` | Maximum agent steps per message (LangGraph `recursionLimit`); each tool call takes about 2–3 steps |
+| `RECURSION_LIMIT` | `10000` | Maximum agent steps per message (LangGraph `recursionLimit`); each tool call takes about 2–3 steps |
 
 ### Provider examples
 

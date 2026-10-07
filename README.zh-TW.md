@@ -163,7 +163,7 @@ npm start               # 以單一埠提供 API 與前端
 | `PORT` | `3000` | 伺服器的 HTTP 埠號 |
 | `HOST` | `127.0.0.1` | 伺服器監聽的網路介面 |
 | `ROKO_DATA_DIR` | `.roko` | 設定檔的儲存目錄 |
-| `RECURSION_LIMIT` | `1000` | 每則訊息 Agent 最多執行的步數（LangGraph `recursionLimit`）；每次工具呼叫約佔 2～3 步 |
+| `RECURSION_LIMIT` | `10000` | 每則訊息 Agent 最多執行的步數（LangGraph `recursionLimit`）；每次工具呼叫約佔 2～3 步 |
 
 ### 供應商設定範例
 
