@@ -1,0 +1,1589 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Agentic SDLC Workshop HTML</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap">
+<style>
+    :root {
+      color-scheme: dark;
+      --bg: #050812;
+      --panel: rgba(15, 24, 43, .78);
+      --panel-strong: #10192b;
+      --text: #f4f7fb;
+      --muted: #9ba8bd;
+      --line: rgba(255,255,255,.12);
+      --cyan: #66e3ff;
+      --lime: #70afef;
+      --coral: #ff8d77;
+      --violet: #acd1f6;
+      --amber: #ffc96b;
+      --max: 1180px;
+      --radius: 28px;
+      --shadow: 0 24px 80px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 4%, rgba(102,227,255,.11), transparent 24rem),
+        radial-gradient(circle at 90% 28%, rgba(172,209,246,.10), transparent 26rem),
+        var(--bg);
+      font-family: Inter, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    button, a { font: inherit; }
+    a { color: inherit; }
+    ::selection { color: #041016; background: var(--cyan); }
+
+    .progress {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 40;
+      height: 4px;
+      background: rgba(255,255,255,.06);
+    }
+    .progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--lime));
+      transition: width .25s ease;
+    }
+
+    .chrome {
+      position: fixed;
+      z-index: 30;
+      inset: 24px 28px auto auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font: 700 .74rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+    .counter {
+      min-width: 74px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(5,8,18,.72);
+      backdrop-filter: blur(18px);
+      text-align: center;
+    }
+    .site-doc-link {
+      position: fixed; z-index: 45; top: 22px; left: 24px;
+      padding: 9px 13px; border: 1px solid var(--line); border-radius: 999px;
+      color: var(--muted); background: rgba(5,8,18,.78); backdrop-filter: blur(18px);
+      font: 800 .7rem/1 ui-monospace, monospace; letter-spacing: .06em; text-decoration: none;
+      transition: color .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .site-doc-link:hover { color: var(--cyan); border-color: rgba(102,227,255,.45); transform: translateY(-1px); }
+
+    .rail {
+      position: fixed;
+      z-index: 30;
+      top: 50%;
+      right: 30px;
+      display: grid;
+      gap: 10px;
+      transform: translateY(-50%);
+    }
+    .rail button {
+      position: relative;
+      width: 9px;
+      height: 9px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.24);
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .rail button::before {
+      content: attr(aria-label);
+      position: absolute;
+      top: 50%;
+      right: 18px;
+      width: max-content;
+      max-width: 220px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      opacity: 0;
+      color: var(--text);
+      background: rgba(5,8,18,.94);
+      pointer-events: none;
+      transform: translate(8px,-50%);
+      transition: opacity .2s ease, transform .2s ease;
+      font-size: .72rem;
+      white-space: nowrap;
+    }
+    .rail button:hover::before,
+    .rail button:focus-visible::before { opacity: 1; transform: translate(0,-50%); }
+    .rail button[aria-current="true"] { background: var(--cyan); transform: scale(1.55); }
+
+    main { counter-reset: slide; }
+    .slide {
+      counter-increment: slide;
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      align-items: center;
+      min-height: 100svh;
+      padding: clamp(72px, 9vw, 126px) clamp(28px, 8vw, 112px);
+      border-bottom: 1px solid rgba(255,255,255,.055);
+      scroll-margin-top: 0;
+    }
+    .slide::before {
+      content: "0" counter(slide);
+      position: absolute;
+      z-index: -1;
+      top: clamp(70px, 9vw, 120px);
+      right: clamp(64px, 10vw, 150px);
+      color: rgba(255,255,255,.035);
+      font: 900 clamp(5rem, 16vw, 13rem)/.8 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: -.1em;
+    }
+    .slide::after {
+      content: "";
+      position: absolute;
+      z-index: -2;
+      inset: auto -10rem -12rem auto;
+      width: 30rem;
+      height: 30rem;
+      border: 1px solid rgba(102,227,255,.08);
+      border-radius: 50%;
+      box-shadow: 0 0 0 5rem rgba(102,227,255,.015), 0 0 0 10rem rgba(102,227,255,.01);
+    }
+    .inner { width: min(100%, var(--max)); margin-inline: auto; }
+    .narrow { width: min(100%, 910px); }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 22px;
+      color: var(--cyan);
+      font: 800 .76rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 30px; height: 2px; background: currentColor; }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2 {
+      max-width: 1000px;
+      margin-bottom: 28px;
+      font-weight: 850;
+      line-height: 1.02;
+      letter-spacing: -.045em;
+      text-wrap: balance;
+    }
+    h1 { font-size: clamp(3.2rem, 8vw, 7.8rem); }
+    h2 { font-size: clamp(2.5rem, 6.2vw, 5.6rem); }
+    h3 { margin-bottom: 12px; font-size: 1.12rem; line-height: 1.3; }
+    .lede {
+      max-width: 850px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 2.1vw, 1.5rem);
+      line-height: 1.6;
+      text-wrap: pretty;
+    }
+    .accent { color: var(--cyan); }
+    .lime { color: var(--lime); }
+    .coral { color: var(--coral); }
+    .violet { color: var(--violet); }
+    .amber { color: var(--amber); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .title-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .6fr);
+      align-items: end;
+      gap: clamp(32px, 7vw, 90px);
+    }
+    .title-grid h1 span { display: block; }
+    .title-grid h1 .small { margin-bottom: .14em; color: var(--muted); font-size: .43em; letter-spacing: -.025em; }
+    .meta-card {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(102,227,255,.09), rgba(172,209,246,.035));
+      box-shadow: var(--shadow);
+    }
+    .meta-card dl { margin: 0; }
+    .meta-card div { display: grid; grid-template-columns: 85px 1fr; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .meta-card div:last-child { border-bottom: 0; }
+    .meta-card dt { color: var(--muted); font-size: .8rem; }
+    .meta-card dd { margin: 0; font-weight: 750; }
+
+    .big-quote {
+      max-width: 1040px;
+      margin: 0;
+      font-size: clamp(2.2rem, 5.3vw, 5rem);
+      font-weight: 800;
+      line-height: 1.17;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+    .subquote { max-width: 800px; margin: 36px 0 0; color: var(--muted); font-size: 1.12rem; }
+
+    .grid-2, .grid-3, .grid-4 { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card {
+      min-width: 0;
+      padding: clamp(22px, 3vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 18px 50px rgba(0,0,0,.18);
+      backdrop-filter: blur(14px);
+    }
+    .card p:last-child { margin-bottom: 0; }
+    .card .num {
+      display: block;
+      margin-bottom: 38px;
+      color: var(--cyan);
+      font: 850 .8rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .12em;
+    }
+    .card .label { color: var(--muted); font-size: .92rem; }
+    .card.emphasis { border-color: rgba(112,175,239,.35); background: linear-gradient(145deg, rgba(112,175,239,.11), rgba(15,24,43,.8)); }
+
+    .chain {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 14px;
+      margin-top: 42px;
+    }
+    .chain > div {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 128px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--panel);
+      font-weight: 750;
+      text-align: center;
+    }
+    .chain > div:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      right: -22px;
+      width: 30px;
+      color: var(--cyan);
+      transform: translateY(-50%);
+      text-align: center;
+    }
+
+    .vs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: stretch;
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .vs-mark { display: grid; place-items: center; color: var(--muted); font: 800 1rem/1 ui-monospace, monospace; }
+    .vs .card { min-height: 290px; }
+    .vs ul { margin: 20px 0 0; padding-left: 1.2em; color: var(--muted); }
+    .vs li + li { margin-top: 8px; }
+
+    .adoption-ladder {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 28px;
+    }
+    #step-two h2, #agent-not-model h2, #harness h2 { font-size: clamp(2.2rem, 4.8vw, 4.4rem); }
+    .adoption-stage {
+      min-height: 230px;
+      padding: 18px 16px;
+      border-top: 4px solid var(--line);
+      border-radius: 17px;
+      background: var(--panel);
+    }
+    .adoption-stage .stage-no { color: var(--muted); font: 800 .68rem/1 ui-monospace, monospace; letter-spacing: .1em; }
+    .adoption-stage h3 { margin: 14px 0 5px; font-size: 1.02rem; }
+    .adoption-stage .plain { display: block; min-height: 38px; color: var(--text); font-size: .8rem; font-weight: 750; }
+    .adoption-stage dl { margin: 17px 0 0; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+    .adoption-stage dt { margin-top: 9px; color: var(--text); font-weight: 800; }
+    .adoption-stage dd { margin: 2px 0 0; }
+    .adoption-stage.current { border-color: var(--amber); background: linear-gradient(145deg, rgba(255,201,107,.09), var(--panel)); }
+    .adoption-stage.target { border-color: var(--lime); background: linear-gradient(145deg, rgba(112,175,239,.11), var(--panel)); }
+    .adoption-goal { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; margin-top: 17px; padding: 15px 18px; border: 1px solid rgba(112,175,239,.32); border-radius: 15px; background: rgba(112,175,239,.055); }
+    .adoption-goal b { color: var(--lime); white-space: nowrap; }
+    .adoption-goal span { color: var(--muted); font-size: .82rem; line-height: 1.45; }
+    .source-line { margin-top: 12px; color: var(--muted); font-size: .7rem; }
+    .source-line a { color: var(--cyan); }
+
+    .agent-definition {
+      display: grid;
+      grid-template-columns: .8fr 70px 1.35fr;
+      align-items: stretch;
+      gap: 18px;
+      margin-top: 38px;
+    }
+    .agent-definition .definition-block { padding: 28px; border: 1px solid var(--line); border-radius: 22px; background: var(--panel); }
+    .agent-definition .definition-block.agent { border-color: rgba(102,227,255,.46); background: linear-gradient(145deg, rgba(102,227,255,.09), var(--panel)); }
+    .definition-block .term { color: var(--cyan); font: 850 .74rem/1 ui-monospace, monospace; letter-spacing: .12em; }
+    .definition-block h3 { margin: 18px 0 12px; font-size: 1.25rem; }
+    .definition-block p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .agent-definition .connector { display: grid; place-items: center; color: var(--cyan); font: 900 2rem/1 ui-monospace, monospace; }
+    .agent-loop { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-top: 22px; }
+    .agent-loop span { padding: 11px 8px; border-radius: 11px; color: var(--text); background: rgba(255,255,255,.05); text-align: center; font-size: .76rem; font-weight: 760; }
+    .agent-takeaway { margin-top: 20px; padding-left: 20px; border-left: 4px solid var(--violet); color: var(--text); font-size: 1rem; font-weight: 760; }
+
+    .stack {
+      display: grid;
+      width: min(100%, 860px);
+      margin-top: 42px;
+      gap: 10px;
+    }
+    .stack-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      align-items: center;
+      gap: 18px;
+    }
+    .stack-row > b { color: var(--muted); font: 800 .8rem/1.2 ui-monospace, monospace; text-align: right; }
+    .stack-row > div { padding: 18px 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); font-weight: 760; }
+    .stack-row:nth-child(1) > div { border-color: rgba(102,227,255,.35); }
+    .stack-row:nth-child(2) > div { border-color: rgba(112,175,239,.3); }
+    .stack-row:nth-child(3) > div { border-color: rgba(172,209,246,.3); }
+    .stack-row:nth-child(4) > div { border-color: rgba(255,141,119,.3); }
+
+    .architecture-map {
+      display: grid;
+      grid-template-columns: minmax(150px, .8fr) 54px minmax(330px, 1.6fr) 70px minmax(190px, 1fr);
+      align-items: stretch;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .arch-column, .arch-core { display: grid; gap: 10px; }
+    .arch-node { padding: 16px 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+    .arch-node b { display: block; margin-bottom: 7px; color: var(--text); }
+    .arch-node small { color: var(--muted); line-height: 1.45; }
+    .arch-human { border-color: rgba(255,141,119,.42); }
+    .arch-agent { padding: 20px; border-color: rgba(102,227,255,.52); background: linear-gradient(135deg, rgba(102,227,255,.1), rgba(102,227,255,.025)); }
+    .arch-agent strong { display: block; margin-bottom: 10px; color: var(--cyan); font: 850 .75rem/1 ui-monospace, monospace; letter-spacing: .1em; }
+    .arch-parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+    .arch-parts span { padding: 9px; border-radius: 10px; color: var(--muted); background: rgba(255,255,255,.045); text-align: center; font-size: .76rem; }
+    .arch-support { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .arch-support .arch-node:first-child { border-color: rgba(112,175,239,.38); }
+    .arch-support .arch-node:last-child { border-color: rgba(172,209,246,.38); }
+    .arch-arrow { display: grid; place-items: center; align-content: center; gap: 6px; color: var(--cyan); font: 900 1.7rem/1 ui-monospace, monospace; text-align: center; }
+    .arch-arrow small { color: var(--muted); font-size: .62rem; letter-spacing: .08em; }
+    .arch-systems .arch-node { padding: 12px 15px; }
+    .arch-feedback { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin-top: 2px; color: var(--muted); font-size: .78rem; }
+    .arch-feedback::before, .arch-feedback::after { content: ""; height: 1px; background: linear-gradient(90deg, transparent, var(--violet)); }
+    .arch-feedback::after { background: linear-gradient(90deg, var(--violet), transparent); }
+
+    .repo-setup-flow { display: grid; grid-template-columns: 1fr 60px 1fr 60px 1fr; align-items: stretch; gap: 12px; margin-top: 34px; }
+    .repo-box { padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel); }
+    .repo-box.skill { border-color: rgba(102,227,255,.45); background: linear-gradient(145deg, rgba(102,227,255,.1), var(--panel)); }
+    .repo-box.output { border-color: rgba(112,175,239,.4); }
+    .repo-box .tag { color: var(--muted); font: 800 .67rem/1 ui-monospace, monospace; letter-spacing: .1em; }
+    .repo-box h3 { margin: 14px 0 10px; font-size: 1rem; }
+    .repo-box ul { margin: 0; padding-left: 1.1em; color: var(--muted); font-size: .82rem; line-height: 1.65; }
+    .repo-arrow { display: grid; place-items: center; color: var(--cyan); font-size: 2rem; }
+
+    .agenda {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 38px;
+    }
+    .agenda .card { position: relative; overflow: hidden; }
+    .agenda .card::after {
+      content: attr(data-part);
+      position: absolute;
+      right: 14px;
+      bottom: -18px;
+      color: rgba(255,255,255,.045);
+      font: 900 5.8rem/1 ui-monospace, monospace;
+    }
+    .agenda h3 { font-size: 1.45rem; }
+
+    .terminal {
+      margin-top: 34px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #03060c;
+      box-shadow: var(--shadow);
+    }
+    .terminal-head { display: flex; align-items: center; gap: 7px; padding: 14px 18px; border-bottom: 1px solid var(--line); background: #0a101d; }
+    .terminal-head i { width: 10px; height: 10px; border-radius: 50%; background: #ff6b6b; }
+    .terminal-head i:nth-child(2) { background: #ffd166; }
+    .terminal-head i:nth-child(3) { background: #77aadd; }
+    .terminal pre { margin: 0; padding: 28px; overflow-x: auto; color: #d9e8f6; font: 650 clamp(.82rem, 1.5vw, 1rem)/1.8 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; }
+
+    .contract {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      align-items: center;
+      gap: 18px;
+      margin-top: 38px;
+    }
+    .contract .bridge { color: var(--cyan); font: 900 2.4rem/1 ui-monospace, monospace; text-align: center; }
+    .tbd {
+      position: relative;
+      min-height: 245px;
+      border: 1px dashed rgba(255,201,107,.55);
+      background: repeating-linear-gradient(-45deg, rgba(255,201,107,.035), rgba(255,201,107,.035) 12px, transparent 12px, transparent 24px);
+    }
+    .tbd::after { content: "TBD"; position: absolute; top: 20px; right: 22px; color: var(--amber); font: 850 .8rem/1 ui-monospace, monospace; letter-spacing: .12em; }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 42px;
+    }
+    .workflow > div {
+      min-height: 150px;
+      padding: 18px 14px;
+      border-top: 4px solid var(--cyan);
+      border-radius: 17px;
+      background: var(--panel);
+    }
+    .workflow > div:nth-child(2), .workflow > div:nth-child(6) { border-color: var(--lime); }
+    .workflow > div:nth-child(4), .workflow > div:nth-child(7) { border-color: var(--violet); }
+    .workflow b { display: block; margin: 16px 0 8px; }
+    .workflow small { color: var(--muted); line-height: 1.45; }
+    .workflow .step { color: var(--muted); font: 750 .72rem/1 ui-monospace, monospace; }
+    .workflow-name { display: inline-flex; align-items: center; gap: 12px; margin: 22px 0 0; padding: 10px 14px; border: 1px solid rgba(102,227,255,.36); border-radius: 999px; color: var(--cyan); background: rgba(102,227,255,.07); font: 850 .86rem/1 ui-monospace, monospace; }
+    .workflow-name span { color: var(--muted); font-size: .65rem; letter-spacing: .12em; }
+    .workflow-phases { display: grid; grid-template-columns: 2fr 3fr 2fr; gap: 9px; margin-top: 12px; color: var(--muted); font: 750 .68rem/1 ui-monospace, monospace; letter-spacing: .08em; text-align: center; }
+    .workflow-phases span { padding-top: 9px; border-top: 1px solid var(--line); }
+
+    .reuse {
+      display: grid;
+      grid-template-columns: 1fr 56px .72fr 56px 1fr;
+      align-items: center;
+      gap: 18px;
+      margin-top: 42px;
+    }
+    .reuse-arrow { display: grid; place-items: center; color: var(--cyan); font-size: 3rem; }
+    .session { padding: 30px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+    .session .tag { display: inline-block; margin-bottom: 20px; color: var(--muted); font: 800 .72rem/1 ui-monospace, monospace; letter-spacing: .1em; }
+    .session ul { margin: 18px 0 0; padding-left: 1.1em; color: var(--muted); }
+    .knowledge-store { display: grid; place-items: center; align-content: center; padding: 24px 18px; border: 1px solid rgba(112,175,239,.4); border-radius: var(--radius); color: var(--lime); background: rgba(112,175,239,.055); text-align: center; }
+    .knowledge-store b { margin-bottom: 10px; }
+    .knowledge-store small { color: var(--muted); line-height: 1.45; }
+
+    .tool-map {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 38px;
+    }
+    .tool { padding: 28px 24px; border: 1px solid var(--line); border-radius: 24px; background: var(--panel); }
+    .tool .icon { display: grid; place-items: center; width: 50px; height: 50px; margin-bottom: 32px; border-radius: 14px; color: #061018; background: var(--cyan); font: 900 1rem/1 ui-monospace, monospace; }
+    .tool:nth-child(2) .icon { background: var(--lime); }
+    .tool:nth-child(3) .icon { background: var(--violet); }
+    .tool:nth-child(4) .icon { background: var(--coral); }
+    .tool p { margin-bottom: 0; color: var(--muted); font-size: .92rem; }
+    .tool-bridge { display: grid; grid-template-columns: 1fr 62px 1fr 62px 1fr; align-items: center; gap: 10px; margin-top: 26px; }
+    .tool-bridge .arch-node { text-align: center; }
+    .tool-bridge .mcp-hub { border-color: rgba(172,209,246,.45); color: var(--violet); font-weight: 850; }
+
+    .equation {
+      display: grid;
+      grid-template-columns: repeat(7, auto);
+      align-items: center;
+      justify-content: start;
+      gap: clamp(8px, 1.6vw, 22px);
+      margin-top: 44px;
+    }
+    .equation .token { padding: 20px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); font-weight: 800; text-align: center; }
+    .equation .operator { color: var(--muted); font: 800 1.4rem/1 ui-monospace, monospace; }
+    .equation .result { border-color: rgba(112,175,239,.4); color: var(--lime); }
+
+    .timeline { display: grid; margin-top: 34px; border-top: 1px solid var(--line); }
+    .timeline-row { display: grid; grid-template-columns: 110px 210px 1fr; gap: 22px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+    .timeline-row time { color: var(--cyan); font: 800 .82rem/1.4 ui-monospace, monospace; }
+    .timeline-row b { line-height: 1.35; }
+    .timeline-row span { color: var(--muted); font-size: .9rem; }
+
+    .presenter-toggle {
+      position: fixed; right: 22px; bottom: 20px; z-index: 50;
+      border: 1px solid rgba(109, 226, 255, .42); border-radius: 999px;
+      padding: 11px 16px; color: var(--text); background: rgba(8, 17, 30, .9);
+      box-shadow: 0 14px 50px rgba(0, 0, 0, .38); backdrop-filter: blur(18px);
+      font: 800 .76rem/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase;
+      cursor: pointer; transition: transform .2s ease, border-color .2s ease;
+    }
+    .presenter-toggle:hover { transform: translateY(-2px); border-color: var(--cyan); }
+    .presenter-panel {
+      position: fixed; z-index: 60; top: 0; right: 0; width: min(470px, 94vw); height: 100vh;
+      display: grid; grid-template-rows: auto minmax(0, 1fr); color: var(--text);
+      background: rgba(6, 14, 25, .97); border-left: 1px solid var(--line);
+      box-shadow: -28px 0 80px rgba(0, 0, 0, .5); backdrop-filter: blur(24px);
+      transform: translateX(104%); transition: transform .28s ease;
+    }
+    .presenter-panel.is-open { transform: translateX(0); }
+    .presenter-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 22px 14px; }
+    .presenter-head small { display: block; margin-bottom: 5px; color: var(--cyan); font: 700 .68rem/1 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }
+    .presenter-head h2 { margin: 0; font-size: 1.25rem; }
+    .presenter-close, .copy-button {
+      border: 1px solid var(--line); border-radius: 10px; color: var(--text); background: var(--panel);
+      padding: 9px 11px; cursor: pointer; font: 700 .875rem/1.2 ui-monospace, monospace;
+    }
+    .presenter-content { overflow-y: auto; padding: 18px 22px 36px; }
+    .prompt-page-title { margin: 0 0 18px; font-size: 1rem; line-height: 1.6; color: var(--muted); }
+    .prompt-empty { margin: 0; padding: 18px 0; font-size: 1rem; color: var(--muted); }
+    .prompt-card { margin: 0 0 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); overflow: hidden; }
+    .prompt-card summary { padding: 14px 15px; cursor: pointer; font-weight: 800; }
+    .prompt-body { padding: 0 15px 15px; }
+    .prompt-body pre { max-height: 310px; overflow: auto; white-space: pre-wrap; color: #cdd9e7; background: rgba(0,0,0,.22); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font: 1rem/1.6 ui-monospace, monospace; }
+    .prompt-actions { display: flex; justify-content: flex-end; margin-top: 9px; }
+    .copy-button.is-copied { color: var(--bg); background: var(--lime); border-color: var(--lime); }
+    .prompt-group-title { margin: 20px 0 10px; color: var(--amber); font: 800 .7rem/1 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }
+
+    .deliverables { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 30px; margin-top: 36px; padding: 0; list-style: none; }
+    .deliverables li { position: relative; padding: 18px 20px 18px 54px; border-bottom: 1px solid var(--line); }
+    .deliverables li::before { content: "✓"; position: absolute; left: 18px; color: var(--lime); font-weight: 900; }
+
+    .closing h2 { max-width: 1100px; }
+    .closing .question { margin: 46px 0 0; padding: 28px 30px; border-left: 5px solid var(--lime); color: var(--text); background: linear-gradient(90deg, rgba(112,175,239,.1), transparent); font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 720; }
+    .closing .final { margin: 36px 0 0; color: var(--lime); font-size: clamp(1.35rem, 3vw, 2.3rem); font-weight: 850; }
+
+    .scroll-hint { position: absolute; left: clamp(28px, 8vw, 112px); bottom: 32px; display: flex; align-items: center; gap: 12px; color: var(--muted); font: 700 .73rem/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+    .scroll-hint::before { content: "↓"; display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 50%; color: var(--cyan); animation: bob 1.8s ease-in-out infinite; }
+    @keyframes bob { 0%,100% { transform: translateY(-2px); } 50% { transform: translateY(4px); } }
+
+    .reveal { opacity: .22; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+    .slide.is-visible .reveal { opacity: 1; transform: translateY(0); }
+    .slide.is-visible .reveal:nth-child(2) { transition-delay: .08s; }
+    .slide.is-visible .reveal:nth-child(3) { transition-delay: .16s; }
+
+    @media (max-width: 980px) {
+      .rail { display: none; }
+      .chrome { right: 18px; top: 16px; }
+      .title-grid, .grid-4, .tool-map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3, .agenda { grid-template-columns: 1fr; }
+      .chain { grid-template-columns: 1fr; }
+      .chain > div { min-height: auto; justify-items: start; text-align: left; }
+      .chain > div:not(:last-child)::after { content: "↓"; top: auto; right: 50%; bottom: -27px; transform: translateX(50%); }
+      .workflow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workflow > div:last-child { grid-column: 1 / -1; }
+      .architecture-map { grid-template-columns: 1fr; }
+      .architecture-map > .arch-arrow { transform: rotate(90deg); min-height: 36px; }
+      .arch-feedback { grid-column: 1; }
+      .repo-setup-flow { grid-template-columns: 1fr; }
+      .repo-arrow { transform: rotate(90deg); min-height: 34px; }
+      .tool-bridge { grid-template-columns: 1fr; }
+      .tool-bridge .arch-arrow { transform: rotate(90deg); min-height: 34px; }
+      .equation { grid-template-columns: 1fr; justify-items: stretch; }
+      .equation .operator { text-align: center; }
+      .adoption-ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .adoption-stage:last-child { grid-column: 1 / -1; }
+      .agent-definition { grid-template-columns: 1fr; }
+      .agent-definition .connector { transform: rotate(90deg); min-height: 36px; }
+    }
+
+    @media (max-width: 700px) {
+      body { font-size: 16px; }
+      .slide { min-height: auto; padding: 90px 22px 76px; }
+      .slide::before { top: 72px; right: 24px; }
+      .title-grid, .grid-2, .grid-4, .tool-map, .deliverables { grid-template-columns: 1fr; }
+      .title-grid { align-items: start; }
+      .meta-card { display: none; }
+      .vs, .contract, .reuse { grid-template-columns: 1fr; }
+      .vs-mark, .contract .bridge, .reuse-arrow { transform: rotate(90deg); min-height: 44px; }
+      .workflow { grid-template-columns: 1fr; }
+      .workflow > div:last-child { grid-column: auto; }
+      .stack-row { grid-template-columns: 1fr; gap: 8px; }
+      .stack-row > b { text-align: left; }
+      .arch-support, .arch-parts { grid-template-columns: 1fr; }
+      .workflow-phases { display: none; }
+      .timeline-row { grid-template-columns: 84px 1fr; }
+      .timeline-row span { grid-column: 2; }
+      .scroll-hint { left: 22px; }
+      .presenter-toggle { right: 14px; bottom: 14px; }
+      .presenter-panel { top: auto; bottom: 0; width: 100%; height: min(82vh, 760px); border-left: 0; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; transform: translateY(104%); }
+      .presenter-panel.is-open { transform: translateY(0); }
+      .adoption-ladder { grid-template-columns: 1fr; }
+      .adoption-stage:last-child { grid-column: auto; }
+      .adoption-goal { grid-template-columns: 1fr; }
+      .agent-loop { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    @media print {
+      :root { color-scheme: light; --bg: #fff; --text: #0c1322; --muted: #4c596d; --line: rgba(0,0,0,.15); --panel: #f5f7fa; }
+      body { background: #fff; }
+      .progress, .chrome, .rail, .scroll-hint, .presenter-toggle, .presenter-panel, .site-doc-link { display: none; }
+      .slide { min-height: 100vh; page-break-after: always; }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+/* Narrative edition: diagrams carry the explanation, notes carry facilitation. */
+:root { --lime: #8ab4ff; --cyan: #73c9f2; --max: 1280px; }
+.slide {padding:80px clamp(26px,6vw,88px) 70px; min-height:100svh;}
+.slide::before,.slide::after{display:none}
+.slide h2{font-size:clamp(1.9rem,3.1vw,3rem);line-height:1.3;letter-spacing:-.025em;max-width:1100px;margin:0 0 18px}
+.slide .eyebrow{font-size:.88rem;letter-spacing:.03em;margin-bottom:16px;color:#8ab4ff}
+.slide .slide-lead{font-size:1.12rem;color:#b7c5d9;max-width:1050px;margin:0 0 28px;line-height:1.7}
+.slide .bridge{border-top:1px solid var(--line);padding-top:17px;margin-top:28px;color:#c2ccdb;font-size:1rem;line-height:1.6}
+.bridge b{color:var(--cyan);margin-right:12px}
+.hero-work{display:grid;grid-template-columns:140px 1fr;gap:22px 30px;padding:30px 0;border-block:1px solid var(--line)}
+.hero-work span{color:#92a8c3}.hero-work strong{font-size:clamp(1.2rem,2.1vw,2rem);font-weight:600}
+.key-line{font-size:1.2rem;color:#a9ceff;margin:24px 0 0;line-height:1.6}
+.detail-text{font-size:1rem;color:#aab9cb;line-height:1.65;margin:18px 0 0}
+.example-line{font-size:1.35rem;border-left:3px solid var(--cyan);padding:14px 22px;margin:18px 0 28px;background:#0b1626}
+.example-line small{display:block;color:#9bacbf;font-size:1rem;margin-top:10px}
+.table-scroll{width:100%;overflow-x:auto}
+.evidence-table{border-collapse:collapse;width:100%;font-size:1.02rem;line-height:1.6}
+.evidence-table th{text-align:left;color:#81c9ed;font-weight:600;border-bottom:2px solid #29405a;padding:12px 16px;background:#0b1421}
+.evidence-table td{padding:16px;border-bottom:1px solid #233145;vertical-align:top;color:#d1dbea}
+.evidence-table td:first-child{font-weight:650;color:#edf3fb;min-width:155px}
+.diagram-frame{padding:25px 0;border-block:1px solid #2a3d55}
+.diagram-caption{color:#a9ceff;margin-bottom:20px;font-size:1rem}
+.explain-row{display:grid;grid-template-columns:minmax(140px,22%) 1fr;gap:24px;border-bottom:1px solid #29405a;padding:20px 0;font-size:1rem;line-height:1.7}.explain-row>b{color:#a9ceff}.explain-row>div{color:#c1cfe0}
+.flow-strip{display:flex;align-items:stretch;gap:12px}
+.diagram-node{flex:1;min-width:0;padding:22px 18px;background:#101d30;border-top:3px solid #5b91c6}
+.diagram-node b{font-size:1.12rem;color:#e2eeff}.diagram-node p{font-size:1rem;color:#adbed4;margin:12px 0 0;line-height:1.6}
+.flow-link{align-self:center;color:#6ebee6;font-size:1.5rem}
+.return-path{border-left:3px solid #95b2cf;background:#161f29;color:#bfcedc;padding:14px 20px;font-size:1rem;line-height:1.6;margin-top:18px}
+.system-human{display:flex;justify-content:space-between;gap:20px;padding:18px 22px;border:1px solid #637594;color:#e2eaf5}
+.system-human span{color:#b8c8dc}.system-body{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:18px;margin-top:22px;align-items:center}
+.system-input,.system-tools{display:grid;gap:14px}.system-agent{text-align:center;border:2px solid #598fc3;padding:32px 20px;background:#0e1f35}
+.system-agent strong{display:block;font-size:2.1rem;margin:20px 0 12px}.system-agent p,.system-agent span{font-size:1rem;color:#a9c7e6;line-height:1.7}
+.timeline{margin-top:16px}.timeline-row{grid-template-columns:90px 185px 1fr;gap:16px;padding:12px 0}.timeline-row>span{font-size:1rem}.timeline-row time{font-size:1rem}.timeline-row .mono{overflow-wrap:anywhere}
+.chapter-status{position:fixed;z-index:30;top:20px;left:26px;max-width:65vw;padding:8px 12px;background:rgba(5,8,18,.92);border-bottom:1px solid #3c5878;color:#bacce2;font-size:.88rem}
+.adoption-stage dl{font-size:.88rem}.adoption-stage .plain{font-size:.94rem}.adoption-stage h3{overflow-wrap:anywhere}
+.reveal{opacity:1;transform:none}.source-line{font-size:.88rem}
+@media(max-width:800px){.flow-strip{flex-direction:column}.flow-link{transform:rotate(90deg)}.system-body{grid-template-columns:1fr}.system-human{flex-direction:column}.hero-work{grid-template-columns:1fr;gap:12px}.hero-work strong{margin-bottom:16px}.slide{padding:82px 24px 60px}.timeline-row{grid-template-columns:82px 1fr}.timeline-row>span{grid-column:2}.chapter-status{left:14px;max-width:70vw;font-size:.78rem}.evidence-table{min-width:560px}.slide h2{font-size:1.9rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{transition:none}}
+
+/* Parallel studio edition — dark editorial system, no external dependencies. */
+:root{--bg:#080d17;--panel:#101a2a;--text:#edf3fd;--muted:#abb9cf;--line:#25364d;--cyan:#83c9ff;--violet:#b2d4f6;--lime:#89b4ff;--max:1240px}
+body{background:#080d17;color:var(--text);font-family:Inter,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;-webkit-font-smoothing:antialiased}
+.slide{position:relative;padding:84px clamp(28px,6vw,100px) 60px;border-bottom:1px solid #24334a;background:radial-gradient(ellipse at 100% 0%,#13223988,transparent 55%),#080d17;overflow:visible}
+.slide:nth-of-type(3n+2){background:radial-gradient(ellipse at 0 100%,#1f304180,transparent 55%),#0b101d}
+.slide>.inner{position:relative;width:100%;max-width:var(--max);margin:auto}
+.slide-mast{display:flex;justify-content:space-between;align-items:center;gap:20px;border-top:1px solid #3a4a62;padding-top:12px;margin-bottom:36px;color:#9aaecb;font:600 .69rem/1.5 ui-monospace,Consolas,monospace;letter-spacing:.13em}
+.slide-mast b{display:inline-block;color:#dceaff;font-size:1rem;margin-left:18px}
+.slide .eyebrow{display:inline-flex;align-items:center;gap:10px;color:#96bbeb;font-size:.85rem;letter-spacing:.02em;margin:0 0 16px}
+.slide .eyebrow::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;background:#8bc5ff;box-shadow:0 0 16px #669fff60}
+.slide h2{font-size:clamp(1.95rem,3.15vw,3.25rem);max-width:1120px;font-weight:750;line-height:1.28;letter-spacing:-.035em;margin-bottom:18px;text-wrap:balance}
+.slide .slide-lead{font-size:clamp(1rem,1.2vw,1.16rem);line-height:1.8;color:#b0bfd4;max-width:1030px;margin-bottom:30px}
+.slide .bridge{display:flex;gap:18px;align-items:baseline;border-top:1px solid #2a3b52;margin-top:32px;padding-top:20px;font-size:.94rem;color:#a7b8d0;line-height:1.65}
+.bridge b{white-space:nowrap;color:#a7c7ef;font-size:.75rem;border:1px solid #344b6a;border-radius:20px;padding:3px 10px;margin:0}
+.key-line{color:#bbd7ff;font-size:clamp(1.1rem,1.45vw,1.45rem);font-weight:650;border-left:3px solid #93b8ff;padding:6px 0 6px 18px;margin-top:26px}
+.detail-text{color:#a7b6cb}.source-line{color:#94a8c5;font-size:.78rem;line-height:1.7;margin-top:18px}.source-line a{text-underline-offset:4px;color:#a7c7ef}
+.table-scroll{border:1px solid #293b54;border-radius:14px;overflow:auto;background:#0d1725;margin:24px 0}
+.evidence-table{font-size:.98rem}.evidence-table th{color:#a8c8f1;font-weight:600;background:#152237;border-bottom:1px solid #36506f;padding:14px 19px;font-size:.83rem;letter-spacing:.02em}
+.evidence-table td{padding:17px 19px;color:#c4d1e4;border-bottom:1px solid #25364b;line-height:1.7}.evidence-table td:first-child{color:#edf3fe;font-weight:600}.evidence-table tr:last-child td{border-bottom:0}.evidence-table tr:nth-child(even){background:#111c2c}
+.diagram-frame{border:1px solid #2b405c;border-radius:18px;background:linear-gradient(145deg,#122137,#0d1726);padding:26px;margin:22px 0}
+.diagram-caption{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:#a0bce0;margin-bottom:20px}
+.diagram-node{border:1px solid #345175;border-top:3px solid #7baee9;border-radius:12px;padding:22px 20px;background:#122238;box-shadow:0 8px 20px #03071325}
+.diagram-node b{color:#e4efff;font-size:1.05rem;line-height:1.6}.diagram-node p{color:#b5c6dd;font-size:.95rem;line-height:1.7}.flow-link{color:#91b8e5;font-weight:400;font-size:1.3rem}
+.return-path{border:1px solid #455668;border-left:3px solid #a0c5eb;border-radius:9px;background:#1e2833;color:#c4d4e5;padding:16px 20px;font-size:.94rem;margin-top:20px}
+.system-human{border:1px solid #718294;border-radius:12px;background:#202a35;padding:16px 22px}.system-human b{color:#cde3f9}.system-human span{font-size:.93rem;color:#b8c6d5}
+.system-body{gap:24px}.system-agent{border:1px solid #72a8ee;border-radius:20px;background:radial-gradient(circle at 50% 20%,#274e7c,#102037 75%);padding:35px 22px;box-shadow:0 0 48px #72aaff15}
+.system-agent strong{font-size:2.7rem;letter-spacing:.06em}.system-input .diagram-node{border-top-color:#9cc2e9}.system-tools .diagram-node{border-top-color:#85c9e7}
+.explain-row{padding:24px 8px;grid-template-columns:23% 1fr}.explain-row:last-child{border-bottom:0}
+.example-line{border:1px solid #41638a;border-left:4px solid #89b6f2;border-radius:0 14px 14px 0;padding:24px 28px;font-size:clamp(1.25rem,1.9vw,1.8rem);background:linear-gradient(100deg,#172b46,#101b2d)}
+.timeline-row{grid-template-columns:96px 205px 1fr;align-items:start;gap:18px;padding:16px 4px;border-bottom:1px solid #26374f}.timeline-row time{font:600 .9rem/1.65 ui-monospace,monospace;color:#8fbbf5}.timeline-row>b{font-size:1rem;color:#e4eeff}.timeline-row>span{color:#a8bad3;font-size:.93rem;line-height:1.65}
+.adoption-ladder{gap:10px}.adoption-stage{border-radius:12px;background:#101a29;border:1px solid #29394f}.adoption-stage.current,.adoption-stage.target{background:#172941;border-color:#77a8e6}
+.chapter-status{top:18px;left:24px;border:1px solid #2e425e;border-radius:8px;background:#0b1322ed;color:#b6cae5;font-size:.76rem;max-width:calc(100vw - 165px);backdrop-filter:blur(12px)}
+.chrome{top:18px;right:24px}.counter{border-radius:8px;padding:10px 12px;font-size:.74rem}.rail{right:18px;gap:8px;max-height:72vh}.rail button{width:6px;height:6px}.rail button.active{background:#a4c8ff}
+.site-doc-link{left:24px;top:auto;bottom:22px;border-radius:8px;background:#0d1728ed;padding:11px 13px;color:#b4c7e2}
+.presenter-toggle{border-radius:9px;background:#193459;color:#e2eeff;border:1px solid #537aa9;box-shadow:0 8px 24px #0005}.presenter-panel{background:#0d1626;border-left:1px solid #385271}.presenter-head{background:#142136}
+.micro-label,.card-index{font:600 .7rem/1.7 ui-monospace,Consolas,monospace;letter-spacing:.12em;color:#9ab8df}
+#title h2{max-width:900px;font-size:clamp(2.3rem,4.2vw,4.6rem);line-height:1.2}#title .slide-lead{display:none}#title{background:radial-gradient(ellipse at 80% 40%,#223c6450,transparent 55%),#080d17}
+.cover-composition{display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:65px;margin-top:35px}.cover-statement>p{font-size:clamp(1.35rem,2.2vw,2.2rem);line-height:1.75;color:#b8c8df;margin:18px 0 28px}.cover-statement em{font-style:normal;color:#f1f5ff}.cover-meta{display:flex;gap:20px;font:600 .66rem/1.6 ui-monospace,monospace;color:#91a6c3;letter-spacing:.08em}
+.mission-panel{border:1px solid #3a567a;background:linear-gradient(135deg,#192b46,#101a2c);border-radius:18px;box-shadow:0 24px 80px #0003;overflow:hidden}.mission-head{padding:15px 22px;border-bottom:1px solid #345075;color:#bbcce2;font-size:.8rem}.mission-head i{display:inline-block;width:7px;height:7px;background:#a8beff;border-radius:50%;margin-right:10px}.mission-panel>div:not(.mission-head){padding:19px 24px;display:grid;grid-template-columns:1fr;border-bottom:1px solid #293c56}.mission-panel>div:last-child{border:0}.mission-panel small{font:.65rem/1.8 ui-monospace,monospace;color:#90aee0;align-self:center}.mission-panel strong{font-size:1.03rem;font-weight:650}.mission-panel p{grid-column:1;margin:5px 0 0;color:#a3b7d2;font-size:.86rem}
+.outcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:35px 0}.outcome-grid article,.route-grid article{padding:28px;border:1px solid #314b6b;border-radius:16px;background:linear-gradient(145deg,#172840,#0f1929);position:relative}.outcome-grid article:nth-child(2){background:linear-gradient(145deg,#21303f,#151b2d);border-color:#486078}.outcome-grid h3{font-size:1.65rem;line-height:1.45;font-weight:650;margin:34px 0 18px}.outcome-grid p{font-size:1rem;color:#b1c1d7;line-height:1.8}.outcome-grid footer{border-top:1px solid #354760;padding-top:20px;margin-top:35px;font-size:.83rem;color:#b7cdec}
+.repo-core{text-align:center;background:#172a44;border:1px solid #557cae;padding:20px;border-radius:14px;max-width:840px;margin:auto}.repo-core strong{display:block;font-size:1.35rem;margin:8px 0}.repo-core p{margin:8px 0;color:#b8cce6;font-size:.94rem}.fork-label,.merge-arrow{text-align:center;color:#a0bbdf;font-size:.85rem;padding:14px;letter-spacing:.02em}
+.worker-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.worker-card{border:1px solid #41628a;border-top:3px solid #89b8f1;border-radius:13px;background:#102139;padding:22px 26px}.worker-card:nth-child(2){border-color:#577390;border-top-color:#a2c8ef;background:#1f2a35}.worker-tag{font:700 .72rem/1.6 ui-monospace,monospace;color:#a8cbff;letter-spacing:.1em}.worker-card:nth-child(2) .worker-tag{color:#c0dcf8}.worker-card h3{font-size:1.5rem;margin:12px 0}.worker-card dl{display:grid;grid-template-columns:70px 1fr;gap:9px;font-size:.9rem}.worker-card dt{color:#9bb4d4}.worker-card dd{margin:0;overflow-wrap:anywhere}.worker-card p{border-top:1px solid #425271;padding-top:14px;color:#b4c7e1;font-size:.9rem;margin-bottom:0}
+.warning-strip{background:#2a241e;border:1px solid #6b5435;border-radius:10px;color:#e5caa2;margin-top:22px;padding:15px 20px;font-size:.94rem;line-height:1.7}.warning-strip b{color:#f0d4ae}
+.route-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.route-grid h3{font-size:1.8rem;line-height:1.35;margin:22px 0}.route-grid h3 small{font-size:1rem;font-weight:400;color:#b3c2d8}.route-grid p{font-size:1rem;color:#bccae0;line-height:1.75}.route-check{border-top:1px solid #354d6c;margin-top:22px;padding-top:18px;color:#a6bcd9;font-size:.9rem}.inline-copy{margin-top:22px;border:1px solid #5b7ba5;border-radius:8px;padding:10px 15px;background:#213a5b;color:#e0edff;cursor:pointer;font-size:.85rem}.inline-copy:hover{background:#2e4d75}.inline-copy:focus-visible{outline:3px solid #adc9ff;outline-offset:3px}
+.contract-strip{display:grid;grid-template-columns:repeat(4,1fr);margin-top:24px;border:1px solid #354a66;border-radius:10px;overflow:hidden}.contract-strip span{text-align:center;padding:13px 10px;border-right:1px solid #354a66;color:#afc5e1;font-size:.88rem}.contract-strip span:last-child{border:0}
+.result-node{border:1px solid #3f5d83;background:#13243a;border-radius:12px;padding:22px}.result-node:nth-child(2){background:#1f2a35;border-color:#556e87}.result-node span{font:600 .72rem/1.6 ui-monospace,monospace;letter-spacing:.08em;color:#acc5e7}.result-node strong{display:block;font-size:1.3rem;margin:12px 0}.result-node p{margin:0;font-size:.9rem;color:#a9bed9}.integration-node{text-align:center;background:linear-gradient(120deg,#19304d,#222f3d);border:1px solid #7183ad;border-radius:14px;padding:24px}.integration-node h3{font-size:1.45rem;margin:10px 0}.integration-node p{font-size:.95rem;color:#b8cce5;margin:8px 0}.review-outcomes{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:20px}.review-outcomes>div{border-left:3px solid #8ab4ef;padding:12px 20px;background:#112039;border-radius:0 8px 8px 0}.review-outcomes>div:last-child{border-color:#e3b479;background:#28231f}.review-outcomes b,.review-outcomes span{display:block}.review-outcomes b{font-size:1rem}.review-outcomes span{font-size:.85rem;color:#b1c2d8;margin-top:8px}
+#closing .key-line{font-size:clamp(1.3rem,2.3vw,2.4rem);padding-block:18px}#workflow .evidence-table td:first-child{color:#a9caff}
+@media(min-width:1500px){.slide{padding-top:100px;padding-bottom:85px}.slide-mast{margin-bottom:46px}}
+@media(max-width:950px){.cover-composition{gap:28px}.outcome-grid{gap:14px}.outcome-grid article,.route-grid article{padding:22px}.outcome-grid h3{font-size:1.3rem}.system-body{gap:12px}.system-agent{padding:25px 15px}.timeline-row{grid-template-columns:88px 170px 1fr}.flow-strip{gap:8px}.diagram-node{padding:18px 14px}}
+@media(max-width:800px){.slide{padding:80px 24px 70px}.slide-mast{margin-bottom:25px;font-size:.61rem}.slide h2{font-size:1.9rem}.cover-composition,.outcome-grid,.route-grid,.worker-grid,.review-outcomes{grid-template-columns:1fr}.cover-statement>p{font-size:1.6rem}.cover-composition{margin-top:24px}.outcome-grid h3{margin-top:18px}.outcome-grid footer{margin-top:22px}.contract-strip{grid-template-columns:1fr 1fr}.contract-strip span:nth-child(2){border-right:0}.contract-strip span:nth-child(-n+2){border-bottom:1px solid #354a66}.diagram-frame{padding:20px 16px}.flow-strip{gap:12px}.system-body{grid-template-columns:1fr;gap:18px}.timeline-row{grid-template-columns:82px 1fr;gap:8px 12px}.timeline-row>span{grid-column:2}.chapter-status{font-size:.67rem;left:14px;max-width:calc(100vw - 125px)}.chrome{right:14px}.rail{right:7px}.site-doc-link{left:14px;bottom:14px;font-size:.6rem;padding:10px}.slide .bridge{display:block}.bridge b{display:inline-block;margin-bottom:10px;margin-right:10px}.worker-card{padding:22px}.explain-row{grid-template-columns:1fr;gap:10px}.presenter-toggle{font-size:.75rem}.cover-meta{gap:13px}}
+@media print{.slide{break-before:page;min-height:0;background:white!important;color:#111;padding:20px}.slide-mast,.chapter-status,.chrome,.rail,.presenter-toggle,.presenter-panel,.site-doc-link,.progress{display:none!important}.slide h2,.slide p,.slide td,.slide b,.slide strong{color:#111!important}.slide a{color:#234!important}}
+
+.archify-slide-map{border:1px solid #354c6b;border-radius:16px;overflow:hidden;background:#0b1020}.archify-slide-map iframe{display:block;width:100%;height:auto;aspect-ratio:1120/800;border:0}.archify-slide-actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:14px 0}.archify-slide-actions a{color:#b7d3fa;font-size:1rem;text-underline-offset:5px}.archify-slide-actions span{color:#9aacc5;font-size:.8rem}@media(max-width:650px){.archify-slide-map iframe{min-height:480px}}
+.sensor-examples{margin:26px 0;padding:24px 0;border-block:1px solid #354c6b}.sensor-examples h3{font-size:1.35rem;margin:0 0 8px}.sensor-examples p{font-size:1rem;color:#b5c6db;line-height:1.7}.sensor-examples ul{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;list-style:none;padding:0;margin:22px 0}.sensor-examples li{border-left:2px solid #82b9ed;padding-left:14px}.sensor-examples b,.sensor-examples span{display:block}.sensor-examples b{font-size:1rem;color:#d0e4ff}.sensor-examples span{font-size:.9rem;color:#a9bcd6;margin-top:6px}@media(max-width:850px){.sensor-examples ul{grid-template-columns:repeat(2,1fr)}}
+
+/* Selected palette A: Ocean Navy + Cyan */
+:root{--bg:#091522;--panel:#11263B;--panel-soft:#11263bcc;--text:#EEF5FC;--muted:#ADC2D5;--line:#2A435A;--cyan:#59D4ED;--violet:#81B6FF;--lime:#81B6FF}
+html,body{background-color:#091522;color:#EEF5FC}
+.slide,.slide:nth-of-type(3n+2){background:radial-gradient(ellipse at 95% 0%,#18435c55,transparent 55%),#091522}
+#title{background:radial-gradient(ellipse at 80% 40%,#1e567050,transparent 55%),#091522}
+.slide .eyebrow,.micro-label,.card-index,.timeline-row time,.diagram-caption{color:#59D4ED}
+.slide .eyebrow::before,.rail button.active{background:#59D4ED}
+.slide h2,.slide-mast b{color:#EEF5FC}
+.mission-panel,.diagram-frame,.outcome-grid article,.route-grid article{background:linear-gradient(145deg,#11263B,#0D1E30);border-color:#2D4C65}
+.outcome-grid article:nth-child(2){background:linear-gradient(145deg,#17334D,#11263B);border-color:#416991}
+.system-human,.return-path,.worker-card:nth-child(2),.result-node:nth-child(2){background:#17304A;border-color:#537CAB}
+.worker-card,.result-node,.repo-core{background:#11263B;border-color:#3E7087}
+.worker-card{border-top-color:#59D4ED}.worker-card:nth-child(2){border-top-color:#81B6FF}
+.worker-tag,.diagram-node b{color:#AAE8F5}.worker-card:nth-child(2) .worker-tag{color:#B6D5FF}
+.diagram-node{background:#11263B;border-color:#3E657F;border-top-color:#59D4ED}
+.system-input .diagram-node{border-top-color:#81B6FF}.system-tools .diagram-node{border-top-color:#59D4ED}
+.integration-node{background:linear-gradient(120deg,#12334B,#183650);border-color:#59D4ED}
+.presenter-toggle,.inline-copy{background:#143D54;border-color:#4B9BB3;color:#EEF5FC}
+.presenter-toggle:hover,.inline-copy:hover{background:#20536D}
+.presenter-panel{background:#0D1E30}.presenter-head{background:#11263B}
+.chapter-status,.site-doc-link{background:#091522ed;border-color:#2A435A}
+.sensor-examples li{border-color:#59D4ED}.sensor-examples b{color:#AAE8F5}
+a:focus-visible,button:focus-visible{outline-color:#59D4ED}
+</style>
+<style id="semantic-diagram-colors">
+/* Use semantic color where the diagram encodes different roles or states. */
+.architecture-legend{display:flex;flex-wrap:wrap;gap:12px 24px;list-style:none;margin:20px 0;padding:0;color:#D5E2EE;font-size:.85rem}
+.architecture-legend li{display:flex;align-items:center;gap:8px}.architecture-legend li>span{width:11px;height:11px;border-radius:3px;background:var(--role-color);flex-shrink:0}
+#agent-not-model .diagram-node:nth-child(3){border-top-color:#C5B2FF;background:#252C43}#agent-not-model .diagram-node:nth-child(3) b{color:#D9CDFF}
+#agent-not-model .return-path,#traceability .return-path{border-left-color:#79DFB5;background:#14342F;color:#C7F2E1}
+#worktree .worker-card:nth-child(2),#parallel-review .result-node:nth-child(2){border-color:#B28B45;border-top:3px solid #F2CB76;background:#302D26}
+#worktree .worker-card:nth-child(2) .worker-tag,#parallel-review .result-node:nth-child(2)>span{color:#F2CB76}
+#parallel-review .result-node:first-child{border-top:3px solid #59D4ED}
+#parallel-review .review-outcomes>div:first-child{border-color:#79DFB5;background:#15362F}#parallel-review .review-outcomes>div:first-child b{color:#A7EDD0}
+#parallel-review .review-outcomes>div:last-child{border-color:#FFA497;background:#3C2B31}#parallel-review .review-outcomes>div:last-child b{color:#FFC2B9}
+#tdd .diagram-node:nth-child(1){border-top-color:#FFA497;background:#3C2B31}#tdd .diagram-node:nth-child(1) b{color:#FFC2B9}
+#tdd .diagram-node:nth-child(3){border-top-color:#79DFB5;background:#15362F}#tdd .diagram-node:nth-child(3) b{color:#A7EDD0}
+#tdd .diagram-node:nth-child(5){border-top-color:#81B6FF;background:#1B3553}#tdd .diagram-node:nth-child(5) b{color:#C6DDFF}
+#traceability .diagram-node:first-child,#skills-write-skills .diagram-node:first-child{border-top-color:#F2CB76;background:#302F26}
+#traceability .diagram-node:first-child b,#skills-write-skills .diagram-node:first-child b{color:#F7DFAF}
+#traceability .diagram-node:last-child,#skills-write-skills .diagram-node:last-child{border-top-color:#79DFB5;background:#15362F}
+#skills-write-skills .diagram-node:nth-child(3){border-top-color:#FFA497;background:#3C2B31}
+.sensor-examples li{border-color:#79DFB5}.sensor-examples b{color:#A7EDD0}
+</style>
+<style id="presenter-dock-style">
+.presenter-dock{position:fixed;right:22px;bottom:20px;z-index:50;display:flex;align-items:stretch;gap:0;padding:5px;border:1px solid #41627B;border-radius:13px;background:#091522ed;box-shadow:0 12px 36px #0005;backdrop-filter:blur(18px)}
+.presenter-dock .site-doc-link,.presenter-dock .presenter-toggle{position:static;inset:auto;display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0;padding:11px 14px;border:0;border-radius:8px;font-size:.75rem;line-height:1.2;letter-spacing:.02em;box-shadow:none;backdrop-filter:none;white-space:nowrap}
+.presenter-dock .site-doc-link{background:transparent;color:#C5D8E9}.presenter-dock .presenter-toggle{background:#143D54;color:#EEF5FC}.presenter-dock a:hover,.presenter-dock button:hover{transform:none;background:#20536D;color:#EEF5FC}
+@media(max-width:800px){.presenter-dock{right:12px;bottom:12px;max-width:calc(100vw - 24px)}.presenter-dock .site-doc-link,.presenter-dock .presenter-toggle{padding:10px;font-size:.7rem}}
+@media print{.presenter-dock{display:none!important}}
+</style>
+<style id="theme-switcher-style">/* Interpretations of VoltAgent DESIGN.md references, adapted for this workshop. */
+:root[data-workshop-theme="vercel"]{--theme-bg:#fff;--theme-panel:#fafafa;--theme-raised:#f0f0f0;--theme-text:#171717;--theme-muted:#525252;--theme-line:#d4d4d4;--theme-accent:#0761d1;--theme-on:#fff;--theme-button:#171717;--theme-radius:6px;color-scheme:light}
+:root[data-workshop-theme="resend"]{--theme-bg:#000;--theme-panel:#0a0a0c;--theme-raised:#161619;--theme-text:#fcfdff;--theme-muted:#a1a4a5;--theme-line:#363639;--theme-accent:#70b8ff;--theme-on:#000;--theme-button:#fcfdff;--theme-radius:12px;color-scheme:dark}
+:root[data-workshop-theme="claude"]{--theme-bg:#faf9f5;--theme-panel:#f5f0e8;--theme-raised:#efe9de;--theme-text:#141413;--theme-muted:#6c6a64;--theme-line:#d6cbbd;--theme-accent:#a9583e;--theme-on:#fff;--theme-button:#a9583e;--theme-radius:12px;color-scheme:light}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]){--bg:var(--theme-bg);--panel:var(--theme-panel);--panel-soft:var(--theme-raised);--text:var(--theme-text);--muted:var(--theme-muted);--line:var(--theme-line);--cyan:var(--theme-accent);--lime:var(--theme-accent);--violet:var(--theme-accent)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) body,html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .slide{background:var(--theme-bg)!important;color:var(--theme-text);border-color:var(--theme-line)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.slide,.presenter-panel) :is(h1,h2,h3,h4,b,strong,em,td,dt,dd,label){color:var(--theme-text)!important}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.slide,.presenter-panel) :is(p,span,small,li,footer){color:var(--theme-muted)!important}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.slide,.presenter-panel) :is(a,.eyebrow,.micro-label,.card-index,time,.flow-link,.diagram-caption){color:var(--theme-accent)!important}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.diagram-frame,.diagram-node,.mission-panel,.outcome-grid article,.route-grid article,.worker-card,.result-node,.repo-core,.integration-node,.review-outcomes>div,.return-path,.example-line,.table-scroll,.adoption-stage,.adoption-stage.current,.adoption-stage.target,.system-human,.system-agent,.card,.panel,.callout,.warning-strip,.prompt-card){background:var(--theme-panel)!important;border-radius:var(--theme-radius);box-shadow:none}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.slide-mast,.bridge,.timeline-row,.table-scroll,.evidence-table td,.explain-row,.contract-strip,.contract-strip span,.outcome-grid footer,.mission-head,.mission-panel>div,.sensor-examples,.worker-card p,.route-check){border-color:var(--theme-line)!important}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.evidence-table th,.evidence-table tr:nth-child(even)){background:var(--theme-raised)!important;color:var(--theme-text)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(pre,code,.prompt-text){background:var(--theme-raised)!important;color:var(--theme-text)!important;border-color:var(--theme-line)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.chapter-status,.counter,.presenter-dock,.presenter-panel,.presenter-head,.presenter-tabs,.theme-panel){background:var(--theme-panel)!important;color:var(--theme-text);border-color:var(--theme-line)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.presenter-dock a,.theme-toggle,.presenter-close,.presenter-tab,.copy-button,select){background:var(--theme-raised)!important;color:var(--theme-text)!important;border-color:var(--theme-line)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.presenter-toggle,.inline-copy,.presenter-tab.active){background:var(--theme-button)!important;color:var(--theme-on)!important;border-color:var(--theme-button)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .rail button.active,html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .eyebrow::before{background:var(--theme-accent)!important;box-shadow:none}
+html[data-workshop-theme="claude"] .slide h2{font-family:Georgia,"Noto Serif TC","Songti TC",serif;font-weight:500;letter-spacing:-.025em}
+html[data-workshop-theme="resend"] #title h2{font-family:Georgia,"Noto Serif TC",serif;font-weight:500}
+html[data-workshop-theme="vercel"] .slide h2{letter-spacing:-.045em}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:42px;border:0;border-radius:8px;padding:11px 13px;background:transparent;color:#c5d8e9;font-family:inherit;font-size:.75rem;font-weight:600;line-height:1.2;cursor:pointer;white-space:nowrap}
+.theme-panel{position:fixed;z-index:55;right:22px;bottom:82px;width:min(330px,calc(100vw - 24px));padding:18px;border:1px solid #41627b;border-radius:14px;background:#0d1e30;color:#eef5fc;box-shadow:0 16px 50px #0005}
+.theme-panel[hidden]{display:none}.theme-panel h2{font-size:1rem;margin:0 0 7px}.theme-panel p{font-size:.8rem;line-height:1.6;color:var(--theme-muted,#adc2d5);margin:5px 0 14px}.theme-options{display:grid;gap:8px}.theme-option{display:flex;align-items:center;gap:12px;text-align:left;padding:12px;border:1px solid #516479;border-radius:9px;background:transparent;color:inherit;cursor:pointer;font:inherit;font-size:.85rem}.theme-option[aria-pressed="true"]{outline:2px solid var(--theme-accent,#59d4ed);outline-offset:1px}.theme-option .swatch{width:28px;height:28px;flex-shrink:0;border:1px solid #777;border-radius:50%;background:var(--swatch)}.theme-option small{display:block;font-size:.7rem;opacity:.75;margin-top:4px}.theme-panel a{color:var(--theme-accent,#59d4ed);font-size:.75rem}.theme-option:focus-visible,.theme-toggle:focus-visible{outline:3px solid var(--theme-accent,#59d4ed);outline-offset:3px}
+@media(max-width:800px){.theme-panel{right:12px;bottom:78px}.theme-toggle{padding:10px 9px;font-size:.7rem}.presenter-dock{gap:2px}.presenter-dock .site-doc-link,.presenter-dock .presenter-toggle{padding:10px 8px}}
+@media print{.theme-panel,.theme-toggle{display:none!important}}
+</style>
+<style id="diagram-picker-style">.diagram-style-picker{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 8px}.diagram-style-picker>span{font-size:.83rem;color:var(--muted);margin-right:8px}.diagram-style-picker button{padding:11px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);font:inherit;font-size:.82rem;cursor:pointer}.diagram-style-picker button[aria-pressed="true"]{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}.diagram-style-picker button:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}.diagram-style-hint{font-size:.86rem!important;color:var(--muted);line-height:1.6;min-height:1.6em}@media print{.diagram-style-picker,.diagram-style-hint{display:none}}</style>
+<style>.palette-swatches{display:inline-flex;gap:4px;margin-right:10px;vertical-align:middle}.palette-swatches i{width:10px;height:10px;display:block;border-radius:50%}</style>
+<style id="cool-palette-final">/* Selected palette 1: shared semantic colors for the entire deck. */
+:root{--role-sand:#D4BA91;--role-blue:#9BADCD;--role-cyan:#7DBCD1;--role-sage:#94BEB6}
+[data-tone="oversight"]{--tone:#D4BA91;--tone-bg:#35312B}
+[data-tone="guides"]{--tone:#9BADCD;--tone-bg:#293446}
+[data-tone="execution"]{--tone:#7DBCD1;--tone-bg:#223B47}
+[data-tone="feedback"]{--tone:#94BEB6;--tone-bg:#293D3C}
+[data-tone="failure"]{--tone:#D3A1A0;--tone-bg:#3B2D34}
+html body .slide [data-tone][data-tone]{background:var(--tone-bg)!important;border-color:var(--tone)!important;box-shadow:none;color:#EEF5FC!important}
+html body .slide [data-tone][data-tone] :is(b,strong,h3,.worker-tag){color:var(--tone)!important}
+html body .slide [data-tone][data-tone] :is(p,span,small,dd,dt,footer){color:#D0DAE4!important}
+html body .slide [data-tone][data-tone] :is(.worker-tag,.micro-label){color:var(--tone)!important}
+html body .slide .sensor-examples li{border-color:var(--role-sage)}
+html body .slide .sensor-examples b{color:var(--role-sage)!important}
+html body .slide .diagram-node:not([data-tone]){background:#223B47;border-color:var(--role-cyan)}
+html body .slide .mission-panel,html body .slide .route-grid article{border-color:#4E7184}
+html body .slide .adoption-stage.current,html body .slide .adoption-stage.target{border-color:var(--role-cyan)}
+</style>
+<style>#traceability .team-skill-name{font:650 clamp(.9rem,1.35vw,1.2rem)/1.5 ui-monospace,Consolas,monospace;overflow-wrap:anywhere;margin:16px 0}#traceability .diagram-node p{font-size:.94rem}#traceability .diagram-node p+p{border-top:1px solid #ffffff25;padding-top:16px;margin-top:18px}</style>
+<style id="worktree-intro-style">#worktree .worktree-command{margin:16px 0;padding:18px 22px;overflow-x:auto;font-size:clamp(.95rem,1.3vw,1.15rem)}#worktree .worktree-command code{white-space:pre}#worktree .worker-card h3{overflow-wrap:anywhere}#worktree .worker-tag{font-size:.9rem;letter-spacing:0}</style>
+<style id="closing-plain-language">#closing .closing-steps{padding-left:1.7em;margin:28px 0;font-size:clamp(1.1rem,1.7vw,1.4rem)}#closing .closing-steps li{padding:12px 0 12px 10px}#closing .closing-steps li::marker{color:var(--cyan);font-weight:700}#closing .closing-steps h3{font-size:1.2em;margin:0 0 8px}#closing .closing-steps p{font-size:1em;margin:0;line-height:1.6}#closing .closing-steps blockquote{margin:10px 0 0;padding:12px 18px;border-left:3px solid var(--cyan);font-size:1em;line-height:1.6}#closing .detail-text{max-width:56em;line-height:1.8}</style>
+<style>.demo-position{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;margin:.2rem 0 1.2rem;font-size:clamp(.9rem,1.2vw,1.1rem);line-height:1.5}.demo-position a{color:var(--cyan);text-underline-offset:4px}.demo-position small{font-size:inherit;opacity:.8}</style>
+<style id="step-two-detail-style">#deliverables .outcome-grid strong{font-weight:600;overflow-wrap:anywhere}#deliverables .outcome-grid p+p{margin-top:12px}#step-two-detail .outcome-grid{margin:26px 0}#step-two-detail .outcome-grid h3{margin:18px 0 14px;font-size:clamp(1.2rem,1.6vw,1.55rem)}#step-two-detail .outcome-grid article{padding:24px}#step-two-detail .outcome-grid p{margin-bottom:0}#step-two-detail .return-path{line-height:1.8}#step-two-detail .detail-text{margin-top:20px}@media(max-width:800px){#step-two-detail .outcome-grid{grid-template-columns:1fr}}</style>
+<style id="domain-integration-style">.knowledge-loop{margin:24px 0 18px;border:1px solid var(--line);border-radius:14px;overflow:hidden}.knowledge-entry{display:grid;grid-template-columns:1fr 36px 1.6fr;gap:14px;align-items:center;padding:18px 22px}.knowledge-entry strong{display:block;font-size:1rem;overflow-wrap:anywhere}.knowledge-entry .micro-label{display:block;margin-bottom:8px;font-size:.85rem}.knowledge-entry p{font-size:1rem;line-height:1.6;margin:8px 0 0}.knowledge-arrow{text-align:center;font-size:1.5rem}.knowledge-loop-body{display:grid;grid-template-columns:1.15fr 90px 1fr;gap:0;padding:18px 22px;background:var(--panel)}.knowledge-process,.knowledge-files{padding:18px;border:1px solid var(--line);border-radius:10px}.knowledge-loop h3{font-size:1.15rem;margin:0 0 15px;line-height:1.5}.knowledge-process ol{list-style:none;margin:0;padding:0;counter-reset:knowledge}.knowledge-process li{counter-increment:knowledge;position:relative;padding:0 0 15px 31px}.knowledge-process li:before{content:counter(knowledge);position:absolute;left:0;top:1px;color:var(--role-cyan);font-weight:700}.knowledge-process li:last-child{padding-bottom:0}.knowledge-process b,.knowledge-process span,.knowledge-process small{display:block;line-height:1.6}.knowledge-process span{font-size:1rem;margin-top:4px}.knowledge-process small{font-size:.9rem;margin-top:6px}.knowledge-files>div{padding:12px 0;border-top:1px solid #ffffff20}.knowledge-files>div:first-of-type{padding-top:0;border:0}.knowledge-files>div:last-child{padding-bottom:0}.knowledge-files b{font-size:1rem;line-height:1.5;overflow-wrap:anywhere}.knowledge-files p{font-size:1rem;line-height:1.6;margin:5px 0 0}.knowledge-exchange{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:24px;font-size:.95rem;color:var(--muted)}.knowledge-loop figcaption{padding:14px 22px;border-top:1px solid var(--line);line-height:1.6}.knowledge-loop figcaption b,.knowledge-loop figcaption span{display:block}.knowledge-loop figcaption span{font-size:.95rem;margin-top:4px}#why-stuck{padding-top:64px;padding-bottom:54px}#why-stuck .slide-mast{margin-bottom:24px}#why-stuck .slide-lead{margin-bottom:18px}#why-stuck .detail-text{margin:10px 0}#why-stuck .source-line{margin-top:10px}@media(max-width:800px){.knowledge-entry{grid-template-columns:1fr}.knowledge-arrow{display:none}.knowledge-loop-body{grid-template-columns:1fr;gap:14px;padding:16px}.knowledge-exchange{flex-direction:row;gap:24px;padding:3px}.knowledge-entry{padding:18px}.knowledge-loop figcaption{padding:16px}}@media print{.knowledge-loop-body{background:white}.knowledge-exchange{color:#333}}</style>
+<style id="worktree-simple-style">#worktree{padding-top:64px;padding-bottom:48px}#worktree .slide-mast{margin-bottom:26px}#worktree .slide-lead{margin-bottom:22px}.wt-tree{width:min(920px,100%);margin:22px auto 20px}.wt-shared{width:min(380px,100%);margin:auto;padding:16px 24px;border:1px solid var(--line);border-radius:12px;text-align:center}.wt-shared strong,.wt-shared span{display:block}.wt-shared strong{font-size:1.2rem;line-height:1.5}.wt-shared span{font-size:1rem;margin-top:4px}.wt-junction{height:36px;position:relative}.wt-junction:before{content:"";position:absolute;left:50%;top:0;height:18px;border-left:2px solid var(--role-blue)}.wt-junction:after{content:"";position:absolute;top:18px;left:calc(25% - 6px);width:calc(50% + 12px);border-top:2px solid var(--role-blue)}.wt-directories{display:grid;grid-template-columns:1fr 1fr;gap:24px}.wt-directories article{position:relative;border:1px solid var(--line);border-radius:12px;padding:20px 24px}.wt-directories article:before{content:"";position:absolute;top:-18px;left:50%;height:18px;border-left:2px solid var(--role-blue)}.wt-directory-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:1rem;line-height:1.5}.wt-branch{border:1px solid #ffffff35;background:#00000018;border-radius:6px;padding:3px 9px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:1rem}.wt-directories h3{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:clamp(1.3rem,2.2vw,1.8rem);line-height:1.4;margin:18px 0 10px;overflow-wrap:anywhere}.wt-directories p{font-size:1rem;line-height:1.6;margin:0}.wt-tree figcaption{text-align:center;font-size:1.05rem;line-height:1.6;color:var(--text);margin-top:18px}.wt-command{width:min(920px,100%);margin:0 auto;border:1px solid var(--line);border-radius:10px;padding:14px 18px;background:var(--panel)}.wt-command>span{display:block;font-size:.95rem;line-height:1.5;color:var(--muted);margin-bottom:7px}.wt-command pre{padding:0;margin:0;background:transparent;border:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}.wt-command code{background:transparent;font-size:1rem;padding:0}#worktree .source-line{font-size:.875rem;margin-top:14px}#worktree .bridge{margin-top:24px;padding-top:18px}@media(max-width:800px){#worktree{padding-top:70px;padding-bottom:60px}.wt-directory-top{align-items:flex-start;flex-direction:column;gap:8px}.wt-directories{gap:14px}.wt-junction:after{left:calc(25% - 3.5px);width:calc(50% + 7px)}.wt-directories article{padding:16px}.wt-shared{padding:14px 18px}.wt-tree figcaption{font-size:1rem}}@media(max-width:500px){.wt-directories{grid-template-columns:1fr}.wt-junction{height:20px}.wt-junction:before{height:20px}.wt-junction:after,.wt-directories article:before{display:none}.wt-command{padding:14px}.wt-tree figcaption{text-align:left}}@media print{.wt-command{background:white}.wt-directory-top .wt-branch{border-color:#555;color:#111!important}.wt-tree figcaption{color:#111}}</style>
+<style id="harness-summary-style">.harness-summary{margin:22px 0 16px;padding:18px 22px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--role-blue);border-radius:0 10px 10px 0}.harness-summary .detail-text{margin:0;font-size:1rem;line-height:1.8}.harness-summary .detail-text+.detail-text{margin-top:10px}@media(max-width:800px){.harness-summary{padding:16px}}@media print{.harness-summary{background:white;border-color:#555}}</style>
+<style id="artifact-adjustments">
+/* ---- static diagrams (replace the Archify iframe) ---- */
+.static-diagram{overflow-x:auto;padding:16px;background:#0b1626}
+.static-diagram svg{display:block;width:100%;max-width:820px;min-width:820px;height:auto;margin:0 auto;font-family:inherit}
+.loop-diagram svg{max-width:960px}
+#step2-loop .loop-diagram svg{max-width:1140px}
+#step2-loop .loop-diagram{padding:10px 16px}
+.progress{top:env(safe-area-inset-top,0px)}
+.slide>.inner{min-width:0}
+.chapter-status{display:none!important}
+
+/* ---- height budget: every slide fits one screen ---- */
+.slide,.slide:nth-of-type(3n+2){padding-top:60px;padding-bottom:44px}
+@media(min-width:1500px){.slide{padding-top:64px;padding-bottom:48px}.slide-mast{margin-bottom:24px}}
+.slide-mast{margin-bottom:22px}
+.slide h2{margin-bottom:12px}
+.slide .slide-lead{margin-bottom:20px}
+.slide .bridge{margin-top:22px;padding-top:15px}
+.evidence-table td{padding:13px 19px}
+.evidence-table th{padding:11px 19px}
+.table-scroll{margin:18px 0}
+.diagram-frame{padding:20px 22px;margin:16px 0}
+.diagram-node{padding:18px 18px}
+.return-path{margin-top:14px;padding:13px 20px}
+.key-line{margin-top:18px}
+.detail-text{margin-top:14px}
+.source-line{margin-top:12px}
+.architecture-legend{margin:14px 0 4px}
+#harness .detail-text{margin-top:10px}
+#closing .closing-steps{margin:20px 0 8px}
+#closing .closing-steps li{padding:8px 0 8px 10px}
+#skills-write-skills .diagram-frame{padding:16px 18px}
+#skills-write-skills .diagram-node{padding:16px}
+#setup-mine .diagram-node{padding:16px 18px}
+#domain-trap .diagram-node{padding:16px 18px}
+#workflow .evidence-table th:first-child,#workflow .evidence-table td:first-child{width:84px;min-width:0}
+
+/* ---- projection: brighter secondary text ---- */
+.slide .slide-lead{color:#C3D1E1}
+.slide .bridge{color:#B4C3D6}
+.detail-text{color:#BCC9DA}
+.source-line{color:#A4B6CC}
+.evidence-table td{color:#D4DFEC}
+.diagram-node p{color:#C6D3E3}
+.timeline-row>span{color:#B8C7DA}
+.explain-row>div{color:#CBD7E6}
+.outcome-grid p{color:#C0CEDF}
+html body .slide [data-tone][data-tone] :is(p,span,small,dd,dt,footer){color:#DCE4EE!important}
+.adoption-stage dl{color:#C0CEDF}
+
+/* ---- Steps of AI Adoption: staircase ---- */
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:stretch;margin-top:22px}
+.stairs .stair{position:relative;display:flex;flex-direction:column;min-height:0;padding:16px 18px;border-top-width:4px}
+.stairs .s1{margin-top:66px}.stairs .s2{margin-top:44px}.stairs .s3{margin-top:22px}.stairs .s4{margin-top:0}
+.stairs .stair .stage-no{font-size:.72rem;letter-spacing:.08em;color:#9FB3C8}
+.stairs .stair h3{margin:8px 0 0;font-size:1.3rem;line-height:1.35;overflow-wrap:normal;text-wrap:balance}
+.stair-tag{align-self:flex-start;margin-bottom:10px;padding:2px 10px;border:1px solid currentColor;border-radius:20px;font-size:.8rem;font-weight:700;line-height:1.6;color:#ADC2D5}
+.stair-body{margin-top:auto;padding-top:14px}
+.stair-count{margin:0;font-size:.95rem;color:#C0CEDF}
+.stair-count b{margin-right:6px;font-size:2rem;font-weight:800;letter-spacing:-.02em;color:#EEF5FC}
+.stairs .stair dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:8px 0 0;padding-top:10px;border-top:1px solid #2A435A;font-size:.92rem;line-height:1.5}
+.stairs .stair dt{margin:0;font-weight:600;color:#9FB3C8}
+.stairs .stair dd{margin:0;color:#DCE4EE}
+.stairs .is-now{border-color:#4E7184}
+.stairs .is-today{background:#223B47;border-color:#7DBCD1;box-shadow:0 0 0 1px #7DBCD1}
+.stairs .is-today .stair-tag{background:#7DBCD1;border-color:#7DBCD1;color:#06202b}
+.stairs .is-goal{border-color:#D4BA91;border-style:dashed;border-top-style:solid}
+.stairs .is-goal .stair-tag,.stair-link{color:#D4BA91}
+.stair-link{display:inline-block;margin-top:10px;font-size:.88rem;text-underline-offset:4px}
+.stairs .is-later{opacity:.72}
+.stairs .is-today .stair-link{color:#7DBCD1}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .is-today .stair-link{color:var(--theme-accent)!important}
+.stairs .stair h3 .nb{display:inline-block;color:inherit}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .stair h3 .nb{color:var(--theme-text)!important}
+.stairs .is-later .stair-tag{color:#9FB3C8}
+#step-two h2,#harness h2{font-size:clamp(1.95rem,3.15vw,3.25rem)}
+.stairs .s1::after{content:"→";position:absolute;top:50%;right:-23px;width:22px;text-align:center;font-size:1.6rem;font-weight:700;line-height:1;color:#7DBCD1}
+@media(max-width:900px){.stairs{grid-template-columns:1fr;gap:12px}.stairs .stair{margin-top:0}.stairs .s1::after{display:none}}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .is-today{border-color:var(--theme-accent);box-shadow:0 0 0 1px var(--theme-accent)}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .is-today .stair-tag{background:var(--theme-accent);border-color:var(--theme-accent);color:#fff!important}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .is-goal{border-color:#a8791f}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) :is(.stairs .is-goal .stair-tag,.stair-link){color:#8a5f1f!important}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .stair dl{border-color:var(--theme-line)}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .s1::after{color:var(--theme-accent)}
+
+/* ---- demo: seven-step progress strip ---- */
+.step-groups,.step-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.step-groups{margin:4px 0 6px}
+.step-groups span{padding-bottom:5px;border-bottom:2px solid #4E7184;font-size:.82rem;font-weight:600;line-height:1.5;color:#B4C3D6}
+.step-strip{list-style:none;margin:0 0 20px;padding:0}
+.step-strip li{min-width:0;padding:10px 12px;border:1px solid;border-radius:10px;line-height:1.4}
+.step-strip li b{display:block;font:700 1.05rem/1.3 ui-monospace,Consolas,monospace}
+.step-strip li span{display:block;margin-top:2px;font-size:.9rem;overflow-wrap:anywhere}
+.step-strip li small{display:none;font-size:.75rem}
+@media(max-width:900px){.step-groups{display:none}.step-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.step-strip li small{display:block;margin-bottom:2px}}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .step-groups span{border-color:var(--theme-line)}
+
+/* ---- prompts read like something a person typed ---- */
+.prompt-body pre{font-family:inherit;font-size:1rem;line-height:1.7}
+.prompt-used{margin:0 0 10px;font-size:.8rem;line-height:1.5;color:#8FA6BD}.prompt-hint{margin:0 0 14px;font-size:.88rem;line-height:1.6;color:#9FB3C8}
+
+/* ---- title cover ---- */
+#title .slide-lead{display:block}
+.title-cover{display:grid;grid-template-columns:1.25fr .85fr;gap:48px;align-items:center;margin-top:8px}
+.title-cover .mission-panel strong{display:block}
+.title-cover .mission-panel small{letter-spacing:.1em}
+@media(max-width:900px){.title-cover{grid-template-columns:1fr;gap:24px}}
+
+/* ---- merged task-level skills ---- */
+.task-skill-grid .worker-card h3{margin:10px 0 12px}
+.task-steps{list-style:none;margin:0;padding:0;counter-reset:ts}
+.task-steps li{counter-increment:ts;position:relative;padding:0 0 10px 30px;font-size:.95rem;line-height:1.55}
+.task-steps li::before{content:counter(ts);position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;border:1px solid currentColor;font:700 .75rem/22px ui-monospace,Consolas,monospace;text-align:center;color:var(--tone,#7DBCD1)}
+.task-steps b{display:block}
+.task-steps span{display:block;margin-top:2px}
+.task-skill-grid .worker-card p{margin-top:6px;padding-top:12px;font-size:.9rem}
+.task-skill-grid .inline-copy{margin-top:14px}
+.task-skill-grid{align-items:start}
+@media(max-width:800px){.task-skill-grid{grid-template-columns:1fr}}
+
+/* ---- light themes: readable tone cards ---- */
+html[data-workshop-theme="vercel"],html[data-workshop-theme="claude"]{--lt-text:#1b2430;--lt-muted:#4a5666}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) [data-tone="oversight"]{--tone:#8a5f1f;--tone-bg:#f6efe2}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) [data-tone="guides"]{--tone:#3f5a8a;--tone-bg:#e9eef7}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) [data-tone="execution"]{--tone:#1f6b86;--tone-bg:#e3f1f6}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) [data-tone="feedback"]{--tone:#2f7a62;--tone-bg:#e6f3ee}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) [data-tone="failure"]{--tone:#9b4a48;--tone-bg:#f7e8e8}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) body .slide [data-tone][data-tone]{color:var(--lt-text)!important}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) body .slide [data-tone][data-tone] :is(p,span,small,dd,dt,footer){color:var(--lt-muted)!important}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .static-diagram{border-color:#c9d1dc}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .task-steps li::before{color:var(--tone)}
+
+/* ---- Step 2: what the reviewer still looks at ---- */
+.review-split{display:grid;grid-template-columns:1fr 1.35fr;gap:12px;margin-top:14px}
+.review-split>div{min-width:0;padding:9px 16px;border:1px solid;border-radius:10px;font-size:.95rem;line-height:1.6}
+.review-split b{margin-right:12px;white-space:nowrap}
+@media(max-width:800px){.review-split{grid-template-columns:1fr}}
+@media(min-width:801px){.review-split.even{grid-template-columns:1fr 1fr}}
+/* 0→1 spans all three skills (guides → execution → feedback); 1→100 is dev-workflow-tdd only */
+html body .slide#traceability .review-split.even>div[data-tone][data-tone]{padding:12px 18px;border-color:transparent!important}
+html body .slide#traceability .review-split.even>div:first-child[data-tone]{background:linear-gradient(90deg,#33415e 0%,#1f4a5c 50%,#2a5249 100%)!important;box-shadow:inset 3px 0 0 #9BADCD}
+html body .slide#traceability .review-split.even>div:last-child[data-tone]{background:linear-gradient(90deg,#2a5249 0%,#1a302d 100%)!important;box-shadow:inset 3px 0 0 #94BEB6}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) body .slide#traceability .review-split.even>div:first-child[data-tone]{background:linear-gradient(90deg,#e9eef7 0%,#e3f1f6 50%,#e6f3ee 100%)!important;box-shadow:inset 3px 0 0 #3f5a8a}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) body .slide#traceability .review-split.even>div:last-child[data-tone]{background:linear-gradient(90deg,#e6f3ee 0%,#d6ece3 100%)!important;box-shadow:inset 3px 0 0 #2f7a62}
+
+/* ---- worktree page: main + two worktrees, so it reads as parallel ---- */
+.wt-tree.three{width:min(1120px,100%)}
+.wt-tree.three .wt-directories h3{font-size:clamp(1.2rem,1.9vw,1.55rem);margin:14px 0 8px}
+@media(min-width:701px){.wt-tree.three .wt-directories{grid-template-columns:repeat(3,minmax(0,1fr))}.wt-tree.three .wt-junction:after{left:calc((100% - 48px)/6);width:calc(100% - (100% - 48px)/3)}}
+@media(max-width:700px){.wt-tree.three .wt-directories{grid-template-columns:1fr}.wt-tree.three .wt-junction{height:20px}.wt-tree.three .wt-junction:after,.wt-tree.three .wt-directories article:before{display:none}}
+#worktree .wt-command{width:min(1120px,100%)}
+#worktree .wt-tree.three{margin:12px auto 12px}#worktree .wt-tree.three figcaption{margin-top:12px}#worktree .wt-tree.three .wt-directories article{padding:16px 22px}#worktree .wt-tree.three .wt-shared{padding:12px 24px}#worktree .wt-command{padding:12px 18px}
+
+/* ---- recap and gap tables ---- */
+.recap-table td:first-child,.gap-table td:first-child{white-space:nowrap}
+.recap-table tr.is-today td{background:#223B47;color:#EEF5FC}
+.recap-table tr.is-today td:first-child{box-shadow:inset 3px 0 0 #7DBCD1;color:#7DBCD1}
+#closing .table-scroll{margin:14px 0 4px}
+#closing .recap-table td,#closing .recap-table th{padding-top:10px;padding-bottom:10px}
+.gap-table th:nth-child(2),.gap-table td:nth-child(2){width:31%}
+
+.gap-tag{display:inline-block;padding:2px 11px;border:1px solid;border-radius:20px;font-size:.82rem;font-weight:700;line-height:1.6}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .recap-table tr.is-today td{background:var(--theme-raised)!important;color:var(--theme-text)}
+html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .recap-table tr.is-today td:first-child{box-shadow:inset 3px 0 0 var(--theme-accent)}
+
+</style>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <div class="chapter-status" id="chapterStatus" hidden>開始之前</div><div class="chrome"><span class="counter" id="counter">01 / 23</span></div>
+  <nav class="rail" id="rail" aria-label="投影片導覽"></nav>
+  
+  <nav class="presenter-dock" aria-label="簡報工具"><button class="theme-toggle" id="themeToggle" type="button" aria-expanded="false" aria-controls="themePanel">配色 ◐</button><button class="presenter-toggle" id="presenterToggle" type="button" aria-controls="presenterPanel" aria-expanded="false">Prompt</button></nav>
+  <aside class="presenter-panel" id="presenterPanel" aria-label="全部 Prompt" aria-hidden="true" inert>
+    <div class="presenter-head">
+      <h2>全部 Prompt</h2>
+      <button class="presenter-close" id="presenterClose" type="button" aria-label="關閉 Prompt">關閉</button>
+    </div>
+    <div class="presenter-content">
+      <p class="prompt-page-title" id="promptPageTitle"></p>
+      <div id="stageContent"></div>
+    </div>
+  </aside>
+
+  <style>
+/* Review 瓶頸 section */
+.rb-stack{display:grid;gap:10px;margin:6px 0 30px}
+.rb-layer{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:16px;padding:16px 20px;border:1px solid var(--line);border-left-width:4px;border-radius:14px;background:var(--panel)}
+.rb-layer .n{color:var(--muted);font:800 .8rem/1 ui-monospace,monospace;letter-spacing:.08em}
+.rb-layer b{display:block;color:var(--text);font-size:1.05rem}
+.rb-layer span{color:var(--muted);font-size:.9rem;line-height:1.5}
+.rb-layer em{font-style:normal;padding:6px 11px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font:700 .74rem/1 ui-monospace,monospace;white-space:nowrap}
+.rb-layer.done{border-left-color:var(--cyan)}.rb-layer.done em{color:var(--cyan);border-color:currentColor}
+.rb-layer.next{border-left-color:var(--amber)}.rb-layer.next em{color:var(--amber);border-color:currentColor}
+.rb-layer.human{border-left-color:var(--coral)}.rb-layer.human em{color:var(--coral);border-color:currentColor}
+.rb-sub{margin:0 0 12px;color:var(--text);font-size:1.05rem;font-weight:750}
+.rb-grid{display:grid;gap:14px}.rb-grid.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.rb-grid.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rb-card{min-width:0;padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.rb-card h3{margin:0 0 8px;font-size:1.02rem;color:var(--text)}
+.rb-card p,.rb-card li{margin:0;color:var(--muted);font-size:.9rem;line-height:1.6}
+.rb-card ul{margin:8px 0 0;padding-left:1.15em}.rb-card li+li{margin-top:4px}
+.rb-card code{padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.07);color:var(--text);font-size:.84em}
+.rb-card .tag{display:inline-block;margin-bottom:10px;font:800 .72rem/1 ui-monospace,monospace;letter-spacing:.08em}
+.rb-card.full{border-top:3px solid var(--coral)}.rb-card.full .tag{color:var(--coral)}
+.rb-card.light{border-top:3px solid var(--cyan)}.rb-card.light .tag{color:var(--cyan)}
+.rb-card.busy{border-top:3px solid var(--coral)}.rb-card.busy .tag{color:var(--coral)}
+.rb-card.idle{border-top:3px solid var(--cyan)}.rb-card.idle .tag{color:var(--cyan)}
+.rb-card .verdict{margin-top:12px;color:var(--text);font-weight:700}
+.rb-steps{counter-reset:rb;margin-top:14px}
+.rb-steps .rb-card{position:relative;padding-top:44px}
+.rb-steps .rb-card::before{counter-increment:rb;content:"0" counter(rb);position:absolute;top:18px;left:22px;color:var(--cyan);font:800 .78rem/1 ui-monospace,monospace;letter-spacing:.1em}
+.rb-pr{margin:0;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(0,0,0,.25);color:var(--text);font:500 .84rem/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-x:auto}
+.rb-pr .h{color:var(--cyan);font-weight:800}
+.rb-ask{margin-top:18px;padding:16px 20px;border:1px dashed var(--line);border-radius:14px}
+.rb-ask b{color:var(--amber);font-size:.92rem}
+.rb-ask ul{margin:8px 0 0;padding-left:1.15em;color:var(--muted);font-size:.92rem}
+.rb-note{margin:12px 0 0;color:var(--muted);font-size:.86rem}
+#review-brakes .rb-layer{padding:12px 20px}
+#review-brakes .rb-layer>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 14px}
+#review-brakes .rb-stack{margin-bottom:22px}
+@media(max-width:800px){.rb-grid.c3,.rb-grid.c2{grid-template-columns:1fr}.rb-layer{grid-template-columns:1fr;gap:6px}.rb-layer em{justify-self:start}}
+@media print{.rb-card,.rb-layer,.rb-pr{background:#fff!important;color:#111!important}}
+.stair-role{margin:0;display:flex;align-items:baseline;gap:10px}.stair-role small{font-size:.8rem;font-weight:600;color:#9FB3C8}.stair-role b{font-size:1.7rem;font-weight:800;letter-spacing:-.01em;color:#EEF5FC}.stairs .is-today .stair-role b{color:#7DBCD1}html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stair-role b{color:var(--theme-text)}html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stair-role small{color:var(--theme-muted)}html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stairs .is-today .stair-role b{color:var(--theme-accent)}.stair-scale{margin:0;font-size:.82rem;color:#8096AD}html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .stair-scale{color:var(--theme-muted)}.task-skill-grid>article:first-child{grid-row:span 2}.task-skill-grid .oracle-extra{grid-column:2;margin-top:0;align-self:start}@media(max-width:800px){.task-skill-grid .oracle-extra{grid-column:auto}}.oracle-tag{display:block;margin-bottom:6px;color:#9FB3C8;font:700 .72rem/1.4 ui-monospace,monospace;letter-spacing:.08em}.oracle-extra>b{display:block;color:#EEF5FC!important;font-size:1.02rem}.oracle-extra li strong{color:#DCE4EE;font-weight:700}#thanks .thanks-title{font-size:clamp(3.4rem,9vw,8rem);margin:12vh 0 0;text-align:center;max-width:none}.door-def{margin:0 0 6px!important;color:#DCE4EE!important;font-size:.92rem!important}
+</style>
+<main>
+<section class="slide" id="title" data-title="From Vibe Coding to Agentic Engineering" data-chapter="開始之前" data-folio="01"><div class="inner"><div class="slide-mast"><span>00 / START</span><span>AGENTIC SDLC <b>01</b></span></div><p class="eyebrow">開始之前 · 00–10 分鐘 · 同段共用</p><div class="title-cover"><div><h2>From Vibe Coding<br>to Agentic Engineering</h2><p class="slide-lead">一起設定環境、開發功能，再把你們的工作流程整理成 Skill。</p><p class="key-line">讓 AI 接手，讓自己早點下班。</p></div><div class="mission-panel"><div class="mission-head"><i></i>今天會留下什麼</div><div><small>01 / SETUP</small><strong>設定好環境與 Repo</strong><p>設定 Agent、Skills 與 MCP，建立 Repo 的知識入口。回去可以接著用。</p></div><div><small>02 / EXPERIENCE</small><strong>實際走過一次開發流程</strong><p>用 dev-workflow-tdd 從需求一路做到 PR，知道每一步怎麼做、怎麼驗收。</p></div><div><small>03 / REUSE</small><strong>帶走自己的 Workflow Skill</strong><p>把團隊的流程寫成 SKILL.md，把做順的方法留下來。</p></div></div></div></div></section>
+
+<section class="slide" id="timeline" data-title="90 分鐘主流程＋30 分鐘緩衝" data-chapter="開始之前" data-folio="02"><div class="inner"><div class="slide-mast"><span>00 / START</span><span>AGENTIC SDLC <b>02</b></span></div><p class="eyebrow">開始之前 · 00–10 分鐘 · 同段共用</p><h2>90 分鐘主流程＋30 分鐘緩衝</h2><div class="timeline"><div class="timeline-row"><time>00–10</time><b>開場</b><span>Step 1→2、今天的主題：同樣的 Step 2，公司內要自己建。</span></div><div class="timeline-row"><time>10–20</time><b>概念與工作方法</b><span>Agent 架構、完整 Workflow、七步流程、Grill 與 Domain 知識、Git Worktree、今天的 Step 2 流程圖。</span></div><div class="timeline-row"><time>20–30</time><b>設定環境與 Repo</b><span>現場安裝與 clone、跑檢查表，建立 Repo 知識入口。</span></div><div class="timeline-row"><time>30–40</time><b>Demo · 啟動</b><span>兩種起點：Task A 給 Work Item 單號、Task B 給 Spec；開兩個 Session，一起回答 grill 的提問。</span></div><div class="timeline-row"><time>40–55</time><b>Agent 跑 TDD 時</b><span>台上不空等：介紹日常任務 Skills，再用 grill-me 訪談團隊流程。</span></div><div class="timeline-row"><time>55–70</time><b>Demo · 驗收與開 PR</b><span>回來看驗證證據與 diff，兩個 Session 各自開 PR。</span></div><div class="timeline-row"><time>70–80</time><b>製作團隊 Workflow Skill</b><span>用 writing-for-agents 把訪談結果寫成 SKILL.md。</span></div><div class="timeline-row"><time>80–85</time><b>收尾 · 回顧</b><span>回顧人的交代、協調、驗收與交付。</span></div><div class="timeline-row"><time>85–90</time><b>Step 3</b><span>再看 Step 3 的樣子，以及我們還差什麼。</span></div><div class="timeline-row"><time>90–120</time><b>緩衝與討論</b><span>現場排錯、補驗證與問答；有時間再翻附錄：Review 瓶頸。</span></div></div></div></section>
+
+<section class="slide" id="step-two" data-title="從單一任務，走向多 Agent 平行協作" data-chapter="開始之前" data-folio="03"><div class="inner"><div class="slide-mast"><span>00 / START</span><span>AGENTIC SDLC <b>03</b></span></div><p class="eyebrow">開始之前 · 00–10 分鐘 · 同段共用</p><h2>從單一任務，走向多 Agent 平行協作</h2><p class="slide-lead">Boris Cherny 觀察到，有人已靠 AI 大幅提高產出，團隊卻還沒跟上。他整理這些 Step，說明人的角色與工作瓶頸如何改變。</p><div class="stairs" aria-label="Steps of AI Adoption：由左到右往上走，Step 1 到 Step 4">
+<article class="adoption-stage stair s1 is-now"><span class="stair-tag">現況</span><span class="stage-no">STEP 1 · ASSISTED</span><h3>一個人盯著一個 Agent</h3><div class="stair-body"><p class="stair-scale">約 1 個 Agent</p><dl><dt>你在做</dt><dd>與 Agent 配對工作</dd><dt>卡在</dt><dd>人的注意力</dd></dl></div></article>
+<article class="adoption-stage stair s2 is-today"><span class="stair-tag">今天走到這裡</span><span class="stage-no">STEP 2 · PARALLEL</span><h3>一個人協調多個 Agent</h3><div class="stair-body"><p class="stair-scale">約 5–10 個 Agent</p><dl><dt>你在做</dt><dd>分派任務、審閱成果</dd><dt>卡在</dt><dd>Review 多份成果</dd></dl></div></article>
+<article class="adoption-stage stair s3 is-goal"><span class="stair-tag">未來大家都要到這裡</span><span class="stage-no">STEP 3 · SUPERVISED AUTONOMY</span><h3><span class="nb">Agent 自主推進，</span><span class="nb">人處理例外</span></h3><div class="stair-body"><p class="stair-scale">約 100 個 Agent</p><dl><dt>你在做</dt><dd>監督工作流程與例外</dd><dt>卡在</dt><dd>驗證可信度與決策速度</dd></dl><a class="stair-link" href="#future-loop">收尾時看實例 ↓</a></div></article>
+<article class="adoption-stage stair s4 is-later"><span class="stair-tag">再往後</span><span class="stage-no">STEP 4 · AI-NATIVE</span><h3>人用意圖決定方向</h3><div class="stair-body"><p class="stair-scale">約 1,000+ 個 Agent</p><dl><dt>你在做</dt><dd>設定目標與操作邊界</dd><dt>卡在</dt><dd>辨識可自動化工作與設定邊界</dd></dl></div></article>
+</div>
+<p class="key-line">Step 越高，人盯得越少；能放手，靠的是驗證與 Guardrails。</p><p class="source-line">參考：<a href="https://www.linkedin.com/posts/bcherny_steps-of-ai-adoption-activity-7483695059843043328-LBg_">Boris Cherny 原文</a> · <a href="https://claude.ai/code/artifact/bfdfaef9-bc62-4dfe-ba9e-c58a26c9accf">Boris Cherny · Steps of AI Adoption</a> · 原文另有 Step 0（Gated），這裡略過</p></div></section>
+
+<section class="slide" id="intent" data-title="同樣的 Step 2，公司內要自己建" data-chapter="開始之前" data-folio="04"><div class="inner"><div class="slide-mast"><span>00 / START</span><span>AGENTIC SDLC <b>04</b></span></div><p class="eyebrow">開始之前 · 00–10 分鐘 · 同段共用</p><h2>同樣的 Step 2，公司內要自己建</h2><p class="slide-lead">公司外，Codex 或 Claude Code 桌面版把 Step 2 需要的東西都內建了，裝好就能用。公司內是封閉的特殊環境，要用 Kimi Code、Herdr 這類工具，把同樣的東西一項一項接起來。</p>
+<div class="table-scroll"><table class="evidence-table"><thead><tr><th>Step 2 需要</th><th>公司外 · 桌面版內建</th><th>公司內 · 今天自己接</th></tr></thead><tbody>
+<tr><td>同時開多個 Agent</td><td>側邊欄開多個 Session，平行跑</td><td>Kimi Code、Herdr 等工具，開多個 Session 平行跑</td></tr>
+<tr><td>各做各的，互不干擾</td><td>內建 Git Worktree，Session 各用一份獨立目錄</td><td>dev-workflow-tdd 開 Branch 時可選擇開 Worktree；也可以直接下 Prompt 請 Agent 開</td></tr>
+<tr><td>Review 成果</td><td>內建 diff 檢視，直接在上面留意見</td><td>dev-workflow-tdd 附驗證證據，PR 開在 Azure DevOps</td></tr>
+<tr><td>接上做法與工具</td><td>現成的 Connector 很多，在介面上點選就能接</td><td>現成的 Connector 不能直接用，要自己設定 Skills 與 MCP</td></tr>
+</tbody></table></div>
+<p class="key-line">今天不是上課，是交流：我分享自己用得順手的方法，大家挑適合自己的 Workflow。有更好的做法，歡迎隨時打斷。</p>
+<p class="source-line">參考：<a href="https://code.claude.com/docs/en/desktop">Claude Code Desktop 文件</a> · <a href="https://openai.com/index/introducing-the-codex-app/">OpenAI：Introducing the Codex app</a></p></div></section>
+
+<section class="slide" id="harness" data-title="一段工作，需要哪些部分一起合作" data-chapter="概念與工作方法" data-folio="05"><div class="inner"><div class="slide-mast"><span>01 / UNDERSTAND</span><span>AGENTIC SDLC <b>05</b></span></div><p class="eyebrow">概念與工作方法 · 10–15 分鐘 · 同段共用</p><h2>一段工作，需要哪些部分一起合作</h2><p class="slide-lead">Agent = Model + Harness：Model 負責推理，Harness 負責執行工具、帶回結果與控制工作循環。完成一段工作，還要接上專案知識與驗證。</p><div class="archify-slide-map static-diagram">
+<svg viewBox="0 0 1160 530" role="img" aria-labelledby="harnessTitle harnessDesc" xmlns="http://www.w3.org/2000/svg">
+<title id="harnessTitle">Agentic Harness：讓 Agent 接上真實工作</title>
+<desc id="harnessDesc">主迴圈 1 到 6：Human 委派任務給 Agent Runtime；Runtime 呼叫 Model 推理並取回判斷、呼叫 Tools；Tools 讀寫真實工作環境；一般工具結果直接回傳 Runtime；Sensors 在改完後自動或由 Agent 觸發，對環境跑 Lint、Build、Test 等檢查，把驗證結果回饋給 Runtime；未通過就修正後再從工具呼叫跑一輪，需要人判斷時回頭向 Human 提問。輔助輸入：Skills 提供流程指引、Repo Knowledge 提供業務依據、Guardrails 限制 Tools 的操作。</desc>
+<defs>
+<marker id="hxMain" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7DBCD1"/></marker>
+<marker id="hxMainBi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7DBCD1"/></marker>
+<marker id="hxBase" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7F93A8"/></marker>
+<marker id="hxGuard" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#D4BA91"/></marker>
+<marker id="hxFeed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94BEB6"/></marker>
+</defs>
+<rect x="0" y="0" width="1160" height="530" fill="#0b1626"/>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M310 60H367V208H425" stroke="#7F93A8" stroke-width="1.5" marker-end="url(#hxBase)"/>
+<path d="M310 460H367V302H425" stroke="#7F93A8" stroke-width="1.5" marker-end="url(#hxBase)"/>
+<path d="M1005 110V190" stroke="#D4BA91" stroke-width="1.5" marker-end="url(#hxGuard)"/>
+<path d="M310 255H425" stroke="#7DBCD1" stroke-width="3.5" marker-end="url(#hxMain)"/>
+<path d="M580 188V112" stroke="#7DBCD1" stroke-width="3.5" marker-start="url(#hxMainBi)" marker-end="url(#hxMainBi)"/>
+<path d="M735 232H850" stroke="#7DBCD1" stroke-width="3.5" marker-end="url(#hxMain)"/>
+<path d="M850 280H735" stroke="#7DBCD1" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#hxMain)"/>
+<path d="M1005 320V400" stroke="#7DBCD1" stroke-width="3.5" marker-end="url(#hxMain)"/>
+<path d="M735 460H850" stroke="#94BEB6" stroke-width="3.5" marker-end="url(#hxFeed)"/>
+<path d="M580 400V320" stroke="#94BEB6" stroke-width="3.5" marker-end="url(#hxFeed)"/>
+</g>
+<g stroke-width="1.5" opacity="0.72">
+<rect x="0" y="10" width="310" height="100" rx="10" fill="#293446" stroke="#9BADCD"/>
+<rect x="850" y="10" width="310" height="100" rx="10" fill="#35312B" stroke="#D4BA91"/>
+<rect x="0" y="400" width="310" height="120" rx="10" fill="#293446" stroke="#9BADCD"/>
+</g>
+<g stroke-width="2.5">
+<rect x="425" y="10" width="310" height="100" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="0" y="190" width="310" height="130" rx="10" fill="#35312B" stroke="#D4BA91"/>
+<rect x="425" y="190" width="310" height="130" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="850" y="190" width="310" height="130" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="425" y="400" width="310" height="120" rx="10" fill="#293D3C" stroke="#94BEB6"/>
+<rect x="850" y="400" width="310" height="120" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+</g>
+<g text-anchor="middle" fill="#EEF5FC" font-size="18" font-weight="700">
+<text x="155" y="53" opacity="0.85">Skills · 做事方法</text>
+<text x="580" y="53">Model · 推理模型</text>
+<text x="1005" y="53" opacity="0.85">Guardrails · 操作邊界</text>
+<text x="155" y="248">Human · 你與團隊</text>
+<text x="580" y="240">Agent Runtime</text>
+<text x="1005" y="248">Tools · 工具介面</text>
+<text x="155" y="453" opacity="0.85">Repo Knowledge</text>
+<text x="580" y="441">Sensors · 驗證與回饋</text>
+<text x="1005" y="453">真實工作環境</text>
+</g>
+<g text-anchor="middle" fill="#D6E0EA" font-size="15">
+<text x="155" y="80" opacity="0.85">dev-workflow-tdd 等流程指引</text>
+<text x="580" y="80">根據 Context 判斷下一步</text>
+<text x="1005" y="80" opacity="0.85">工具權限、Branch 保護、核准</text>
+<text x="155" y="275">目標、業務判斷、Review</text>
+<text x="580" y="267">整理 Context，依結果決定</text>
+<text x="580" y="290">再修一輪，或向 Human 提問</text>
+<text x="1005" y="275">本機 CLI／MCP Client + Server</text>
+<text x="155" y="480" opacity="0.85">業務用語、規則與決策理由</text>
+<text x="580" y="467">Lint／Build／Test／UI／Review</text>
+<text x="580" y="492" fill="#94BEB6">改完自動跑，或由 Agent 執行</text>
+<text x="1005" y="480">Repo、Azure、Oracle、Chrome</text>
+</g>
+<g font-size="15" fill="#9FB3C8">
+<text x="357" y="155" text-anchor="end">流程指引</text>
+<text x="357" y="365" text-anchor="end">業務依據</text>
+<text x="1017" y="155" fill="#D4BA91">限制操作</text>
+</g>
+<g font-size="15" font-weight="700" fill="#7DBCD1">
+<text x="367" y="244" text-anchor="middle">1 · 委派任務</text>
+<text x="592" y="155">2 · 推理與回應</text>
+<text x="792" y="222" text-anchor="middle">3 · 工具呼叫</text>
+<text x="792" y="302" text-anchor="middle" font-size="13">回傳工具結果</text>
+<text x="1017" y="365">4 · 讀寫環境</text>
+<text x="792" y="449" text-anchor="middle" fill="#94BEB6">5 · 跑檢查</text>
+<text x="592" y="365" fill="#94BEB6">6 · 驗證回饋</text>
+</g>
+</svg>
+</div></div></section>
+
+<section class="slide" id="traceability" data-title="我們團隊的完整 Workflow，給大家參考" data-chapter="概念與工作方法" data-folio="06"><div class="inner"><div class="slide-mast"><span>01 / UNDERSTAND</span><span>AGENTIC SDLC <b>06</b></span></div><p class="eyebrow">概念與工作方法 · 10–15 分鐘 · 同段共用</p><h2>我們團隊的完整 Workflow，給大家參考</h2><p class="slide-lead">每個團隊的工作模式都不同，這套完整流程供大家參考。不是每個任務都要跑完這一長串，先看它是 0→1 還是 1→100。</p><div class="flow-strip"><div class="diagram-node" data-tone="guides"><b>BDD · 先說清楚預期行為</b><h3 class="team-skill-name">requirement-to-prd</h3><p><strong>請 PM 使用</strong>，產出 PRD：需求範圍、驗收條件與 Given／When／Then 行為案例。</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="execution"><b>SDD · 把需求變成實作規格</b><h3 class="team-skill-name">prd-to-spec</h3><p><strong>產出 Spec</strong>：資料、介面、例外與修改範圍，對回 PRD 的驗收條件。</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="feedback"><b>TDD · 用測試帶著實作走</b><h3 class="team-skill-name">dev-workflow-tdd</h3><p><strong>產出可 Review 的成果</strong>：測試先行（Red → Green → Refactor），附 Code、測試與驗證證據。</p></div></div><div class="review-split even"><div data-tone="guides"><b>0 → 1 · 從無到有</b><span>走完整流程：先 PRD，再 Spec，最後 TDD</span></div><div data-tone="feedback"><b>1 → 100 · 在既有基礎上持續開發</b><span>直接用 dev-workflow-tdd，從釐清需求做到 PR</span></div></div></div></section>
+
+<section class="slide" id="workflow" data-title="dev-workflow-tdd：從需求到可 Review 的 PR" data-chapter="概念與工作方法" data-folio="07"><div class="inner"><div class="slide-mast"><span>01 / UNDERSTAND</span><span>AGENTIC SDLC <b>07</b></span></div><p class="eyebrow">概念與工作方法 · 10–15 分鐘 · 同段共用</p><h2>dev-workflow-tdd：從需求到可 Review 的 PR</h2><p class="slide-lead">dev-workflow-tdd 用七個 Step，把需求釐清、實作、驗證與交付接在一起。實作時就沿這張地圖追蹤進度。</p><div class="table-scroll"><table class="evidence-table"><thead><tr><th>Step</th><th>做什麼</th><th>重點</th></tr></thead><tbody><tr><td>1</td><td>接收任務</td><td>模糊需求、Spec 或 Azure DevOps Work Item</td></tr><tr><td>2</td><td>grill-with-docs</td><td>讀既有知識，一問一答陪你把 Spec 補完整：需求、Domain 知識與決策</td></tr><tr><td>3</td><td>開新的 Branch</td><td>可選要不要開 Worktree：要開就建立獨立分支與工作目錄，平行任務各用自己的 Worktree；不開就直接在原目錄開 Branch</td></tr><tr><td>4</td><td>TDD 開發</td><td>Red → Green → Refactor</td></tr><tr><td>5</td><td>驗證與 Code Review</td><td>測試、瀏覽器操作、整合驗證與 diff Review</td></tr><tr><td>6</td><td>Commit</td><td>提交已驗證的程式、測試與相關文件</td></tr><tr><td>7</td><td>自動開 PR</td><td>附上修改摘要、驗證結果與待注意事項</td></tr></tbody></table></div><p class="key-line">Step 5–7 的 Code Review、Commit、開 PR，都能換成你們團隊的規則與模板。dev-workflow-tdd 是底稿，最後一段就用它寫出你們自己的 Workflow Skill。</p></div></section>
+
+<section class="slide" id="domain-trap" data-title="grill-with-docs：把模糊需求問到可驗收" data-chapter="概念與工作方法" data-folio="08"><div class="inner"><div class="slide-mast"><span>01 / UNDERSTAND</span><span>AGENTIC SDLC <b>08</b></span></div><p class="eyebrow">概念與工作方法 · 15–20 分鐘 · 同段共用</p><h2>grill-with-docs：把模糊需求問到可驗收</h2><p class="slide-lead">dev-workflow-tdd 的 Step 2：先查能從 Repo 找到的事實，再問需要人決定的問題，確認後留下可重用的依據。</p><div class="table-scroll"><table class="evidence-table"><thead><tr><th>要釐清什麼</th><th>Agent 怎麼做</th><th>確認後留下什麼</th></tr></thead><tbody><tr><td>業務詞彙與概念</td><td>比對既有詞彙；同一個詞是否有不同意思？</td><td>GLOSSARY.md 詞彙表：團隊用語與概念邊界</td></tr><tr><td>預期行為與例外</td><td>核對 Code，再用具體情境問清楚規則</td><td>Spec／tests：行為與驗收案例</td></tr><tr><td>重要取捨與修改範圍</td><td>提出選項、推薦方案與理由，由人決定</td><td>計畫與邊界；重要取捨才寫 docs/adr/</td></tr></tbody></table></div><p class="key-line">今天問一次，答案寫回 Repo：Repo 跟著你一起成長，下次不用再問。</p><p class="source-line">Matt Pocock：<a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md?plain=1">grill-with-docs</a> · <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md?plain=1">domain-modeling</a></p></div></section>
+
+<section class="slide" id="worktree" data-title="Git Worktree：一個 Repo，多個工作目錄" data-chapter="概念與工作方法" data-folio="09"><div class="inner"><div class="slide-mast"><span>01 / UNDERSTAND</span><span>AGENTIC SDLC <b>09</b></span></div><p class="eyebrow">概念與工作方法 · 15–20 分鐘 · 同段共用</p><h2>Git Worktree：一個 Repo，多個工作目錄</h2><p class="slide-lead">邁向 Step 2 的關鍵：每個 Agent 有自己的工作目錄，可以同時開著、各自修改，不用來回切 Branch。</p><figure class="wt-tree three" aria-label="同一個 Repo 共用 Git 歷史：原本目錄使用 main，Worktree A 使用 feature/a 給 Agent A，Worktree B 使用 feature/b 給 Agent B，兩邊平行開發"><div class="wt-shared" data-tone="guides"><strong>同一個 Repo</strong><span>共用 Git 歷史，不用再 clone</span></div><div class="wt-junction" aria-hidden="true"></div><div class="wt-directories"><article data-tone="guides"><div class="wt-directory-top"><span>原本的目錄</span><span class="wt-branch">main</span></div><h3>project/</h3><p>保留主分支，開 PR 前在這裡檢查</p></article><article data-tone="execution"><div class="wt-directory-top"><span>Worktree A · Agent A</span><span class="wt-branch">feature/a</span></div><h3>project-a/</h3><p>Agent A 在這裡開發功能 A</p></article><article data-tone="execution"><div class="wt-directory-top"><span>Worktree B · Agent B</span><span class="wt-branch">feature/b</span></div><h3>project-b/</h3><p>Agent B 同時在這裡開發功能 B</p></article></div><figcaption>各目錄未提交的修改互不影響；兩個 Agent 同時做，完成後各自開 PR。</figcaption></figure><div class="wt-command"><pre><code>git worktree add -b feature/a ../project-a main
+git worktree add -b feature/b ../project-b main</code></pre></div><p class="source-line">目錄與分支名稱為示例 · <a href="https://git-scm.com/docs/git-worktree">Git worktree 官方文件</a></p></div></section>
+
+<section class="slide" id="step2-loop" data-title="今天的做法：Step 2，Agent 平行做，人守三個關卡" data-chapter="概念與工作方法" data-folio="10"><div class="inner"><div class="slide-mast"><span>01 / UNDERSTAND</span><span>AGENTIC SDLC <b>10</b></span></div><p class="eyebrow">概念與工作方法 · 15–20 分鐘 · 同段共用</p><h2>今天的做法：Step 2，Agent 平行做，人守三個關卡</h2><p class="slide-lead">兩個 Agent 平行跑 dev-workflow-tdd，自己跑 Test、Build、Lint、E2E；人只守三個關卡，看的是驗證證據。</p>
+<div class="archify-slide-map static-diagram loop-diagram">
+<svg viewBox="0 0 1200 310" role="img" aria-labelledby="s2Title s2Desc" xmlns="http://www.w3.org/2000/svg">
+<title id="s2Title">Step 2 的開發流程：今天的 Demo</title>
+<desc id="s2Desc">由左到右。關卡 1：人交代任務。接著開兩個 Session，各下一段 dev-workflow-tdd 的 Prompt（開 Branch 時選擇開 Worktree），形成兩條平行線：Agent A 與 Agent B 各自用 grill-with-docs 把需求問到可驗收（人回答提問），開 Branch 時用 Worktree，再用 TDD 實作，並自己跑 Test、Build、Lint、E2E。關卡 2：人分別看兩份成果的驗證證據與 diff，有問題就退回給該 Agent 修。確認後，兩個 Agent 各自開一份 PR，附上驗證結果。關卡 3：人 Review 兩份 PR，決定合不合併。</desc>
+<defs>
+<marker id="s2Main" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7DBCD1"/></marker>
+<marker id="s2Human" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#D4BA91"/></marker>
+</defs>
+<rect x="0" y="0" width="1200" height="310" fill="#0b1626"/>
+<g font-size="14" fill="#9FB3C8">
+<rect x="0" y="4" width="14" height="14" rx="3" fill="#35312B" stroke="#D4BA91" stroke-width="2"/><text x="22" y="16">人：守關卡</text>
+<rect x="120" y="4" width="14" height="14" rx="3" fill="#223B47" stroke="#7DBCD1" stroke-width="2"/><text x="142" y="16">Agent：做事</text>
+</g>
+<g fill="none" stroke="#7DBCD1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M150 155H174" marker-end="url(#s2Main)"/>
+<path d="M330 155H350V80H372" marker-end="url(#s2Main)"/>
+<path d="M350 155V230H372" marker-end="url(#s2Main)"/>
+<path d="M592 80H616" marker-end="url(#s2Main)"/>
+<path d="M592 230H616" marker-end="url(#s2Main)"/>
+<path d="M756 80H780" marker-end="url(#s2Main)"/>
+<path d="M756 230H780" marker-end="url(#s2Main)"/>
+<path d="M940 80H970V137H1000" marker-end="url(#s2Main)"/>
+<path d="M940 230H970V173H1000" marker-end="url(#s2Main)"/>
+</g>
+<g fill="none" stroke="#D4BA91" stroke-width="2.5" stroke-dasharray="8 7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M686 40V26H482V36" marker-end="url(#s2Human)"/>
+<path d="M686 270V284H482V274" marker-end="url(#s2Human)"/>
+</g>
+<g stroke-width="2.5">
+<rect x="0" y="110" width="150" height="90" rx="10" fill="#35312B" stroke="#D4BA91"/>
+<rect x="178" y="110" width="152" height="90" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="376" y="40" width="216" height="80" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="376" y="190" width="216" height="80" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="620" y="40" width="136" height="80" rx="10" fill="#35312B" stroke="#D4BA91"/>
+<rect x="620" y="190" width="136" height="80" rx="10" fill="#35312B" stroke="#D4BA91"/>
+<rect x="784" y="40" width="156" height="80" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="784" y="190" width="156" height="80" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="1004" y="105" width="196" height="100" rx="10" fill="#35312B" stroke="#D4BA91"/>
+</g>
+<g text-anchor="middle" font-weight="700" font-size="16" fill="#D4BA91">
+<text x="75" y="139">關卡 1</text>
+<text x="688" y="66">關卡 2</text>
+<text x="688" y="216">關卡 2</text>
+<text x="1102" y="134">關卡 3</text>
+</g>
+<g text-anchor="middle" font-weight="700" font-size="17" fill="#EEF5FC">
+<text x="75" y="164">交代任務</text>
+<text x="254" y="150">開兩個 Session</text>
+<text x="484" y="73">Agent A · Worktree A</text>
+<text x="484" y="223">Agent B · Worktree B</text>
+<text x="688" y="90">看證據</text>
+<text x="688" y="240">看證據</text>
+<text x="862" y="78">開 PR A</text>
+<text x="862" y="228">開 PR B</text>
+<text x="1102" y="160">Review 兩份 PR</text>
+</g>
+<g text-anchor="middle" font-size="13" fill="#D6E0EA">
+<text x="75" y="186">給單號與 Spec</text>
+<text x="254" y="175">各下一段 Prompt</text>
+<text x="688" y="108">驗證結果與 diff</text>
+<text x="688" y="258">驗證結果與 diff</text>
+<text x="862" y="101">附驗證結果</text>
+<text x="862" y="251">附驗證結果</text>
+<text x="1102" y="184">各自決定合不合併</text>
+</g>
+<g text-anchor="middle" font-size="14" font-weight="700" fill="#94BEB6">
+<text x="484" y="99">grill → Worktree → TDD</text>
+<text x="484" y="249">grill → Worktree → TDD</text>
+</g>
+<g text-anchor="middle" font-size="13" fill="#D4BA91">
+<text x="584" y="20">有問題，退回 Agent A 修</text>
+<text x="584" y="302">有問題，退回 Agent B 修</text>
+</g>
+</svg>
+</div>
+<div class="review-split"><div data-tone="feedback"><b>不用再看</b><span>Build、Lint、測試有沒有過：Agent 已附上證據</span></div><div data-tone="oversight"><b>還要人看</b><span>需求有沒有理解對、設計合不合理、有沒有踩到沒寫下來的規則</span></div></div>
+<p class="key-line">人不再盯每一步；每一份成果還是要過人，但看的是證據。</p></div></section>
+
+<section class="slide" id="environment" data-title="設定 Agent、Skills 與 MCP" data-chapter="設定環境與 Repo" data-folio="11"><div class="inner"><div class="slide-mast"><span>02 / SETUP</span><span>AGENTIC SDLC <b>11</b></span></div><p class="eyebrow">設定環境與 Repo · 20–25 分鐘</p><h2>設定 Agent、Skills 與 MCP</h2><p class="slide-lead">MCP 讓你的 Agent 長出手跟腳，操作真實的工作環境。每人設定自己的 Agent、Skills 與 MCP，用小型唯讀操作確認連線與權限。</p><div class="table-scroll"><table class="evidence-table"><thead><tr><th>要接好的部分</th><th>現場最小操作</th><th>成功證據</th></tr></thead><tbody><tr><td>Agent ＋ Skills</td><td>確認可載入 dev-workflow-tdd、grill-with-docs</td><td>能讀出各 Skill 的流程與停止條件</td></tr><tr><td>Azure DevOps MCP</td><td>讀 Work Item 2901321（Task A 會用到）</td><td>回傳正確 ID 與需求內容</td></tr><tr><td>Oracle MCP <span class="gap-tag" data-tone="guides">可選</span></td><td>任務需要查資料時才接；先用小範圍唯讀查詢確認連線，寫入測試資料的權限另外開</td><td>有結果，且知道來源與查詢範圍</td></tr><tr><td>Chrome DevTools MCP</td><td>開啟測試頁面並檢查畫面或 Console</td><td>取得可核對的瀏覽器結果</td></tr><tr><td>Roko Repo</td><td>從 Azure Repos clone，npm install，填好模型設定</td><td>npm run check 通過，Roko 能回答「現在台北幾點？」</td></tr><tr><td>Git 身分</td><td>git config user.email 有值</td><td>Branch 名稱會用 @ 前面那段當後綴，避免大家撞名</td></tr></tbody></table></div><div class="return-path" data-tone="feedback">出錯也一起練習：看 log → 分清啟動／網路／登入／權限問題 → 做一個可逆診斷 → 再驗證。</div></div></section>
+
+<section class="slide" id="setup-mine" data-title="先建立約定：Agent 去哪裡讀、怎麼用團隊知識" data-chapter="設定環境與 Repo" data-folio="12"><div class="inner"><div class="slide-mast"><span>02 / SETUP</span><span>AGENTIC SDLC <b>12</b></span></div><p class="eyebrow">設定環境與 Repo · 25–30 分鐘</p><h2>先建立約定：Agent 去哪裡讀、怎麼用團隊知識</h2><p class="slide-lead">setup-matt-pocock-skills 設定每個 Repo 的知識入口與讀取規則；Domain 內容在後續討論中逐步累積。</p><div class="flow-strip"><div class="diagram-node" data-tone="guides"><b>探索現有 Repo</b><p>找既有入口、文件與工作追蹤方式</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="oversight"><b>確認設定草稿</b><p>沿用團隊慣例，確認後才寫入</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="guides"><b>留下讀取約定</b><p>後續 Skills 知道先讀什麼、遇到衝突怎麼辦</p></div></div><div class="table-scroll"><table class="evidence-table"><thead><tr><th>文件</th><th>實際用途</th></tr></thead><tbody><tr><td>AGENTS.md 或 CLAUDE.md</td><td>更新既有入口的 Agent skills 區塊，連到 docs/agents/*.md</td></tr><tr><td>docs/agents/domain.md</td><td>指定 GLOSSARY.md／GLOSSARY-MAP.md 與相關 ADR 的讀取規則；沿用術語，明確提出 ADR 衝突</td></tr><tr><td>docs/agents/issue-tracker.md</td><td>記錄工作追蹤方式；今天的答案是 Work Item 與 PR 都在 Azure DevOps</td></tr><tr><td>docs/agents/triage-labels.md</td><td>Azure DevOps 沒有 GitHub 式的 Label，改用 Tag 對應；State 照走團隊的工作流程進度，兩者不衝突</td></tr></tbody></table></div><p class="key-line">先把知識的入口接好，再讓每次工作都有機會把它補完整。</p><p class="source-line">來源：<a href="https://github.com/mattpocock/skills/blob/4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d/skills/engineering/setup-matt-pocock-skills/SKILL.md">setup-matt-pocock-skills</a> · <a href="https://github.com/mattpocock/skills/blob/4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d/skills/engineering/setup-matt-pocock-skills/domain.md">Domain 讀取約定</a></p></div></section>
+
+<section class="slide" id="experience-one" data-title="Demo：在 Roko 上完成兩個小功能" data-chapter="Demo · 兩個功能到 PR" data-folio="13"><div class="inner"><div class="slide-mast"><span>03 / BUILD</span><span>AGENTIC SDLC <b>13</b></span></div><p class="eyebrow">Demo · 兩個功能到 PR · 30–35 分鐘 · 同段共用</p><h2>Demo：在 Roko 上完成兩個小功能</h2><p class="slide-lead">今天要改的是 Roko：以 Deep Agents 打造、可串接 OpenAI 相容 API 的聊天 Agent。</p><div class="worker-grid"><article class="worker-card" data-tone="execution"><span class="worker-tag">TASK A · 後端</span><h3>TSMC Week 工具</h3><p>新增自訂工具：日期與週別互相換算，例如 W641 ↔ 10/4–10/10；Roko 在對話中自動使用。</p><dl><dt>起點</dt><dd>Azure DevOps Work Item 2901321：透過 Azure DevOps MCP 讀單，沒寫清楚的再用 grill-with-docs 問</dd><dt>驗收</dt><dd>週別規則、跨年週與錯誤輸入可測試；對話中出現工具卡片</dd></dl></article><article class="worker-card" data-tone="guides"><span class="worker-tag">TASK B · 前端</span><h3>匯出對話</h3><p>將目前的可見對話（使用者訊息與 Roko 回覆）下載為 Markdown，保留順序與 Code Block。</p><dl><dt>起點</dt><dd>Spec 檔 docs/specs/export-conversation.md，課前用 to-spec 寫好</dd><dt>驗收</dt><dd>空對話與處理中停用；排除 Agent 步驟、錯誤訊息與思考中提示</dd></dl></article></div><p class="key-line">需求來自 Work Item 還是 Spec 檔，都交給同一個 Workflow。</p></div></section>
+
+<section class="slide" id="tdd" data-title="開始實作" data-chapter="Demo · 兩個功能到 PR" data-folio="14"><div class="inner"><div class="slide-mast"><span>03 / BUILD</span><span>AGENTIC SDLC <b>14</b></span></div><p class="eyebrow">Demo · 兩個功能到 PR · 35–40 啟動 · 55–70 驗收與開 PR</p><p class="demo-position"><a href="#workflow">Demo 地圖</a><span>Step 1–7 · 從需求到 PR</span><small>TSMC Week 工具 ＋ 匯出對話</small></p><h2>開始實作</h2><p class="slide-lead">兩個 Session 各下 dev-workflow-tdd，開 Branch 時選擇開 Worktree；都是 Skill，不綁 Agent 工具。</p><div class="step-groups" aria-hidden="true"><span style="grid-column:span 6">兩個 Session 各自在自己的 Worktree 做（需求也各自問）</span><span>各自交付</span></div><ol class="step-strip" aria-label="dev-workflow-tdd 七步：Demo 進度"><li data-tone="oversight"><small>各自做</small><b>1</b><span>接收任務</span></li><li data-tone="oversight"><small>各自做</small><b>2</b><span>grill-with-docs<br>A 讀 Work Item · B 讀 Spec</span></li><li data-tone="execution"><small>各自做</small><b>3</b><span>開新的 Branch<br>可選開 Worktree</span></li><li data-tone="execution"><small>各自做</small><b>4</b><span>TDD 開發</span></li><li data-tone="execution"><small>各自做</small><b>5</b><span>驗證與 Code Review</span></li><li data-tone="execution"><small>各自做</small><b>6</b><span>Commit</span></li><li data-tone="feedback"><small>各自交付</small><b>7</b><span>各自開 PR</span></li></ol><p class="detail-text">右下角「Prompt」：2、3 各貼到一個新 Session 平行做，dev-workflow-tdd 會各自一路做到開 PR（今天只開到自己的 setup branch，不合併）。</p></div></section>
+
+<section class="slide" id="knowledge-reuse" data-title="兩個 Task-level Skill：修弱點與寫文章" data-chapter="日常任務 Skills" data-folio="15"><div class="inner"><div class="slide-mast"><span>04 / SKILLS</span><span>AGENTIC SDLC <b>15</b></span></div><p class="eyebrow">日常任務 Skills · 40–45 分鐘 · Agent 跑 TDD 時</p><h2>兩個 Task-level Skill：修弱點與寫文章</h2><p class="slide-lead">Agent 在跑 TDD，人不用盯著。趁這段時間，把同一套「給任務 → 確認邊界 → 驗收證據」用在日常工作。換的是工作，委派方式相同。</p>
+<div class="worker-grid task-skill-grid">
+<article class="worker-card" data-tone="execution"><span class="worker-tag">實跑 · AZURE-FIX-SECURITY-ISSUE</span><h3>修弱點</h3><ol class="task-steps"><li><b>讀 CI Build 結果</b><span>給 Build URL，找出弱點、套件位置與受影響範圍</span></li><li><b>最小安全修補</b><span>確認版本與相容性，只改必要範圍</span></li><li><b>驗證與交付</b><span>重跑掃描、測試與 Build，說明殘餘風險</span></li></ol><button type="button" class="inline-copy" data-copy-prompt="C">複製 azure-fix-security-issue Prompt ↗</button></article>
+<article class="worker-card" data-tone="guides"><span class="worker-tag">介紹用途 · TKMS-ARTICLE</span><h3>寫文章</h3><p>把素材整理成文章、填進 TKMS 草稿；人看過再發。</p><button type="button" class="inline-copy" data-copy-prompt="D">複製 TKMS Prompt 範例 ↗</button></article>
+<div class="rb-ask oracle-extra"><span class="oracle-tag">延伸 · ORACLE MCP <span class="gap-tag" data-tone="guides">可選</span></span><b>讓 Agent 直接用資料庫驗證</b><ul><li><strong>驗證 SQL</strong>：Agent 寫完查詢，直接在測試資料上跑，確認語法和結果對不對</li><li><strong>建立測試資料</strong>：依情境在測試環境產生資料，不用手動準備（今天不示範）</li><li><strong>確保程式正確</strong>：用資料庫裡的實際結果，核對程式的輸出</li></ul><button type="button" class="inline-copy" data-copy-prompt="O" style="margin-top:10px">複製 Oracle MCP Prompt ↗</button></div>
+</div>
+
+<p class="key-line">Task-level Skill 的共同點：範圍小、輸入清楚、完成條件明確。</p></div></section>
+
+<section class="slide" id="skills-write-skills" data-title="用 Skills 寫出你們自己的 Skill" data-chapter="製作團隊 Workflow Skill" data-folio="16"><div class="inner"><div class="slide-mast"><span>04 / SKILLS</span><span>AGENTIC SDLC <b>16</b></span></div><p class="eyebrow">製作團隊 Workflow Skill · 45–55 訪談 · 70–80 寫成 SKILL.md</p><h2>用 Skills 寫出你們自己的 Skill</h2><p class="slide-lead">現在一起問清楚你們的工作流程：用 grill-me 訪談，再用 writing-for-agents 寫成可交給 Agent 使用的 SKILL.md。</p><div class="sk-flow" aria-label="兩份輸入：dev-workflow-tdd 當參考底稿、團隊的回答；兩個步驟：grill-me 訪談、writing-for-agents 撰寫；產出另一份新的 Team SKILL.md，dev-workflow-tdd 本身不會被修改">
+<div class="sk-inputs"><span class="sk-label">輸入 · 參考材料</span>
+<div class="sk-ref"><b>dev-workflow-tdd</b><p>當參考底稿：拿來對照，不會被修改</p></div>
+<div class="sk-ref team"><b>團隊的回答</b><p>你們實際怎麼做、在意什麼</p></div></div>
+<div class="sk-arrow" aria-hidden="true">→</div>
+<div class="sk-steps"><span class="sk-label">兩個步驟</span>
+<div class="sk-step"><small>步驟 1 · 45–55</small><b>grill-me 訪談</b><p>逐項問：保留、刪除、替換還是新增</p></div>
+<div class="sk-arrow inline" aria-hidden="true">→</div>
+<div class="sk-step"><small>步驟 2 · 70–80</small><b>writing-for-agents</b><p>寫成 Agent 讀得懂的流程，未決事項留 TODO</p></div></div>
+<div class="sk-arrow" aria-hidden="true">→</div>
+<div class="sk-out"><span class="sk-label">產出</span><b>你們的 Team SKILL.md</b><p>另一份新的 Skill，初版交給團隊試跑</p></div>
+</div>
+<style>
+.sk-flow{display:grid;grid-template-columns:1fr auto 1.7fr auto 1fr;align-items:stretch;gap:12px;margin:6px 0 26px}
+.sk-label{display:block;margin-bottom:8px;color:#9FB3C8;font:700 .72rem/1 ui-monospace,monospace;letter-spacing:.08em}
+.sk-inputs,.sk-steps,.sk-out{min-width:0}
+.sk-steps{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto 1fr;gap:0 10px}.sk-steps .sk-label{grid-column:1/-1}
+.sk-ref{padding:12px 14px;border:1px dashed #4E7184;border-radius:12px;background:transparent}.sk-ref+.sk-ref{margin-top:8px}
+.sk-ref.team{border-color:#D4BA91}
+.sk-ref b,.sk-step b,.sk-out b{display:block;color:#EEF5FC;font-size:1rem}
+.sk-ref p,.sk-step p,.sk-out p{margin:4px 0 0;color:#B5C6DD;font-size:.86rem;line-height:1.55}
+.sk-step{padding:16px;border:1px solid #7DBCD1;border-radius:12px;background:#223B47}
+.sk-step small{display:block;margin-bottom:6px;color:#7DBCD1;font:700 .72rem/1 ui-monospace,monospace}
+.sk-out{padding:16px;border:2px solid #94BEB6;border-radius:12px;background:#293D3C}
+.sk-out .sk-label{color:#94BEB6}
+.sk-arrow{align-self:center;color:#7DBCD1;font-size:1.4rem;font-weight:700}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) :is(.sk-step,.sk-out){background:var(--theme-raised)!important;border-color:var(--theme-accent)}
+html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-color:var(--theme-line)}
+@media(max-width:800px){.sk-flow,.sk-steps{grid-template-columns:1fr}.sk-arrow{transform:rotate(90deg);justify-self:center}}
+</style>
+<div class="table-scroll"><table class="evidence-table"><thead><tr><th>要問團隊</th><th>為什麼會改變流程</th></tr></thead><tbody><tr><td>工作從哪裡進來？需求不足找誰？</td><td>決定入口與提問對象</td></tr><tr><td>哪些測試必跑？UI 怎麼驗？</td><td>決定驗收證據</td></tr><tr><td>Done 到 PR、部署，還是要寫 TKMS？</td><td>決定停止與交付條件</td></tr></tbody></table></div></div></section>
+
+<section class="slide" id="closing" data-title="從盯著一個 Agent，到協調兩個任務" data-chapter="收尾" data-folio="17"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>17</b></span></div><p class="eyebrow">收尾 · 80–85 分鐘 · 同段共用</p><h2>從盯著一個 Agent，到協調兩個任務</h2><p class="slide-lead">Step 1→2 的改變，是你開始負責交代、協調、驗收與交付。兩個 Agent 是今天的練習，可靠交付才是判斷依據。</p><ol class="closing-steps"><li><h3>交代清楚，再分工</h3><p>TSMC Week 從 Work Item 開始、匯出對話直接給 Spec；各開一個 Session 與 Worktree，各自問到可驗收。</p></li><li><h3>看證據，處理例外</h3><p>讓 Agent 自己推進 TDD；人處理決策、檢查畫面與下載內容，確認未驗證項目。</p></li><li><h3>兩份成果，各自交付</h3><p>各自重跑檢查、附上驗證結果，各開一份可 Review 的 PR。同樣的方法，也能用在修弱點、寫文章與團隊流程。</p></li></ol></div></section>
+
+
+
+
+<section class="slide" id="future-loop" data-title="再往前一步：Step 3，Agent 自主推進，人只抽查" data-chapter="收尾" data-folio="18"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>18</b></span></div><p class="eyebrow">收尾 · 85–90 分鐘 · 同段共用</p><h2>再往前一步：Step 3，Agent 自主推進，人只抽查</h2><p class="slide-lead">這是未來大家都要達到的工作方式，對應 <a href="#step-two">Steps of AI Adoption</a> 的 Step 3（Supervised Autonomy）：Agent 從規劃、實作、驗證一路做到合併；人不再逐一審查 PR，改成隔天抽查，發現問題就調整環境。</p>
+<div class="archify-slide-map static-diagram loop-diagram">
+<svg viewBox="0 0 1160 410" role="img" aria-labelledby="loopTitle loopDesc" xmlns="http://www.w3.org/2000/svg">
+<title id="loopTitle">Step 3 的 PR 出貨流程</title>
+<desc id="loopDesc">三個泳道。人／外部輸入：Bug 回報與新資訊進入 Project coordinator。Agent 做事：1 Project coordinator 規劃派工，2 多個 agent 實作，3 Verifier agents 實測，4 Agent 自己合併 PR。人只抽查：5 隔天抽查 commit 歷史，6 有問題就改環境；改過的環境回到步驟 2，用在下一輪。</desc>
+<defs>
+<marker id="lpMain" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7DBCD1"/></marker>
+<marker id="lpHuman" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#D4BA91"/></marker>
+</defs>
+<rect x="0" y="0" width="1160" height="410" fill="#0b1626"/>
+<g stroke="#2A435A" stroke-dasharray="4 6"><path d="M0 128H1160"/><path d="M0 282H1160"/></g>
+<g font-size="14" font-weight="700" fill="#9FB3C8">
+<text x="10" y="40">人／外部</text><text x="10" y="60">輸入</text>
+<text x="10" y="206">Agent 做事</text>
+<text x="10" y="356">人只抽查</text>
+</g>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M265 96V156" stroke="#D4BA91" stroke-width="3" marker-end="url(#lpHuman)"/>
+<path d="M380 202H408" stroke="#7DBCD1" stroke-width="3" marker-end="url(#lpMain)"/>
+<path d="M638 202H666" stroke="#7DBCD1" stroke-width="3" marker-end="url(#lpMain)"/>
+<path d="M896 202H924" stroke="#7DBCD1" stroke-width="3" marker-end="url(#lpMain)"/>
+<path d="M1039 248V312" stroke="#D4BA91" stroke-width="3" marker-end="url(#lpHuman)"/>
+<path d="M924 352H896" stroke="#D4BA91" stroke-width="3" marker-end="url(#lpHuman)"/>
+<path d="M666 352H523V248" stroke="#D4BA91" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#lpHuman)"/>
+</g>
+<g stroke-width="2">
+<rect x="150" y="16" width="230" height="80" rx="10" fill="#35312B" stroke="#D4BA91"/>
+<rect x="150" y="156" width="230" height="92" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="408" y="156" width="230" height="92" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="666" y="156" width="230" height="92" rx="10" fill="#293D3C" stroke="#94BEB6"/>
+<rect x="924" y="156" width="230" height="92" rx="10" fill="#223B47" stroke="#7DBCD1"/>
+<rect x="924" y="312" width="230" height="80" rx="10" fill="#35312B" stroke="#D4BA91"/>
+<rect x="666" y="312" width="230" height="80" rx="10" fill="#35312B" stroke="#D4BA91"/>
+</g>
+<g text-anchor="middle" fill="#EEF5FC" font-size="17" font-weight="700">
+<text x="265" y="49">Bug 回報與新資訊</text>
+<text x="265" y="195">1 · Project coordinator</text>
+<text x="523" y="195">2 · 多個 agent 實作</text>
+<text x="781" y="195">3 · Verifier agents 實測</text>
+<text x="1039" y="195">4 · Agent 自己合併 PR</text>
+<text x="1039" y="345">5 · 隔天抽查 commit 歷史</text>
+<text x="781" y="345">6 · 有問題就改環境</text>
+</g>
+<g text-anchor="middle" fill="#D6E0EA" font-size="14">
+<text x="265" y="75">Teams、TKMS、Azure</text>
+<text x="265" y="222">規劃與派工，不寫程式</text>
+<text x="523" y="222">用驗證 skill 重現並驗證</text>
+<text x="781" y="222">找出迴歸，再修一輪</text>
+<text x="1039" y="222">通過驗證才合併</text>
+<text x="1039" y="371">抽樣，不逐一審查</text>
+<text x="781" y="371">retro → 改 Skill、lint</text>
+</g>
+<text x="536" y="292" font-size="14" fill="#D4BA91">改過的環境，用在下一輪</text>
+</svg>
+</div>
+<p class="key-line">人的工作從審每一個 PR，變成抽查結果、把環境改好。</p>
+<p class="source-line">參考：Poteto 的 PR 出貨流程，依 Matt Pocock × Poteto 訪談（2026-10-03）整理，輸入來源換成我們常用的工具，非講者原圖。</p></div></section>
+
+<section class="slide" id="gap-to-step3" data-title="我們離 Step 3 還差什麼" data-chapter="收尾" data-folio="19"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>19</b></span></div><p class="eyebrow">收尾 · 85–90 分鐘 · 同段共用</p><h2>我們離 Step 3 還差什麼</h2><p class="slide-lead">Step 3 的門檻是信任：公司願不願意、工程師敢不敢讓 Agent 合併。信任不是談出來的，是測試環境、Domain 知識、Agent 的環境一項一項補出來的。</p>
+<div class="table-scroll"><table class="evidence-table gap-table"><thead><tr><th>哪一層</th><th>為什麼卡住</th><th>怎麼解決</th></tr></thead><tbody>
+<tr><td>自動合併 PR</td><td>公司對 Agent 自動合併 PR 的態度是什麼？工程師自己有沒有把握？</td><td><b>公司的態度</b>：先挑一類低風險變更試行（例如測試、文件、內部工具），講好出問題就 revert、隔天抽查，用試行結果去談。<br><b>工程師的把握</b>：來自測得到，加上抽查時發現問題就改環境；所以要和下一列的測試環境一起看</td></tr>
+<tr><td>測試環境</td><td>還不完整，有些問題要到接近 Production 的環境才測得出來；測不到，工程師就沒把握放手</td><td>按變更類型分：測得到的先放手，碰到整合與權限的照舊人審</td></tr>
+<tr><td>Domain 知識</td><td>Reviewer 在看的業務規則，還有一部分沒寫下來</td><td>grill-with-docs：問清楚就寫進 GLOSSARY.md 與 ADR；驗收條件由人確認，測試從它推出來</td></tr>
+<tr><td>Agent 的環境</td><td>自動驗證還蓋不到 Reviewer 會挑的每一種問題</td><td>用 retro 回顧 session 和 PR，找出要優化的 Skill、要串的 MCP、要加的 lint 規則；改好環境，下次不用人看</td></tr>
+</tbody></table></div>
+<p class="key-line">從一小段開始，把今天這套做下去，讓自己早點下班。</p></div></section>
+<section class="slide" id="thanks" data-title="謝謝大家" data-chapter="收尾" data-folio="20"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>20</b></span></div><h2 class="thanks-title">謝謝大家</h2></div></section>
+
+<section class="slide" id="review-brakes" data-title="Step 2 卡在 Review：加上三層煞車" data-chapter="附錄" data-folio="21"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>21</b></span></div><p class="eyebrow">附錄 · Review 瓶頸 · 有時間或有人問再翻</p><h2>附錄：Step 2 卡在 Review，加上三層煞車</h2><p class="slide-lead">Agent 越多，PR 越多；要讓人工 Review 變快，得靠前兩層先把關。</p>
+<div class="rb-stack">
+<div class="rb-layer done"><span class="n">01</span><div><b>自動化檢查</b><span>Test、Build、Lint、E2E：只花 CPU，可以盡量多加</span></div><em>dev-workflow-tdd 已做</em></div>
+<div class="rb-layer done"><span class="n">02</span><div><b>自動化 Review</b><span>dev-workflow-tdd 的 Code Review 環節＋公司的 AI Reviewer；下一步是對照團隊規範</span></div><em>已有 · 再補規範</em></div>
+<div class="rb-layer human"><span class="n">03</span><div><b>人工 Review</b><span>依風險決定看多深，不必每個 PR 都逐行看</span></div><em>只看重要的</em></div>
+</div>
+<p class="rb-sub">但 CI 全綠，不代表可以合併：AI 寫的測試常見三種騙法</p>
+<div class="rb-grid c3">
+<div class="rb-card"><h3>套套邏輯</h3><p>程式寫 <code>LIMIT = 280</code>，測試就寫 <code>expect(LIMIT).toBe(280)</code>。只是把實作再抄一次，沒有驗到行為。</p></div>
+<div class="rb-card"><h3>對結構過敏</h3><p>不渲染畫面，直接讀原始碼檔案比對字串先後。程式一重排就失敗，功能壞了卻不一定抓得到。</p></div>
+<div class="rb-card"><h3>不可能失敗</h3><p>把 AudioContext 這類 API 整個 mock 掉，正式環境才會出現的錯誤，測試永遠測不到。</p></div>
+</div>
+<p class="key-line">解法從架構下手：用 Deep Module 把複雜實作藏在簡單介面後面，並要求 Agent 只從介面測。</p>
+<p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖。</p></div></section>
+<section class="slide" id="own-reviewer" data-title="Review 加上團隊規範" data-chapter="附錄" data-folio="22"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>22</b></span></div><p class="eyebrow">附錄 · Review 瓶頸 · 有時間或有人問再翻</p><h2>已經有 AI Review，下一步是放進團隊規範</h2><p class="slide-lead">公司有 AI Reviewer，dev-workflow-tdd 也有 Code Review 環節。Matt Pocock 的提醒是：通用的 Reviewer 不是太廣而一直誤報，就是太窄而不適用；要真的有用，得累積自己團隊的規範。</p>
+<div class="rb-grid c2">
+<div class="rb-card busy"><span class="tag">IMPLEMENT AGENT · 已經滿載</span><ul><li>探索：找出要改哪裡</li><li>實作：修改檔案</li><li>除錯：跑驗證、修到通過</li></ul><p class="verdict">再塞 coding standards，三件事都做得更差。</p></div>
+<div class="rb-card idle"><span class="tag">CODE REVIEW 環節 · 還很空</span><ul><li>拿到 diff，只需補看周邊脈絡</li><li>不用實作，也不用除錯</li><li>有自己的 context，逐條對照規範</li></ul><p class="verdict">規範交給它，效果好得多。</p></div>
+</div>
+<div class="rb-grid c3 rb-steps">
+<div class="rb-card"><h3>規範放 coding-standards.md</h3><p>給 dev-workflow-tdd 的 Code Review 環節讀，不放進 AGENTS.md，免得搶走實作的注意力。那些沒人讀的內部規範文件，終於有地方用。</p></div>
+<div class="rb-card"><h3>能修的直接 commit</h3><p>Code Review 環節找到問題就修，有疑問才留 comment。人看到的是修好的成果，而不是一串要自己判斷的意見。</p></div>
+<div class="rb-card"><h3>先能動，再變好</h3><p>一個 context 做 red-green，另一個 context 做 refactor。不要期待 Agent 一次就寫出好 code。</p></div>
+</div>
+<p class="key-line">同樣的 Review comment 不寫第二次：人工 Review 發現的問題，就寫進 coding-standards.md、lint 或 Skill，也就是我們說的「改環境」。用 retro 定期回顧 session 和 PR，找出該改哪裡。</p>
+<p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖。</p></div></section>
+<section class="slide" id="one-way-door" data-title="單向門與雙向門" data-chapter="附錄" data-folio="23"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>23</b></span></div><p class="eyebrow">附錄 · Review 瓶頸 · 有時間或有人問再翻</p><h2>不是每個 PR 都一樣危險：單向門與雙向門</h2><p class="slide-lead">大部分 PR 是雙向門，合併後隨時能 revert；真正要細審的是回不去的那些。讓 Agent 在 PR 描述裡先標出來，人就知道力氣該花在哪。</p>
+<div class="rb-grid c2">
+<div class="rb-card light"><span class="tag">雙向門 · 可以輕審</span><p class="door-def">走錯了可以退回來：合併後隨時能 revert，影響也能完全收回。</p><ul><li>內部重構、UI 文字調整</li><li>有測試覆蓋的一般功能</li></ul><p class="verdict">看摘要與驗證證據即可。</p></div>
+<div class="rb-card full"><span class="tag">單向門 · 一定要細審</span><p class="door-def">走過去就回不來：就算 revert 程式，資料已刪、信已寄出，影響收不回。</p><ul><li>資料 migration、刪除資料</li><li>對外寄信、發通知</li><li>權限、整合與上線設定</li></ul><p class="verdict">逐行看，必要時找人一起看。</p></div>
+</div>
+<p class="rb-note">這個說法來自 Amazon 的決策分類：可逆的決定快速做，不可逆的才慢下來仔細想。看起來很小的改動也可能是單向門，例如一行設定就寄信給六萬人。所以除了可不可逆，還要看爆炸半徑。</p>
+<div class="rb-grid c2" style="margin-top:16px">
+<pre class="rb-pr"><span class="h">## Merge 風險</span>
+- 可逆性：雙向門（可直接 revert）
+- 爆炸半徑：只影響報表頁的匯出
+- 建議 Review 深度：看摘要與驗證證據</pre>
+<div class="rb-ask" style="margin-top:0"><b>一起討論</b><ul><li>我們的測試環境不完整，哪些變更其實比看起來更「單向」？</li><li>你們平常怎麼判斷一個 PR 要看多細？</li><li>哪一類 PR，你願意先只看摘要？</li></ul></div>
+</div>
+<p class="key-line">單向門每個都要審；雙向門，不用每個都看。</p>
+<p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖。</p></div></section>
+</main>
+
+  <script>window.workshopPrompts={"A": {"group": "正常流程", "title": "1 · Repo Setup", "text": "用 setup-matt-pocock-skills 幫這個 repo 設定 Agent 的知識入口。\n我們整套都在 Azure DevOps：需求是 Work Item，PR 也開在 Azure DevOps。\n先跟我說你打算怎麼設定，我確認後再寫。寫好 commit 到 workshop/agent-setup-帳號 這個 branch，帳號用 git email @ 前面那段。"}, "J": {"group": "正常流程", "title": "2 · Session A：TSMC Week", "text": "dev-workflow-tdd 2901321\n開 branch 的時候用 worktree，從 workshop/agent-setup-帳號 開出 feature/tsmc-week-帳號（帳號用 git email @ 前面那段）。\nPR 開到 workshop/agent-setup-帳號，開成 Draft，先不要合併。"}, "L": {"group": "正常流程", "title": "3 · Session B：匯出對話", "text": "dev-workflow-tdd docs/specs/export-conversation.md\n開 branch 的時候用 worktree，從 workshop/agent-setup-帳號 開出 feature/export-conversation-帳號（帳號用 git email @ 前面那段）。\nPR 開到 workshop/agent-setup-帳號，開成 Draft，先不要合併。"}, "C": {"group": "正常流程", "title": "4 · azure-fix-security-issue", "text": "azure-fix-security-issue <CI Build Url>"}, "E": {"group": "正常流程", "title": "5 · Team Workflow Skill", "text": "我們想把團隊的開發流程寫成一份新的 Skill。用 grill-me 問我們平常怎麼做，拿 dev-workflow-tdd 當參考，看哪些要留、刪、換或新增；不要改 dev-workflow-tdd 本身。\n問完先停，整理一份訪談結果給我看，等我說可以再用 writing-for-agents 寫成 SKILL.md，還沒確定的先留 TODO。"}, "D": {"group": "延伸範例", "title": "6 · TKMS Draft", "text": "tkms-article 幫我把 Roko 的專案架構寫成 TKMS 文章"}, "O": {"group": "延伸範例", "title": "7 · Oracle MCP 查資料表", "text": "用 Oracle MCP 告訴我目前 RD_DB 裡面有哪些 Table，各自大概存什麼。只用 Read-only 查詢。"}};
+window.workshopSlidePrompts={"title": [], "intent": [], "timeline": [], "step-two": [], "harness": [], "traceability": [], "workflow": [], "domain-trap": [], "worktree": [], "environment": [], "setup-mine": ["A"], "experience-one": [], "tdd": ["J", "L"], "knowledge-reuse": ["C", "D", "O"], "skills-write-skills": ["E"], "closing": [], "review-brakes": [], "own-reviewer": [], "one-way-door": [], "step2-loop": [], "future-loop": [], "gap-to-step3": [], "thanks": []};</script>
+
+  <script>
+    (() => {
+      const aliases={'agent-not-model':'harness',mcp:'tdd','parallel-review':'tdd',handoff:'tdd','step-two-detail':'step-two','parallel-launch':'tdd','skill-check':'skills-write-skills'};
+      const resolveAlias=()=>{const id=aliases[location.hash.slice(1)];if(id){try{history.replaceState(null,'','#'+id);}catch(_){}document.getElementById(id)?.scrollIntoView();}};
+      window.addEventListener('hashchange',resolveAlias);resolveAlias();
+      const main = document.querySelector('main');
+      const slides = [...document.querySelectorAll('.slide')];
+      const rail = document.getElementById('rail');
+      const counter = document.getElementById('counter');
+      const progressBar = document.getElementById('progressBar');
+      const panel = document.getElementById('presenterPanel');
+      const panelToggle = document.getElementById('presenterToggle');
+      const stageContent = document.getElementById('stageContent');
+      const promptPageTitle = document.getElementById('promptPageTitle');
+      const prompts = window.workshopPrompts;
+      const slidePrompts = window.workshopSlidePrompts;
+
+
+      const escapeHtml = (value) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
+      const copyText = async (text, button) => {
+        let copied = false;
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            copied = true;
+          }
+        } catch (_) {}
+        if (!copied) {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.setAttribute('readonly', '');
+          textarea.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try { copied = document.execCommand('copy'); } catch (_) {}
+          textarea.remove();
+        }
+        const original = button.textContent;
+        button.textContent = copied ? '已複製' : '請手動複製';
+        button.classList.toggle('is-copied', copied);
+        window.setTimeout(() => { button.textContent = original; button.classList.remove('is-copied'); }, 1400);
+      };
+
+      const promptCard = (key, open = false, used = []) => {
+        const prompt = prompts[key];
+        const usedLine = used && used.length ? `<p class="prompt-used">用在：${used.map(escapeHtml).join('、')}</p>` : '';
+        return `<details class="prompt-card"${open ? ' open' : ''}><summary>${escapeHtml(prompt.title)}</summary><div class="prompt-body">${usedLine}<pre>${escapeHtml(prompt.text)}</pre><div class="prompt-actions"><button class="copy-button" type="button" data-copy-prompt="${key}">複製 Prompt</button></div></div></details>`;
+      };
+
+      const promptOrder = ['A','J','L','C','E','D','O'];
+      const usedOn = {};
+      slides.forEach((sl) => (slidePrompts[sl.id] || []).forEach((k) => { (usedOn[k] = usedOn[k] || []).push(`${sl.dataset.folio} ${sl.dataset.title}`); }));
+      const renderAllPrompts = () => {
+        const keys = [...promptOrder.filter((k) => prompts[k]), ...Object.keys(prompts).filter((k) => !promptOrder.includes(k))];
+        const groups = [];
+        keys.forEach((k) => { const g = prompts[k].group || '其他'; let grp = groups.find((x) => x.name === g); if (!grp) groups.push(grp = { name: g, keys: [] }); grp.keys.push(k); });
+        promptPageTitle.textContent = `全部 ${keys.length} 個 Prompt，依 Demo 順序編號`;
+        stageContent.innerHTML = '<p class="prompt-hint">可以照貼，也可以用自己的話講；看到 [ ] 就換成你的內容。</p>' + groups.map((grp) => `<p class="prompt-group-title">${escapeHtml(grp.name)}</p>` + grp.keys.map((k) => promptCard(k, false, usedOn[k])).join('')).join('');
+      };
+      const renderStep = () => {};
+      renderAllPrompts();
+
+      const openPanel = () => {
+        panel.inert = false;
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden', 'false');
+        panelToggle.setAttribute('aria-expanded', 'true');
+        document.getElementById('presenterClose').focus();
+      };
+      const closePanel = () => {
+        panelToggle.focus();
+        panel.inert = true;
+        panel.classList.remove('is-open');
+        panel.setAttribute('aria-hidden', 'true');
+        panelToggle.setAttribute('aria-expanded', 'false');
+      };
+      const togglePanel = () => panel.classList.contains('is-open') ? closePanel() : openPanel();
+      panelToggle.addEventListener('click', togglePanel);
+      document.getElementById('presenterClose').addEventListener('click', closePanel);
+
+      document.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-copy-prompt]');
+        if (button) copyText(prompts[button.dataset.copyPrompt].text, button);
+      });
+
+      slides.forEach((slide, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('aria-label', slide.dataset.title || `Slide ${index + 1}`);
+        button.addEventListener('click', () => slide.scrollIntoView({ behavior: 'smooth' }));
+        rail.appendChild(button);
+      });
+
+      const dots = [...rail.querySelectorAll('button')];
+      let activeIndex = 0;
+
+      const update = (index) => {
+        activeIndex = index;
+        document.getElementById('chapterStatus').textContent = slides[index].dataset.chapter;
+        const current = String(index + 1).padStart(2, '0');
+        const total = String(slides.length).padStart(2, '0');
+        counter.textContent = `${current} / ${total}`;
+        progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+        dots.forEach((dot, i) => dot.setAttribute('aria-current', i === index ? 'true' : 'false'));
+        renderStep(slides[index].id);
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = slides.indexOf(entry.target);
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: .1 });
+
+      slides.forEach((slide) => observer.observe(slide));
+      let scrollQueued = false;
+      window.addEventListener('scroll', () => {
+        if (scrollQueued) return;
+        scrollQueued = true;
+        requestAnimationFrame(() => {
+          const anchor = window.innerHeight * .3;
+          let index = 0;
+          slides.forEach((slide, i) => { if (slide.getBoundingClientRect().top <= anchor) index = i; });
+          if (index !== activeIndex) update(index);
+          scrollQueued = false;
+        });
+      }, { passive: true });
+      slides[0].classList.add('is-visible');
+      update(0);
+
+      document.addEventListener('keydown', (event) => {
+        const typing = event.target.closest('input, textarea, select, button, summary, [contenteditable]:not([contenteditable="false"]), [role="textbox"]');
+
+        if (event.key === 'Escape' && panel.classList.contains('is-open')) {
+          closePanel();
+          return;
+        }
+        if (typing) return;
+        // Also disable the browser's default Space / Shift+Space page scrolling.
+        if (event.code === 'Space' || event.key === ' ') {
+          event.preventDefault();
+          return;
+        }
+        const nextKeys = ['ArrowDown', 'PageDown'];
+        const prevKeys = ['ArrowUp', 'PageUp'];
+
+        if (nextKeys.includes(event.key)) {
+          event.preventDefault();
+          slides[Math.min(activeIndex + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+        } else if (prevKeys.includes(event.key)) {
+          event.preventDefault();
+          slides[Math.max(activeIndex - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          slides[0].scrollIntoView({ behavior: 'smooth' });
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    })();
+  </script>
+<section class="theme-panel" id="themePanel" aria-label="選擇簡報配色" hidden><h2>換個風格，直接比較</h2><p>保留閱讀位置；架構圖角色色不變。</p><div class="theme-options"><button type="button" class="theme-option" data-theme-choice="ocean" aria-pressed="false"><span class="swatch" style="--swatch:#091522" aria-hidden="true"></span><span>深海軍藍<small>目前版本 · 冷色科技感</small></span></button><button type="button" class="theme-option" data-theme-choice="resend" aria-pressed="false"><span class="swatch" style="--swatch:#000000" aria-hidden="true"></span><span>Resend 靈感<small>深黑畫布 · 字體與內容優先</small></span></button><button type="button" class="theme-option" data-theme-choice="vercel" aria-pressed="false"><span class="swatch" style="--swatch:#ffffff" aria-hidden="true"></span><span>淺色白底<small>投影亮房間用</small></span></button><button type="button" class="theme-option" data-theme-choice="claude" aria-pressed="false"><span class="swatch" style="--swatch:#faf9f5" aria-hidden="true"></span><span>淺色米白<small>襯線標題 · 柔和</small></span></button></div><p>設計語言參考，非品牌官方模板。</p><a href="https://github.com/VoltAgent/awesome-design-md" target="_blank" rel="noopener">參考：VoltAgent Awesome DESIGN.md ↗</a></section><script>(()=>{
+ const themes={ocean:1,resend:1,vercel:1,claude:1};
+ const root=document.documentElement,button=document.getElementById('themeToggle'),panel=document.getElementById('themePanel');
+ function apply(name){if(!themes[name])name='ocean';const active=[...document.querySelectorAll('section.slide')].find(s=>s.getBoundingClientRect().bottom>100);const top=active?.getBoundingClientRect().top;root.dataset.workshopTheme=name;try{localStorage.setItem('workshop-theme',name);}catch(_){}for(const b of panel.querySelectorAll('[data-theme-choice]'))b.setAttribute('aria-pressed',String(b.dataset.themeChoice===name));if(active)requestAnimationFrame(()=>window.scrollBy({top:active.getBoundingClientRect().top-top,behavior:'instant'}));}
+ function open(value){panel.hidden=!value;button.setAttribute('aria-expanded',String(value));}
+ button.addEventListener('click',()=>open(panel.hidden));panel.addEventListener('click',e=>{const b=e.target.closest('[data-theme-choice]');if(b)apply(b.dataset.themeChoice);});document.addEventListener('click',e=>{if(!panel.contains(e.target)&&!button.contains(e.target))open(false);});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){open(false);button.focus();}});
+ let stored='ocean';try{stored=localStorage.getItem('workshop-theme')||'ocean';}catch(_){}apply(stored);
+})();</script>
+
+</body></html>
