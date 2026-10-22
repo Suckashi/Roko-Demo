@@ -257,8 +257,8 @@ const MENU_POS = [
   [18, 154],
   [112, 154],
 ];
-// 精靈球：從 from 飛到 to（0.3 秒、邊飛邊轉），到了就打開不見
-const pokeball = (id, start, from, to) => `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="0.4" style="position:absolute;inset:0">
+// 精靈球：從 from 出發；pokeballJs 讓它飛到 to（0.3 秒、邊飛邊轉），到了就打開不見
+const pokeball = (id, start, from) => `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="0.4" style="position:absolute;inset:0">
   <img id="${id}-b" src="${P}/pokeball.svg" style="left:${from[0]}px;top:${from[1]}px;width:12px;height:12px" alt="" />
 </div>`;
 const pokeballJs = (id, at, from, to) => `  tl.fromTo("#${id}-b", { x: 0, rotation: 0 }, { x: ${to[0] - from[0]}, rotation: 360, duration: 0.3, ease: "none", snap: "x" }, ${r(at)});
@@ -385,7 +385,7 @@ TRAINERS.forEach((tr, ti) => {
   let menus = "";
   // 開場：「去吧！Clawd！」精靈球從左下飛進來，打開後 Clawd 出場
   menus += msg(`${id}-go`, 0.1, INTRO - 0.1, ['去吧！<span class="hl">Clawd</span>！']);
-  foes += pokeball(`${id}-ball`, 0.2, [-12, 150], [CLAWD_C[0] - 6, CLAWD_C[1] - 6]);
+  foes += pokeball(`${id}-ball`, 0.2, [-12, 150]);
   script += pokeballJs(`${id}-ball`, 0.2, [-12, 150], [CLAWD_C[0] - 6, CLAWD_C[1] - 6]);
   script += `  tl.fromTo("#${id}-clawd", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, 0.6);
   tl.fromTo("#${id}-php", { x: 160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x" }, 0.8);\n`;
@@ -402,7 +402,7 @@ TRAINERS.forEach((tr, ti) => {
     foes += `<div id="${fid}" class="clip" data-start="${r(t0)}" data-duration="${len}" data-layout-allow-overflow style="position:absolute;left:${left}px;top:${top}px;width:${sh.w}px;height:${sh.h}px;overflow:hidden">
   <div id="${fid}-s" class="px" style="left:0;top:0;width:${sh.w}px;height:${sh.h}px;background:url('${P}/${p.file}-sheet.png') 0 0 / ${sh.w * sh.frames}px ${sh.h}px;transform-origin:50% 100%"></div>
 </div>
-${pokeball(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
+${pokeball(`${fid}-ball`, t0, [330, -10])}
 <div id="${fid}-burst" class="clip" data-start="${r(t0 + 0.3)}" data-duration="0.4" style="position:absolute;left:${FOE_X - 20}px;top:${FOE_FEET - 40}px;width:40px;height:40px">
   <div class="px" style="left:0;top:0;width:40px;height:40px;border-radius:50%;background:#fff"></div>
 </div>
@@ -555,8 +555,6 @@ const NIGHT = `<div class="px" style="left:0;top:0;width:320px;height:45px;backg
 <div class="px" style="left:100px;top:6px;width:120px;height:120px;border-radius:50%;background:#3A4A78"></div>
 <div class="px" style="left:116px;top:22px;width:88px;height:88px;border-radius:50%;background:#4E5E90"></div>`;
 const BOX = `<div class="px" style="left:0;top:130px;width:320px;height:50px;background:#F8F8F8;border:3px solid #485868;box-shadow:inset 0 0 0 2px #98B0C8"></div>`;
-const TBC_TEXT = (id, top) =>
-  `<div id="${id}" class="t" style="left:84px;top:${top}px;font-size:24px;line-height:26px;color:#F8D030;text-shadow:2px 0 #383838,-2px 0 #383838,0 2px #383838,0 -2px #383838">To be continued…</div>`;
 // JoJo 式「To Be Continued」：畫面泛黃定格，箭頭從右邊滑進左下角（素材來自使用者提供的綠幕影片，去背後放在 assets/pokemon/jojo-arrow.png）
 const JOJO = (id, start, dur) => `<div id="${id}" class="clip" data-start="${start}" data-duration="${dur}" style="position:absolute;inset:0">
   <div id="${id}-tint" style="position:absolute;inset:0;background:#B08850;mix-blend-mode:color;opacity:0.7"></div>
