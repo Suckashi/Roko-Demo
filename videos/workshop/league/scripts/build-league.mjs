@@ -19,7 +19,7 @@ const TRAINERS = [
     step: 2,
     moves: ["TDD 自我驗證", "多開 Session", "grill-with-docs", "Git Worktree"],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證", gag: "一直盯著看" },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
       { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", move: "多開 Session", gag: "泡咖啡等它" },
       { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", move: "grill-with-docs" },
       { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", move: "Git Worktree" },
@@ -45,7 +45,9 @@ const TRAINERS = [
 const ROUND = 6;
 const GAG = 2.6;
 // 有 gag 的回合先誤用一招、效果不太好，再換對的招式
-const battleLength = (t) => t.team.length * ROUND + t.team.filter((p) => p.gag).length * GAG;
+const COUNTER = 1.6; // 對手反擊（例如催眠術）多出來的時間
+const roundLength = (p) => ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0);
+const battleLength = (t) => t.team.reduce((sum, p) => sum + roundLength(p), 0);
 
 // 兩集的場景順序與長度（秒）；每集的時間從 0 開始
 const PARTS = {
@@ -231,6 +233,30 @@ const MENU_POS = [
   [112, 154],
 ];
 const audioCues = []; // [場景, id, src, 集內時間, 長度, 音量]
+
+// 催眠術：粉紫色波紋一圈圈從對手飄向 Clawd，畫面跟著閃紫光
+const FX_FROM = [FOE_X, 40];
+const FX_TO = [76, 93];
+const RINGS = 6;
+const hypnosisFx = (id, start, dur) => `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="${r(dur)}" style="position:absolute;inset:0">
+  <div id="${id}-tint" class="layer" style="background:#B058C8;opacity:0"></div>
+${Array.from({ length: RINGS }, (_, i) => `  <div id="${id}-r${i}" class="px" style="left:${FX_FROM[0] - 10}px;top:${FX_FROM[1] - 6}px;width:20px;height:12px;border-radius:50%;border:3px solid ${i % 2 ? "#F8A0E0" : "#C060D8"};opacity:0"></div>`).join("\n")}
+</div>`;
+const hypnosisJs = (id, clawd, at) => {
+  let js = Array.from({ length: RINGS }, (_, i) => {
+    const t = r(at + 0.15 + i * 0.15);
+    return `  tl.fromTo("#${id}-r${i}", { x: 0, y: 0, scale: 0.6, opacity: 1 }, { x: ${FX_TO[0] - FX_FROM[0]}, y: ${FX_TO[1] - FX_FROM[1]}, scale: 2.6, opacity: 0.2, duration: 0.6, ease: "steps(6)", immediateRender: false }, ${t});`;
+  }).join("\n");
+  js += `\n  tl.fromTo("#${id}-tint", { opacity: 0 }, { opacity: 0.25, duration: 0.2, ease: "steps(2)", yoyo: true, repeat: 3, immediateRender: false }, ${r(at + 0.3)});`;
+  js += `\n  tl.fromTo("${clawd}", { x: 0 }, { x: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, ${r(at + 0.7)});\n`;
+  return js;
+};
+// 睡著：Clawd 頭上冒出 Z z z
+const sleepFx = (id, start, dur) => `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="${r(dur)}" style="position:absolute;inset:0">
+${["Z", "z", "z"].map((c, i) => `  <div id="${id}-z${i}" class="t outline" style="left:${104 + i * 8}px;top:${62 - i * 8}px;opacity:0">${c}</div>`).join("\n")}
+</div>`;
+const sleepJs = (id, at) =>
+  [0, 1, 2].map((i) => `  tl.fromTo("#${id}-z${i}", { y: 4, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "steps(3)", immediateRender: false }, ${r(at + 0.1 + i * 0.25)});`).join("\n") + "\n";
 let CUR = "";
 
 TRAINERS.forEach((tr, ti) => {
@@ -259,7 +285,7 @@ TRAINERS.forEach((tr, ti) => {
   let t0 = 0;
   tr.team.forEach((p, pi) => {
     const gag = p.gag;
-    const len = ROUND + (gag ? GAG : 0);
+    const len = roundLength(p);
     const sh = sheet(p.file);
     const left = Math.round(FOE_X - sh.w / 2);
     const top = FOE_FEET - sh.h;
@@ -314,9 +340,22 @@ TRAINERS.forEach((tr, ti) => {
       k += 0.8;
       attack(gag, k, false);
       k += 0.9;
-      m += msg(`${fid}-bad`, k, 0.9, ["效果不太好…"]);
-      script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
-      k += 0.9;
+      if (p.counter) {
+        // 對手反擊：催眠術的波紋從對手飄向 Clawd，Clawd 睡著
+        m += msg(`${fid}-cm`, k, 1.4, [`<span class="hl">${p.name}</span>使出了${p.counter.move}！`]);
+        foes += hypnosisFx(`${fid}-fx`, k, 1.4);
+        script += hypnosisJs(`${fid}-fx`, `#${id}-clawd`, k);
+        audioCues.push([CUR, `fx-${fid}`, "assets/sfx/hypnosis.wav", base + k + 0.1, 1.4, 0.6]);
+        k += 1.4;
+        m += msg(`${fid}-zz`, k, 1.1, [p.counter.after]);
+        foes += sleepFx(`${fid}-zz-fx`, k, 1.1);
+        script += sleepJs(`${fid}-zz-fx`, k);
+        k += 1.1;
+      } else {
+        m += msg(`${fid}-bad`, k, 0.9, ["效果不太好…"]);
+        script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
+        k += 0.9;
+      }
       choose(p.move, k, `${fid}-g2`, menu);
       k += 0.8;
     } else {
@@ -326,7 +365,7 @@ TRAINERS.forEach((tr, ti) => {
     attack(p.move, k, true);
     k += 1.0;
     m += msg(`${fid}-good`, k, 0.9, ["效果絕佳！"]);
-    script += `  tl.fromTo("#${id}-bar", { width: ${gag ? 70 : 77}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
+    script += `  tl.fromTo("#${id}-bar", { width: ${gag && !p.counter ? 70 : 77}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
     k += 0.9;
     m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`]);
     script += `  tl.fromTo("#${fid}-s", { y: 0 }, { y: ${sh.h}, duration: 0.3, ease: "power2.in", snap: "y" }, ${r(k + 0.05)});
