@@ -40,6 +40,8 @@ for (const [name, job] of Object.entries(jobs)) {
   // 門牌由右往左換，避免連鎖替換（Step 1→2→3）
   for (const [a, b] of [...(job.replace || [])].reverse()) html = html.split(a).join(b);
   if (name === "hall") html = html.replace('left:245px;top:31px;width:46px">Step 4', 'left:245px;top:31px;width:46px">冠軍');
+  // 暫存檔放在 .hyperframes/bake，用 <base> 讓 design/ 裡的相對路徑（common.css、../assets/）照樣找得到
+  html = html.replace("<head>", `<head><base href="file://${join(root, "design")}/">`);
   html = html.replace("</head>", `<style>${job.css}</style></head>`);
   const file = join(tmp, `${name}.html`);
   writeFileSync(file, html);

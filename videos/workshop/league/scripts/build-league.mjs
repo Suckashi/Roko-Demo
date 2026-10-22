@@ -20,9 +20,9 @@ const TRAINERS = [
     intro: "一個人帶好幾個 Agent？先過我這關！",
     outro: "……好吧，Step 2 的門為你打開。",
     moves: ["dev-workflow-tdd", "多開 Session", "grill-with-docs", "Git Worktree"],
-    learned: [["dev-workflow-tdd", "它自己跑測試"], ["多開 Session", "不用乾等"], ["grill-with-docs", "先問清楚"], ["Git Worktree", "各改各的"]],
+    learned: [["dev-workflow-tdd", "附驗證證據"], ["多開 Session", "不用乾等"], ["grill-with-docs", "先問清楚"], ["Git Worktree", "各改各的"]],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "Agent 自己跑測試，你看證據就好", move: "dev-workflow-tdd", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "人不用盯每一步；成果還是要過人，看的是證據", move: "dev-workflow-tdd", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
       { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", tip: "它在跑的時候，再開一個做別的事", move: "多開 Session", gag: "泡咖啡等它" },
       { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", tip: "讓 Agent 先追問，需求清楚再動手", move: "grill-with-docs" },
       { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", tip: "每個 Agent 一份 worktree，互不干擾", move: "Git Worktree" },

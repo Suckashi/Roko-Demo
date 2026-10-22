@@ -1,7 +1,7 @@
 /* 風格圖共用設定：原生 320×180 舞台放大 6 倍（1 原生像素 = 6 螢幕像素） */
 @font-face {
   font-family: "Fusion Pixel 12px Proportional TC";
-  src: url("file:///home/user/Roko-Demo/videos/workshop/ep1/assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2");
+  src: url("../assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2");
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
