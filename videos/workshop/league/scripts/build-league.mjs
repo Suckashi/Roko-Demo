@@ -31,15 +31,14 @@ const TRAINERS = [
     name: "芙蓉",
     sprite: "trainer-phoebe-gen3.png",
     step: 3,
-    gag: "全部逐行看",
-    moves: ["三層煞車", "Deep Module", "/retro", "低風險試行", "Verifier agent", "grill-with-docs"],
+    gag: "直接全面開放",
+    moves: ["低風險試行", "只放手測得到的", "打好測試環境", "grill-with-docs", "/retro"],
     team: [
-      { name: "卡比獸", file: "snorlax", problem: "PR 堆成山，Review 不完", move: "三層煞車" },
-      { name: "樹才怪", file: "sudowoodo", problem: "CI 全綠，不代表可以合併", move: "Deep Module" },
-      { name: "小拉達", file: "rattata", problem: "同樣的問題一再出現", move: "/retro" },
-      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 合併", move: "低風險試行" },
-      { name: "百變怪", file: "ditto", problem: "看起來對，但測試環境測不到", move: "Verifier agent" },
-      { name: "天然鳥", file: "xatu", problem: "Domain 知識沒寫下來", move: "grill-with-docs" },
+      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併", move: "低風險試行" },
+      { name: "百變怪", file: "ditto", problem: "敢不敢放手，要看測不測得到", move: "只放手測得到的" },
+      { name: "樹才怪", file: "sudowoodo", problem: "測試環境不完整，上線前才測得出來", move: "打好測試環境" },
+      { name: "天然鳥", file: "xatu", problem: "業務規則還有一部分沒寫下來", move: "grill-with-docs" },
+      { name: "小拉達", file: "rattata", problem: "自動驗證抓不到 Reviewer 會挑的問題", move: "/retro" },
     ],
   },
 ];
@@ -363,7 +362,7 @@ TRAINERS.forEach((tr, i) => {
   CUR = id;
   const next = tr.step + 1;
   const flag = `<img id="${id}-flag" src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
-<div id="${id}-tag" class="t outline" style="left:58px;top:110px;padding:0 3px;background:#2C3458">今天走到這裡</div>`;
+<div id="${id}-tag" class="t outline" style="left:58px;top:110px;padding:0 3px;line-height:14px;height:14px;background:#2C3458">今天走到這裡</div>`;
   scene(
     id,
     `<img class="bg" src="${P}/bg-hall.png" alt="" />
@@ -397,8 +396,9 @@ const JOJO_JS = (id, start) => `  tl.fromTo("#${id}-tint", { opacity: 0 }, { opa
   tl.fromTo("#${id}-arrow", { x: 1900 }, { x: 0, duration: 0.2, ease: "power2.out" }, ${start});`;
 const OPEN_DOOR = (x) =>
   `<div class="px" style="left:${x}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E"></div>`;
-const FLAG = `<img src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
-<div class="t outline" style="left:58px;top:110px;padding:0 3px;background:#2C3458">今天走到這裡</div>`;
+const FLAG = (id) => `<img src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
+<div class="px" style="left:58px;top:110px;width:78px;height:14px;background:#2C3458"></div>
+<div id="${id}-tag" class="t outline" style="left:61px;top:110px;line-height:14px">今天走到這裡</div>`;
 
 // ── 第 1 集結尾：下一位天王預告 ─────────────────────────────
 CUR = "tease1";
@@ -407,7 +407,7 @@ scene(
   `${NIGHT}
 <img id="tease1-sil" src="${P}/phoebe-silhouette.png" style="left:120px;top:14px;width:80px;height:80px" alt="" />
 ${BOX}
-${msg("tease1-m1", 1.0, 7.0, ['下一位天王：<span class="hl">芙蓉</span>', "守著 Step 3，帶著 6 隻寶可夢"])}
+${msg("tease1-m1", 1.0, 7.0, ['下一位天王：<span class="hl">芙蓉</span>', `守著 Step 3，帶著 ${TRAINERS[1].team.length} 隻寶可夢`])}
 <div id="tease1-fade" class="layer" style="background:#000"></div>`,
   JOJO("tease1-jojo", 3.6, 4.4),
   `  tl.fromTo("#tease1-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
@@ -422,7 +422,7 @@ scene(
   "recap2",
   `<img class="bg" src="${P}/bg-hall.png" alt="" />
 ${OPEN_DOOR(96)}
-${FLAG}
+${FLAG("recap2")}
 <div id="recap2-arrow" class="t" style="left:107px;top:2px;color:#F8D030;text-shadow:1px 1px #383838">▼</div>
 <div id="recap2-clawd" class="px" style="left:23px;top:100px;width:35px;height:27px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
 ${msg("recap2-m1", 0.4, 4.6, ['上一集：打贏花月，走到了 <span class="hl">Step 2</span>', '這次的目標：走到 <span class="hl">Step 3</span>'])}
@@ -438,7 +438,7 @@ scene(
   "tbc",
   `<img class="bg" src="${P}/bg-hall.png" alt="" />
 ${OPEN_DOOR(96)}
-${FLAG}
+${FLAG("tbc")}
 <div class="px" style="left:168px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#FFF4C0"></div>
 <div id="tbc-door-l" class="px" style="left:168px;top:38px;width:16px;height:61px;border-radius:16px 0 0 0;background:#8A4A22;box-shadow:inset -1px 0 0 #5A2A12;transform-origin:0 50%"></div>
 <div id="tbc-door-r" class="px" style="left:184px;top:38px;width:16px;height:61px;border-radius:0 16px 0 0;background:#8A4A22;box-shadow:inset 1px 0 0 #5A2A12;transform-origin:100% 50%"></div>

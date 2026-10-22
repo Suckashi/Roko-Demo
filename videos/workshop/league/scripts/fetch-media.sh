@@ -37,7 +37,6 @@ pokemon 79 slowpoke    # 呆呆獸
 pokemon 54 psyduck     # 可達鴨
 pokemon 51 dugtrio     # 三地鼠
 # 芙蓉：守 Step 3
-pokemon 143 snorlax    # 卡比獸
 pokemon 185 sudowoodo  # 樹才怪
 pokemon 19 rattata     # 小拉達
 pokemon 202 wobbuffet  # 果然翁
