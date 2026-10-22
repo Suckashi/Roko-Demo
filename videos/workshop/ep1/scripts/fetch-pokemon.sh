@@ -30,7 +30,7 @@ sheet 97 hypno     # 引夢貘人（Step 1）
 sheet 143 snorlax  # 卡比獸（Step 2）
 sheet 132 ditto    # 百變怪（Step 3）
 
-# 屬性：空（Step 4）只露剪影：保留透明度，顏色全部換成深藍灰
-curl -fsS --retry 3 -o "$TMP/772.png" "$BASE/772.png"
-ffmpeg -v error -y -i "$TMP/772.png" -vf "format=rgba,lutrgb=r=40:g=48:b=72" "$OUT/typenull-silhouette.png"
-echo "typenull-silhouette: 完成"
+# 烈空坐（Step 4，To be continued）只露剪影：保留透明度，顏色全部換成深藍灰
+curl -fsS --retry 3 -o "$TMP/384.png" "$BASE/384.png"
+ffmpeg -v error -y -i "$TMP/384.png" -vf "format=rgba,lutrgb=r=40:g=48:b=72" "$OUT/rayquaza-silhouette.png"
+echo "rayquaza-silhouette: 完成"

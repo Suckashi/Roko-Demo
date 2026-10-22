@@ -67,7 +67,7 @@
 
 ### Step 4：To be continued
 
-第三扇門打開一條縫，露出屬性：空的剪影，接著跳出「To be continued」。
+第三扇門打開一條縫，露出烈空坐的剪影，接著跳出「To be continued」。
 
 ## 流程
 
