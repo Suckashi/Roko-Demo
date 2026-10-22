@@ -19,7 +19,7 @@ const TRAINERS = [
     step: 2,
     moves: ["TDD 自我驗證", "多開 Session", "grill-with-docs", "Git Worktree"],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證", gag: "乾等" },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證", gag: "一直盯著看" },
       { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", move: "多開 Session", gag: "泡咖啡等它" },
       { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", move: "grill-with-docs" },
       { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", move: "Git Worktree" },
