@@ -19,13 +19,19 @@ const TRAINERS = [
     step: 2,
     intro: "一個人帶好幾個 Agent？先過我這關！",
     outro: "……好吧，Step 2 的門為你打開。",
-    moves: ["dev-workflow-tdd", "多開 Session", "grill-me", "Git Worktree"],
-    learned: [["dev-workflow-tdd", "整套流程走完"], ["多開 Session", "效率翻倍"], ["grill-me", "先問清楚"], ["Git Worktree", "各改各的"]],
+    moves: ["多開 Session", "Git Worktree", "Lint", "dev-workflow-tdd"],
+    learned: [["多開 Session", "效率翻倍"], ["Git Worktree", "各改各的"], ["dev-workflow-tdd", "整套流程走完"]],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "整套開發流程自動走完，人只在關鍵處審核", move: "dev-workflow-tdd", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
       { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", tip: "平行處理，效率翻倍", move: "多開 Session", gag: "泡咖啡等它" },
-      { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", tip: "讓 Agent 先追問，需求清楚再動手", move: "grill-me" },
       { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", tip: "每個 Agent 一份 worktree，互不干擾", move: "Git Worktree" },
+      {
+        name: "達克萊伊", file: "darkrai", problem: "盯著它，怕它做錯", scale: 0.8, // 圖比較高，縮小才不會超出畫面
+        tip: "整套流程自動走完，人只看驗證證據，徹底解放注意力", move: "dev-workflow-tdd",
+        gag: "一直盯著看",
+        counter: { move: "暗黑洞", fx: "dark", after: '<span class="hl">Clawd</span> 睡著了，還做起了惡夢…' },
+        // 單項檢查各打一點，最後用整套流程收尾
+        combo: ["Lint", "Build", "Test"],
+      },
     ],
   },
   {
@@ -53,7 +59,8 @@ const ROUND = T.sent + T.menu + T.attack + T.good + T.down;
 // 有 gag 的回合先誤用一招、效果不太好，再換對的招式
 const GAG = T.menu + T.gagAttack + T.bad;
 const COUNTER = T.hyp + T.sleep - T.bad; // 對手反擊（例如催眠術）取代「效果不太好」
-const roundLength = (p) => ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0);
+const COMBO = (n) => T.menu + n * (T.gagAttack + T.bad); // 連續單招：選一次招式，每招各打一點
+const roundLength = (p) => ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0) + (p.combo ? COMBO(p.combo.length) : 0);
 const INTRO = 4.2; // 對戰開場：天王撂話，小智喊「去吧！Clawd！」丟出精靈球
 const OUTRO = 2.8; // 對戰收場：天王認輸
 const battleLength = (t) => INTRO + t.team.reduce((sum, p) => sum + roundLength(p), 0) + OUTRO;
@@ -284,16 +291,21 @@ const pokeballJs = (id, at, from, to) => `  tl.fromTo("#${id}-b", { x: 0, rotati
 const FX_FROM = [FOE_X, 40];
 const FX_TO = [76, 93];
 const RINGS = 6;
-const hypnosisFx = (id, start, dur) => `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="${r(dur)}" style="position:absolute;inset:0">
-  <div id="${id}-tint" class="layer" style="background:#B058C8;opacity:0"></div>
-${Array.from({ length: RINGS }, (_, i) => `  <div id="${id}-r${i}" class="px" style="left:${FX_FROM[0] - 10}px;top:${FX_FROM[1] - 6}px;width:20px;height:12px;border-radius:50%;border:3px solid ${i % 2 ? "#F8A0E0" : "#C060D8"};opacity:0"></div>`).join("\n")}
+// 暗黑洞（dark）：黑紫色的漩渦，畫面變暗
+const FX_PALETTE = { hypnosis: ["#B058C8", "#F8A0E0", "#C060D8"], dark: ["#100818", "#583878", "#180C28"] };
+const hypnosisFx = (id, start, dur, kind = "hypnosis") => {
+  const [tint, a, b] = FX_PALETTE[kind];
+  return `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="${r(dur)}" style="position:absolute;inset:0">
+  <div id="${id}-tint" class="layer" style="background:${tint};opacity:0"></div>
+${Array.from({ length: RINGS }, (_, i) => `  <div id="${id}-r${i}" class="px" style="left:${FX_FROM[0] - 10}px;top:${FX_FROM[1] - 6}px;width:20px;height:12px;border-radius:50%;border:3px solid ${i % 2 ? a : b};opacity:0"></div>`).join("\n")}
 </div>`;
+};
 const hypnosisJs = (id, clawd, at) => {
   let js = Array.from({ length: RINGS }, (_, i) => {
     const t = r(at + 0.15 + i * 0.15);
     return `  tl.fromTo("#${id}-r${i}", { x: 0, y: 0, scale: 0.6, opacity: 1 }, { x: ${FX_TO[0] - FX_FROM[0]}, y: ${FX_TO[1] - FX_FROM[1]}, scale: 2.6, opacity: 0.2, duration: 0.6, ease: "steps(6)", immediateRender: false }, ${t});`;
   }).join("\n");
-  js += `\n  tl.fromTo("#${id}-tint", { opacity: 0 }, { opacity: 0.25, duration: 0.2, ease: "steps(2)", yoyo: true, repeat: 3, immediateRender: false }, ${r(at + 0.3)});`;
+  js += `\n  tl.fromTo("#${id}-tint", { opacity: 0 }, { opacity: 0.35, duration: 0.2, ease: "steps(2)", yoyo: true, repeat: 3, immediateRender: false }, ${r(at + 0.3)});`;
   js += `\n  tl.fromTo("${clawd}", { x: 0 }, { x: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, ${r(at + 0.7)});\n`;
   return js;
 };
@@ -429,7 +441,7 @@ TRAINERS.forEach((tr, ti) => {
     const top = FOE_FEET - sh.h;
     const fid = `${id}-p${pi}`;
     names.push(`<div id="${fid}-name" class="t gtx clip" data-start="${r(t0)}" data-duration="${len}" style="left:8px;top:2px">${p.name}</div>`);
-    foes += `<div id="${fid}" class="clip" data-start="${r(t0)}" data-duration="${len}" data-layout-allow-overflow style="position:absolute;left:${left}px;top:${top}px;width:${sh.w}px;height:${sh.h}px;overflow:hidden">
+    foes += `<div id="${fid}" class="clip" data-start="${r(t0)}" data-duration="${len}" data-layout-allow-overflow style="position:absolute;left:${left}px;top:${top}px;width:${sh.w}px;height:${sh.h}px;overflow:hidden${p.scale ? `;transform:scale(${p.scale});transform-origin:50% 100%` : ""}">
   <div id="${fid}-s" class="px" style="left:0;top:0;width:${sh.w}px;height:${sh.h}px;background:url('${P}/${p.file}-sheet.png') 0 0 / ${sh.w * sh.frames}px ${sh.h}px;transform-origin:50% 100%"></div>
 </div>
 ${pokeball(`${fid}-ball`, t0, [330, -10])}
@@ -459,7 +471,7 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
 `;
       audioCues.push([CUR, `sel-${menuId}`, "assets/sfx/select.wav", base + at + T.menu - 0.2, 0.1, 0.5]);
     };
-    const attack = (move, at, good) => {
+    const attack = (move, at, good, chip = false) => {
       m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? T.attack : T.gagAttack, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
       script += `  tl.fromTo("#${id}-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, ${r(at + 0.15)});
   tl.fromTo("#${id}-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, ${r(at + 0.25)});
@@ -473,20 +485,24 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
         // 特效打到之後，對手閃爍
         script += [0, 0.08, 0.16, 0.24].map((d, i) => `  tl.set("#${fid}-s", { opacity: ${i % 2} }, ${r(at + 0.95 + d)});`).join("\n") + "\n";
         audioCues.push([CUR, `hit-${fid}`, "assets/sfx/hit.wav", base + at + 0.95, 0.25, 0.6]);
+      } else if (chip) {
+        script += [0, 0.08].map((d, i) => `  tl.set("#${fid}-s", { opacity: ${i % 2} }, ${r(at + 0.4 + d)});`).join("\n") + "\n";
+        audioCues.push([CUR, `chip-${fid}-${Math.round(at * 10)}`, "assets/sfx/hit.wav", base + at + 0.4, 0.25, 0.4]);
       } else {
         audioCues.push([CUR, `bump-${fid}`, "assets/sfx/bump.wav", base + at + 0.3, 0.15, 0.5]);
       }
     };
-    const menu = menuFor(tr, p.move, gag);
+    const menu = p.combo ? [...p.combo, p.move] : menuFor(tr, p.move, gag);
+    let curW = 77; // 對手目前的血量條寬度
     if (gag) {
-      choose(gag, k, `${fid}-g1`, menu);
+      choose(gag, k, `${fid}-g1`, p.combo ? [...p.combo, gag] : menu);
       k += T.menu;
       attack(gag, k, false);
       k += T.gagAttack;
       if (p.counter) {
         // 對手反擊：催眠術的波紋從對手飄向 Clawd，Clawd 扣血、睡著
         m += msg(`${fid}-cm`, k, T.hyp, [`<span class="hl">${p.name}</span>使出了${p.counter.move}！`]);
-        foes += hypnosisFx(`${fid}-fx`, k, T.hyp);
+        foes += hypnosisFx(`${fid}-fx`, k, T.hyp, p.counter.fx);
         script += hypnosisJs(`${fid}-fx`, `#${id}-clawd`, k);
         script += `  tl.fromTo("#${id}-pbar", { width: 77 }, { width: 58, duration: 0.4, ease: "none", immediateRender: false }, ${r(k + 0.9)});
   tl.set("#${id}-hp-full", { opacity: 0 }, ${r(k + 1.1)});
@@ -500,8 +516,22 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
       } else {
         m += msg(`${fid}-bad`, k, T.bad, ["效果不太好…"]);
         script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
+        curW = 70;
         k += T.bad;
       }
+    }
+    if (p.combo) {
+      // 單項檢查一招一招打：每招只打掉一點血
+      choose(p.combo[0], k, `${fid}-c`, menu);
+      k += T.menu;
+      p.combo.forEach((mv, ci) => {
+        attack(mv, k, false, true);
+        k += T.gagAttack;
+        m += msg(`${fid}-chip${ci}`, k, T.bad, ["打中了，但還不夠…"]);
+        script += `  tl.fromTo("#${id}-bar", { width: ${curW} }, { width: ${curW - 15}, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.05)});\n`;
+        curW -= 15;
+        k += T.bad;
+      });
     }
     choose(p.move, k, `${fid}-m`, menu);
     k += T.menu;
@@ -511,10 +541,10 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
     script += `  tl.fromTo("#${id}-cam", { x: 0 }, { x: 3, duration: 0.05, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, ${r(k)});\n`;
     script += `  tl.set("#${id}-cam", { x: 0 }, ${r(k + 0.31)});\n`;
     audioCues.push([CUR, `crit-${fid}`, "assets/sfx/crit.wav", base + k, 0.35, 0.5]);
-    script += `  tl.fromTo("#${id}-bar", { width: ${gag && !p.counter ? 70 : 77}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
+    script += `  tl.fromTo("#${id}-bar", { width: ${curW}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
     k += T.good;
     // 倒下，並用一句白話說明這招為什麼有效
-    m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`, `<span class="tip">→ ${p.tip}</span>`]);
+    m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`, `<span class="tip">${p.tip}</span>`]);
     script += `  tl.fromTo("#${fid}-s", { y: 0 }, { y: ${sh.h}, duration: 0.3, ease: "power2.in", snap: "y" }, ${r(k + 0.05)});
   tl.fromTo("#${id}-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, ${r(t0 + len - 0.3)});
 `;
