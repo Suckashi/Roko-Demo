@@ -1,0 +1,58 @@
+<template>
+<style>
+  @font-face { font-family: "Fusion Pixel 12px Proportional TC"; src: url("assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2"); }
+  #root { position: absolute; inset: 0; background: #000; overflow: hidden; }
+  .stage { position: absolute; left: 0; top: 0; width: 320px; height: 180px; transform: scale(6); transform-origin: 0 0; overflow: hidden;
+    font-family: "Fusion Pixel 12px Proportional TC", sans-serif; font-size: 12px; line-height: 14px; color: #404040; }
+  .stage img, .stage .px { position: absolute; image-rendering: pixelated; }
+  .bg { left: 0; top: 0; width: 320px; height: 180px; }
+  .t { position: absolute; white-space: nowrap; }
+  .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
+  .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
+  .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
+  .msg { position: absolute; left: 10px; top: 137px; }
+  .line { display: block; width: max-content; white-space: nowrap; margin-bottom: 4px; }
+  .layer { position: absolute; inset: 0; }
+</style>
+<div id="root" data-composition-id="tbc" data-width="1920" data-height="1080">
+<div class="stage">
+<div class="layer" style="background:#5A6A90"></div>
+<div class="px" style="left:100px;top:10px;width:120px;height:120px;border-radius:50%;background:#7888B0"></div>
+<div class="px" style="left:116px;top:26px;width:88px;height:88px;border-radius:50%;background:#98A8C8"></div>
+<img id="tbc-ray" src="assets/pokemon/rayquaza-silhouette.png" style="left:112px;top:22px;width:96px;height:96px" alt="" />
+<div id="tbc-m1" class="msg clip" data-start="0.8" data-duration="4.2" style="left:118px;top:124px"><div class="line outline">Step 4・再往後</div></div>
+<div id="tbc-m2" class="clip" data-start="2" data-duration="3" style="position:absolute;left:92px;top:148px">
+  <div id="tbc-tbc" class="t" style="font-size:24px;line-height:26px;color:#F8D030;text-shadow:2px 0 #383838,-2px 0 #383838,0 2px #383838,0 -2px #383838">To be continued…</div>
+</div>
+</div>
+</div>
+<script>
+(function () {
+
+  const tl = gsap.timeline({ paused: true });
+  const $ = (s) => document.querySelector(s);
+  function playSheet(el, frames, fps, w, start, dur) {
+    const p = { t: 0 };
+    tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
+      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+  }
+  function type(line, start) {
+    const n = [...line.textContent].length;
+    const d = n * 0.035;
+    tl.fromTo(line, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: d, ease: "steps(" + n + ")" }, start);
+    return start + d;
+  }
+  function typeMsg(sel, start) {
+    let t = start;
+    document.querySelector(sel).querySelectorAll(".line").forEach((l) => { t = type(l, t) + 0.08; });
+  }
+
+  
+  typeMsg("#tbc-m1", 0.8);
+  tl.fromTo("#tbc-ray", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "steps(6)" }, 0.1);
+  tl.fromTo("#tbc-tbc", { x: 180 }, { x: 0, duration: 0.35, ease: "power3.out", snap: "x" }, 2.0);
+  window.__timelines["tbc"] = tl;
+})();
+</script>
+</template>

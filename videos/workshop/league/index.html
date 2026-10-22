@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+    </style>
+  </head>
+  <body>
+    <!-- 由 scripts/build-league.mjs 產生；要改劇情請改那支腳本裡的資料 -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="82" data-width="1920" data-height="1080">
+      <div id="oak" data-composition-id="oak" data-composition-src="compositions/oak.html" data-start="0" data-duration="6" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="lab" data-composition-id="lab" data-composition-src="compositions/lab.html" data-start="6" data-duration="6" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="hall" data-composition-id="hall" data-composition-src="compositions/hall.html" data-start="12" data-duration="5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="vs1" data-composition-id="vs1" data-composition-src="compositions/vs1.html" data-start="17" data-duration="3" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="bat1" data-composition-id="bat1" data-composition-src="compositions/bat1.html" data-start="20" data-duration="18" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="win1" data-composition-id="win1" data-composition-src="compositions/win1.html" data-start="38" data-duration="5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="vs2" data-composition-id="vs2" data-composition-src="compositions/vs2.html" data-start="43" data-duration="3" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="bat2" data-composition-id="bat2" data-composition-src="compositions/bat2.html" data-start="46" data-duration="26" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="win2" data-composition-id="win2" data-composition-src="compositions/win2.html" data-start="72" data-duration="5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="tbc" data-composition-id="tbc" data-composition-src="compositions/tbc.html" data-start="77" data-duration="5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <audio id="bgm-oak" src="assets/pokemon/bgm-oak.mp3" data-start="0" data-duration="17" data-volume="0.55" data-fade-out="1"></audio>
+      <audio id="bgm-keyitem" src="assets/pokemon/bgm-key-item.mp3" data-start="7.2" data-duration="3.4" data-volume="0.8"></audio>
+      <audio id="bgm-battle1" src="assets/pokemon/bgm-battle.mp3" data-start="17" data-duration="21" data-volume="0.5" data-fade-out="0.4"></audio>
+      <audio id="bgm-victory1" src="assets/pokemon/bgm-victory.mp3" data-start="38" data-duration="5" data-volume="0.55" data-fade-out="0.8"></audio>
+      <audio id="bgm-battle2" src="assets/pokemon/bgm-battle.mp3" data-start="43" data-duration="29" data-volume="0.5" data-fade-out="0.4"></audio>
+      <audio id="bgm-victory2" src="assets/pokemon/bgm-victory.mp3" data-start="72" data-duration="5" data-volume="0.55" data-fade-out="0.8"></audio>
+      <audio id="cry-bat1-p0" src="assets/pokemon/hypno-cry.mp3" data-start="20.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat1-p0-g1" src="assets/sfx/select.wav" data-start="21.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="bump-bat1-p0" src="assets/sfx/bump.wav" data-start="22.3" data-duration="0.15" data-volume="0.5"></audio>
+      <audio id="sel-bat1-p0-g2" src="assets/sfx/select.wav" data-start="23.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat1-p0" src="assets/sfx/hit.wav" data-start="24.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat1-p0" src="assets/sfx/faint.wav" data-start="25.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat1-p1" src="assets/pokemon/slowpoke-cry.mp3" data-start="26.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat1-p1-m" src="assets/sfx/select.wav" data-start="27.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat1-p1" src="assets/sfx/hit.wav" data-start="28.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat1-p1" src="assets/sfx/faint.wav" data-start="29.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat1-p2" src="assets/pokemon/psyduck-cry.mp3" data-start="30.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat1-p2-m" src="assets/sfx/select.wav" data-start="31.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat1-p2" src="assets/sfx/hit.wav" data-start="32.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat1-p2" src="assets/sfx/faint.wav" data-start="33.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat1-p3" src="assets/pokemon/dugtrio-cry.mp3" data-start="34.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat1-p3-m" src="assets/sfx/select.wav" data-start="35.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat1-p3" src="assets/sfx/hit.wav" data-start="36.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat1-p3" src="assets/sfx/faint.wav" data-start="37.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat2-p0" src="assets/pokemon/snorlax-cry.mp3" data-start="46.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat2-p0-g1" src="assets/sfx/select.wav" data-start="47.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="bump-bat2-p0" src="assets/sfx/bump.wav" data-start="48.3" data-duration="0.15" data-volume="0.5"></audio>
+      <audio id="sel-bat2-p0-g2" src="assets/sfx/select.wav" data-start="49.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat2-p0" src="assets/sfx/hit.wav" data-start="50.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat2-p0" src="assets/sfx/faint.wav" data-start="51.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat2-p1" src="assets/pokemon/sudowoodo-cry.mp3" data-start="52.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat2-p1-m" src="assets/sfx/select.wav" data-start="53.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat2-p1" src="assets/sfx/hit.wav" data-start="54.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat2-p1" src="assets/sfx/faint.wav" data-start="55.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat2-p2" src="assets/pokemon/rattata-cry.mp3" data-start="56.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat2-p2-m" src="assets/sfx/select.wav" data-start="57.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat2-p2" src="assets/sfx/hit.wav" data-start="58.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat2-p2" src="assets/sfx/faint.wav" data-start="59.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat2-p3" src="assets/pokemon/wobbuffet-cry.mp3" data-start="60.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat2-p3-m" src="assets/sfx/select.wav" data-start="61.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat2-p3" src="assets/sfx/hit.wav" data-start="62.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat2-p3" src="assets/sfx/faint.wav" data-start="63.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat2-p4" src="assets/pokemon/ditto-cry.mp3" data-start="64.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat2-p4-m" src="assets/sfx/select.wav" data-start="65.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat2-p4" src="assets/sfx/hit.wav" data-start="66.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat2-p4" src="assets/sfx/faint.wav" data-start="67.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="cry-bat2-p5" src="assets/pokemon/xatu-cry.mp3" data-start="68.1" data-duration="1.8" data-volume="0.7"></audio>
+      <audio id="sel-bat2-p5-m" src="assets/sfx/select.wav" data-start="69.85" data-duration="0.1" data-volume="0.5"></audio>
+      <audio id="hit-bat2-p5" src="assets/sfx/hit.wav" data-start="70.35" data-duration="0.25" data-volume="0.6"></audio>
+      <audio id="faint-bat2-p5" src="assets/sfx/faint.wav" data-start="71.45" data-duration="0.6" data-volume="0.5"></audio>
+      <audio id="open-win1" src="assets/sfx/bump.wav" data-start="40" data-duration="0.15" data-volume="0.6"></audio>
+      <audio id="open-win2" src="assets/sfx/bump.wav" data-start="74" data-duration="0.15" data-volume="0.6"></audio>
+      <audio id="boom" src="assets/sfx/boom.wav" data-start="77.1" data-duration="2.5" data-volume="0.9"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

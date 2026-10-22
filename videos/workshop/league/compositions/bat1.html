@@ -1,0 +1,206 @@
+<template>
+<style>
+  @font-face { font-family: "Fusion Pixel 12px Proportional TC"; src: url("assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2"); }
+  #root { position: absolute; inset: 0; background: #000; overflow: hidden; }
+  .stage { position: absolute; left: 0; top: 0; width: 320px; height: 180px; transform: scale(6); transform-origin: 0 0; overflow: hidden;
+    font-family: "Fusion Pixel 12px Proportional TC", sans-serif; font-size: 12px; line-height: 14px; color: #404040; }
+  .stage img, .stage .px { position: absolute; image-rendering: pixelated; }
+  .bg { left: 0; top: 0; width: 320px; height: 180px; }
+  .t { position: absolute; white-space: nowrap; }
+  .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
+  .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
+  .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
+  .msg { position: absolute; left: 10px; top: 137px; }
+  .line { display: block; width: max-content; white-space: nowrap; margin-bottom: 4px; }
+  .layer { position: absolute; inset: 0; }
+
+  .hpbox { position: absolute; background: #404848; clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 1px, calc(100% - 1px) 1px, calc(100% - 1px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 1px) calc(100% - 2px), calc(100% - 1px) calc(100% - 1px), calc(100% - 2px) calc(100% - 1px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 1px), 1px calc(100% - 1px), 1px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 1px 2px, 1px 1px, 2px 1px); }
+  .hpbox .in { position: absolute; left: 2px; top: 2px; right: 2px; bottom: 2px; background: #F8F8D8; box-shadow: inset 0 -2px 0 #E0E0B8; }
+  .cap { position: absolute; height: 12px; background: #505858; }
+  .cap .lab { position: absolute; left: 3px; top: 0; line-height: 12px; color: #F8C040; }
+  .cap .trk { position: absolute; left: 19px; right: 2px; top: 3px; height: 6px; background: #F8F8F8; }
+  .cap .trk i { position: absolute; left: 1px; top: 1px; bottom: 1px; display: block; background: #58D080; }
+</style>
+<div id="root" data-composition-id="bat1" data-width="1920" data-height="1080">
+<div class="stage">
+<img class="bg" src="assets/pokemon/bg-battle.png" alt="" />
+<img src="assets/sprites/base-foe.svg" style="left:194px;top:53px;width:112px;height:22px" alt="" />
+<img src="assets/sprites/base-player.svg" style="left:6px;top:108px;width:140px;height:26px" alt="" />
+<div id="bat1-clawd" class="px" style="left:41px;top:66px;width:70px;height:54px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 140px 54px"></div>
+<div id="bat1-php" class="hpbox" style="left:168px;top:77px;width:148px;height:51px">
+  <div class="in"></div>
+  <div class="t gtx" style="left:8px;top:2px">Clawd</div><div class="t gtx" style="right:9px;top:2px">Lv.1</div>
+  <div class="cap" style="left:40px;top:17px;width:100px"><div class="lab">HP</div><div class="trk"><i style="width:77px"></i></div></div>
+  <div class="t gtx" style="right:9px;top:28px">20/20</div>
+</div>
+<div id="bat1-fhp" class="hpbox" style="left:6px;top:5px;width:150px;height:33px">
+  <div class="in"></div>
+  <div class="t gtx" style="right:9px;top:2px">Lv.2</div>
+  <div class="cap" style="left:42px;top:17px;width:100px"><div class="lab">HP</div><div class="trk"><i id="bat1-bar" style="width:77px"></i></div></div>
+<div id="bat1-p0-name" class="t gtx clip" data-start="0" data-duration="6" style="left:8px;top:2px">引夢貘人</div>
+<div id="bat1-p1-name" class="t gtx clip" data-start="6" data-duration="4" style="left:8px;top:2px">呆呆獸</div>
+<div id="bat1-p2-name" class="t gtx clip" data-start="10" data-duration="4" style="left:8px;top:2px">可達鴨</div>
+<div id="bat1-p3-name" class="t gtx clip" data-start="14" data-duration="4" style="left:8px;top:2px">三地鼠</div>
+</div>
+<div id="bat1-p0" class="clip" data-start="0" data-duration="6" data-layout-allow-overflow style="position:absolute;left:217px;top:5px;width:67px;height:62px;overflow:hidden">
+  <div id="bat1-p0-s" class="px" style="left:0;top:0;width:67px;height:62px;background:url('assets/pokemon/hypno-sheet.png') 0 0 / 4288px 62px;transform-origin:50% 100%"></div>
+</div>
+<div id="bat1-p0-burst" class="clip" data-start="0" data-duration="0.4" style="position:absolute;left:230px;top:27px;width:40px;height:40px">
+  <div class="px" style="left:0;top:0;width:40px;height:40px;border-radius:50%;background:#fff"></div>
+</div>
+<div id="bat1-p1" class="clip" data-start="6" data-duration="4" data-layout-allow-overflow style="position:absolute;left:218px;top:13px;width:65px;height:54px;overflow:hidden">
+  <div id="bat1-p1-s" class="px" style="left:0;top:0;width:65px;height:54px;background:url('assets/pokemon/slowpoke-sheet.png') 0 0 / 3055px 54px;transform-origin:50% 100%"></div>
+</div>
+<div id="bat1-p1-burst" class="clip" data-start="6" data-duration="0.4" style="position:absolute;left:230px;top:27px;width:40px;height:40px">
+  <div class="px" style="left:0;top:0;width:40px;height:40px;border-radius:50%;background:#fff"></div>
+</div>
+<div id="bat1-p2" class="clip" data-start="10" data-duration="4" data-layout-allow-overflow style="position:absolute;left:231px;top:21px;width:39px;height:46px;overflow:hidden">
+  <div id="bat1-p2-s" class="px" style="left:0;top:0;width:39px;height:46px;background:url('assets/pokemon/psyduck-sheet.png') 0 0 / 2106px 46px;transform-origin:50% 100%"></div>
+</div>
+<div id="bat1-p2-burst" class="clip" data-start="10" data-duration="0.4" style="position:absolute;left:230px;top:27px;width:40px;height:40px">
+  <div class="px" style="left:0;top:0;width:40px;height:40px;border-radius:50%;background:#fff"></div>
+</div>
+<div id="bat1-p3" class="clip" data-start="14" data-duration="4" data-layout-allow-overflow style="position:absolute;left:224px;top:25px;width:52px;height:42px;overflow:hidden">
+  <div id="bat1-p3-s" class="px" style="left:0;top:0;width:52px;height:42px;background:url('assets/pokemon/dugtrio-sheet.png') 0 0 / 2236px 42px;transform-origin:50% 100%"></div>
+</div>
+<div id="bat1-p3-burst" class="clip" data-start="14" data-duration="0.4" style="position:absolute;left:230px;top:27px;width:40px;height:40px">
+  <div class="px" style="left:0;top:0;width:40px;height:40px;border-radius:50%;background:#fff"></div>
+</div>
+<div id="bat1-p0-g1" class="clip" data-start="1.4" data-duration="0.6" style="position:absolute;inset:0">
+  <div class="t gtx" style="left:18px;top:136px">自我驗證</div><div class="t gtx" style="left:112px;top:136px">多開 Session</div><div class="t gtx" style="left:18px;top:154px">連環追問</div><div class="t gtx" style="left:112px;top:154px">乾等</div>
+  <div class="t gtx" style="left:102px;top:154px">▶</div>
+  <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
+  <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
+</div>
+<div id="bat1-p0-g2" class="clip" data-start="3.4" data-duration="0.6" style="position:absolute;inset:0">
+  <div class="t gtx" style="left:18px;top:136px">自我驗證</div><div class="t gtx" style="left:112px;top:136px">多開 Session</div><div class="t gtx" style="left:18px;top:154px">連環追問</div><div class="t gtx" style="left:112px;top:154px">乾等</div>
+  <div class="t gtx" style="left:8px;top:136px">▶</div>
+  <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
+  <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
+</div>
+<div id="bat1-p0-a" class="msg clip" data-start="0" data-duration="1.4"><div class="line gtx">花月派出了<span class="hl">引夢貘人</span>！</div><div class="line gtx"><span class="stuck">卡在：盯著它，怕它做錯</span></div></div><div id="bat1-p0-u20" class="msg clip" data-start="2" data-duration="0.7"><div class="line gtx"><span class="hl">Clawd</span> 使出了 乾等！</div></div><div id="bat1-p0-bad" class="msg clip" data-start="2.7" data-duration="0.7"><div class="line gtx">效果不太好…</div></div><div id="bat1-p0-u40" class="msg clip" data-start="4" data-duration="0.7"><div class="line gtx"><span class="hl">Clawd</span> 使出了 自我驗證！</div></div><div id="bat1-p0-good" class="msg clip" data-start="4.7" data-duration="0.7"><div class="line gtx">效果絕佳！</div></div><div id="bat1-p0-down" class="msg clip" data-start="5.4" data-duration="0.6"><div class="line gtx"><span class="hl">引夢貘人</span>倒下了！</div></div><div id="bat1-p1-m" class="clip" data-start="7.4" data-duration="0.6" style="position:absolute;inset:0">
+  <div class="t gtx" style="left:18px;top:136px">自我驗證</div><div class="t gtx" style="left:112px;top:136px">多開 Session</div><div class="t gtx" style="left:18px;top:154px">連環追問</div><div class="t gtx" style="left:112px;top:154px">Worktree 分身</div>
+  <div class="t gtx" style="left:102px;top:136px">▶</div>
+  <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
+  <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
+</div>
+<div id="bat1-p1-a" class="msg clip" data-start="6" data-duration="1.4"><div class="line gtx">花月派出了<span class="hl">呆呆獸</span>！</div><div class="line gtx"><span class="stuck">卡在：等它跑完，順便泡咖啡</span></div></div><div id="bat1-p1-u80" class="msg clip" data-start="8" data-duration="0.7"><div class="line gtx"><span class="hl">Clawd</span> 使出了 多開 Session！</div></div><div id="bat1-p1-good" class="msg clip" data-start="8.7" data-duration="0.7"><div class="line gtx">效果絕佳！</div></div><div id="bat1-p1-down" class="msg clip" data-start="9.4" data-duration="0.6"><div class="line gtx"><span class="hl">呆呆獸</span>倒下了！</div></div><div id="bat1-p2-m" class="clip" data-start="11.4" data-duration="0.6" style="position:absolute;inset:0">
+  <div class="t gtx" style="left:18px;top:136px">自我驗證</div><div class="t gtx" style="left:112px;top:136px">多開 Session</div><div class="t gtx" style="left:18px;top:154px">連環追問</div><div class="t gtx" style="left:112px;top:154px">Worktree 分身</div>
+  <div class="t gtx" style="left:8px;top:154px">▶</div>
+  <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
+  <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
+</div>
+<div id="bat1-p2-a" class="msg clip" data-start="10" data-duration="1.4"><div class="line gtx">花月派出了<span class="hl">可達鴨</span>！</div><div class="line gtx"><span class="stuck">卡在：需求講不清楚，它會做歪</span></div></div><div id="bat1-p2-u120" class="msg clip" data-start="12" data-duration="0.7"><div class="line gtx"><span class="hl">Clawd</span> 使出了 連環追問！</div></div><div id="bat1-p2-good" class="msg clip" data-start="12.7" data-duration="0.7"><div class="line gtx">效果絕佳！</div></div><div id="bat1-p2-down" class="msg clip" data-start="13.4" data-duration="0.6"><div class="line gtx"><span class="hl">可達鴨</span>倒下了！</div></div><div id="bat1-p3-m" class="clip" data-start="15.4" data-duration="0.6" style="position:absolute;inset:0">
+  <div class="t gtx" style="left:18px;top:136px">自我驗證</div><div class="t gtx" style="left:112px;top:136px">多開 Session</div><div class="t gtx" style="left:18px;top:154px">連環追問</div><div class="t gtx" style="left:112px;top:154px">Worktree 分身</div>
+  <div class="t gtx" style="left:102px;top:154px">▶</div>
+  <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
+  <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
+</div>
+<div id="bat1-p3-a" class="msg clip" data-start="14" data-duration="1.4"><div class="line gtx">花月派出了<span class="hl">三地鼠</span>！</div><div class="line gtx"><span class="stuck">卡在：同時改同一份 code，會打架</span></div></div><div id="bat1-p3-u160" class="msg clip" data-start="16" data-duration="0.7"><div class="line gtx"><span class="hl">Clawd</span> 使出了 Worktree 分身！</div></div><div id="bat1-p3-good" class="msg clip" data-start="16.7" data-duration="0.7"><div class="line gtx">效果絕佳！</div></div><div id="bat1-p3-down" class="msg clip" data-start="17.4" data-duration="0.6"><div class="line gtx"><span class="hl">三地鼠</span>倒下了！</div></div>
+</div>
+</div>
+<script>
+(function () {
+
+  const tl = gsap.timeline({ paused: true });
+  const $ = (s) => document.querySelector(s);
+  function playSheet(el, frames, fps, w, start, dur) {
+    const p = { t: 0 };
+    tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
+      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+  }
+  function type(line, start) {
+    const n = [...line.textContent].length;
+    const d = n * 0.035;
+    tl.fromTo(line, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: d, ease: "steps(" + n + ")" }, start);
+    return start + d;
+  }
+  function typeMsg(sel, start) {
+    let t = start;
+    document.querySelector(sel).querySelectorAll(".line").forEach((l) => { t = type(l, t) + 0.08; });
+  }
+
+  typeMsg("#bat1-p0-a", 0);
+  typeMsg("#bat1-p0-u20", 2);
+  typeMsg("#bat1-p0-bad", 2.7);
+  typeMsg("#bat1-p0-u40", 4);
+  typeMsg("#bat1-p0-good", 4.7);
+  typeMsg("#bat1-p0-down", 5.4);
+  typeMsg("#bat1-p1-a", 6);
+  typeMsg("#bat1-p1-u80", 8);
+  typeMsg("#bat1-p1-good", 8.7);
+  typeMsg("#bat1-p1-down", 9.4);
+  typeMsg("#bat1-p2-a", 10);
+  typeMsg("#bat1-p2-u120", 12);
+  typeMsg("#bat1-p2-good", 12.7);
+  typeMsg("#bat1-p2-down", 13.4);
+  typeMsg("#bat1-p3-a", 14);
+  typeMsg("#bat1-p3-u160", 16);
+  typeMsg("#bat1-p3-good", 16.7);
+  typeMsg("#bat1-p3-down", 17.4);
+  playSheet($("#bat1-clawd"), 2, 2.5, 70, 0, 18);
+  playSheet($("#bat1-p0-s"), 64, 10, 67, 0, 6);
+  tl.fromTo("#bat1-p0-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, 0.05);
+  tl.fromTo("#bat1-p0-burst .px", { scale: 0.2, opacity: 1 }, { scale: 1.5, opacity: 0, duration: 0.35, ease: "power2.out" }, 0);
+  tl.fromTo("#bat1-fhp", { x: -160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x", immediateRender: true }, 0.1);
+  tl.fromTo("#bat1-bar", { width: 77, backgroundColor: "#58D080" }, { width: 77, duration: 0.01, immediateRender: true }, 0);
+  tl.fromTo("#bat1-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, 2.15);
+  tl.fromTo("#bat1-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, 2.25);
+  tl.fromTo("#bat1-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, 2.8);
+  tl.fromTo("#bat1-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, 4.15);
+  tl.fromTo("#bat1-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, 4.25);
+  tl.set("#bat1-p0-s", { opacity: 0 }, 4.35);
+  tl.set("#bat1-p0-s", { opacity: 1 }, 4.43);
+  tl.set("#bat1-p0-s", { opacity: 0 }, 4.51);
+  tl.set("#bat1-p0-s", { opacity: 1 }, 4.59);
+  tl.fromTo("#bat1-bar", { width: 70, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, 4.75);
+  tl.fromTo("#bat1-p0-s", { y: 0 }, { y: 62, duration: 0.3, ease: "power2.in", snap: "y" }, 5.45);
+  tl.fromTo("#bat1-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, 5.7);
+  playSheet($("#bat1-p1-s"), 47, 10, 65, 6, 4);
+  tl.fromTo("#bat1-p1-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, 6.05);
+  tl.fromTo("#bat1-p1-burst .px", { scale: 0.2, opacity: 1 }, { scale: 1.5, opacity: 0, duration: 0.35, ease: "power2.out" }, 6);
+  tl.fromTo("#bat1-fhp", { x: -160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x", immediateRender: false }, 6.1);
+  tl.fromTo("#bat1-bar", { width: 77, backgroundColor: "#58D080" }, { width: 77, duration: 0.01, immediateRender: false }, 6);
+  tl.fromTo("#bat1-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, 8.15);
+  tl.fromTo("#bat1-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, 8.25);
+  tl.set("#bat1-p1-s", { opacity: 0 }, 8.35);
+  tl.set("#bat1-p1-s", { opacity: 1 }, 8.43);
+  tl.set("#bat1-p1-s", { opacity: 0 }, 8.51);
+  tl.set("#bat1-p1-s", { opacity: 1 }, 8.59);
+  tl.fromTo("#bat1-bar", { width: 77, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, 8.75);
+  tl.fromTo("#bat1-p1-s", { y: 0 }, { y: 54, duration: 0.3, ease: "power2.in", snap: "y" }, 9.45);
+  tl.fromTo("#bat1-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, 9.7);
+  playSheet($("#bat1-p2-s"), 54, 10, 39, 10, 4);
+  tl.fromTo("#bat1-p2-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, 10.05);
+  tl.fromTo("#bat1-p2-burst .px", { scale: 0.2, opacity: 1 }, { scale: 1.5, opacity: 0, duration: 0.35, ease: "power2.out" }, 10);
+  tl.fromTo("#bat1-fhp", { x: -160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x", immediateRender: false }, 10.1);
+  tl.fromTo("#bat1-bar", { width: 77, backgroundColor: "#58D080" }, { width: 77, duration: 0.01, immediateRender: false }, 10);
+  tl.fromTo("#bat1-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, 12.15);
+  tl.fromTo("#bat1-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, 12.25);
+  tl.set("#bat1-p2-s", { opacity: 0 }, 12.35);
+  tl.set("#bat1-p2-s", { opacity: 1 }, 12.43);
+  tl.set("#bat1-p2-s", { opacity: 0 }, 12.51);
+  tl.set("#bat1-p2-s", { opacity: 1 }, 12.59);
+  tl.fromTo("#bat1-bar", { width: 77, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, 12.75);
+  tl.fromTo("#bat1-p2-s", { y: 0 }, { y: 46, duration: 0.3, ease: "power2.in", snap: "y" }, 13.45);
+  tl.fromTo("#bat1-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, 13.7);
+  playSheet($("#bat1-p3-s"), 43, 10, 52, 14, 4);
+  tl.fromTo("#bat1-p3-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, 14.05);
+  tl.fromTo("#bat1-p3-burst .px", { scale: 0.2, opacity: 1 }, { scale: 1.5, opacity: 0, duration: 0.35, ease: "power2.out" }, 14);
+  tl.fromTo("#bat1-fhp", { x: -160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x", immediateRender: false }, 14.1);
+  tl.fromTo("#bat1-bar", { width: 77, backgroundColor: "#58D080" }, { width: 77, duration: 0.01, immediateRender: false }, 14);
+  tl.fromTo("#bat1-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, 16.15);
+  tl.fromTo("#bat1-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, 16.25);
+  tl.set("#bat1-p3-s", { opacity: 0 }, 16.35);
+  tl.set("#bat1-p3-s", { opacity: 1 }, 16.43);
+  tl.set("#bat1-p3-s", { opacity: 0 }, 16.51);
+  tl.set("#bat1-p3-s", { opacity: 1 }, 16.59);
+  tl.fromTo("#bat1-bar", { width: 77, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, 16.75);
+  tl.fromTo("#bat1-p3-s", { y: 0 }, { y: 42, duration: 0.3, ease: "power2.in", snap: "y" }, 17.45);
+  tl.fromTo("#bat1-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, 17.7);
+
+  window.__timelines["bat1"] = tl;
+})();
+</script>
+</template>
