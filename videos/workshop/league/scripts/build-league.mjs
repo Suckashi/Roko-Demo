@@ -18,12 +18,12 @@ const TRAINERS = [
     sprite: "trainer-sidney-gen3.png",
     step: 2,
     gag: "乾等",
-    moves: ["自我驗證", "多開 Session", "連環追問", "Worktree 分身"],
+    moves: ["TDD 自我驗證", "多開 Session", "grill-with-docs", "Git Worktree"],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "自我驗證" },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證" },
       { name: "呆呆獸", file: "slowpoke", problem: "等它跑完，順便泡咖啡", move: "多開 Session" },
-      { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", move: "連環追問" },
-      { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", move: "Worktree 分身" },
+      { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", move: "grill-with-docs" },
+      { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", move: "Git Worktree" },
     ],
   },
   {
@@ -32,20 +32,20 @@ const TRAINERS = [
     sprite: "trainer-phoebe-gen3.png",
     step: 3,
     gag: "全部逐行看",
-    moves: ["三層煞車", "只從介面測", "寫進規範", "低風險試行", "Verifier 實測", "寫進 GLOSSARY"],
+    moves: ["三層煞車", "Deep Module", "/retro", "低風險試行", "Verifier agent", "grill-with-docs"],
     team: [
       { name: "卡比獸", file: "snorlax", problem: "PR 堆成山，Review 不完", move: "三層煞車" },
-      { name: "樹才怪", file: "sudowoodo", problem: "CI 全綠，不代表可以合併", move: "只從介面測" },
-      { name: "小拉達", file: "rattata", problem: "同樣的問題一再出現", move: "寫進規範" },
+      { name: "樹才怪", file: "sudowoodo", problem: "CI 全綠，不代表可以合併", move: "Deep Module" },
+      { name: "小拉達", file: "rattata", problem: "同樣的問題一再出現", move: "/retro" },
       { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 合併", move: "低風險試行" },
-      { name: "百變怪", file: "ditto", problem: "看起來對，但測試環境測不到", move: "Verifier 實測" },
-      { name: "天然鳥", file: "xatu", problem: "Domain 知識沒寫下來", move: "寫進 GLOSSARY" },
+      { name: "百變怪", file: "ditto", problem: "看起來對，但測試環境測不到", move: "Verifier agent" },
+      { name: "天然鳥", file: "xatu", problem: "Domain 知識沒寫下來", move: "grill-with-docs" },
     ],
   },
 ];
 
-// 每場 4 秒；每位天王第一場先選錯招，多 2 秒
-const ROUND = 4;
+// 每場 5 秒；每位天王第一場先選錯招，多 2 秒
+const ROUND = 5;
 const GAG = 2;
 const battleLength = (t) => t.team.length * ROUND + GAG;
 
@@ -274,7 +274,7 @@ TRAINERS.forEach((tr, ti) => {
     // 登場
     body += ""; // (血條框內容在下方組合)
     let k = t0;
-    const sent = msg(`${fid}-a`, k, 1.4, [`${tr.name}派出了<span class="hl">${p.name}</span>！`, `<span class="stuck">卡在：${p.problem}</span>`]);
+    const sent = msg(`${fid}-a`, k, 2.0, [`${tr.name}派出了<span class="hl">${p.name}</span>！`, `<span class="stuck">卡在：${p.problem}</span>`]);
     script += `  playSheet($("#${fid}-s"), ${sh.frames}, ${sh.fps}, ${sh.w}, ${r(t0)}, ${len});
   tl.fromTo("#${fid}-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, ${r(t0 + 0.05)});
   tl.fromTo("#${fid}-burst .px", { scale: 0.2, opacity: 1 }, { scale: 1.5, opacity: 0, duration: 0.35, ease: "power2.out" }, ${r(t0)});
@@ -283,7 +283,7 @@ TRAINERS.forEach((tr, ti) => {
 `;
     audioCues.push([`cry-${fid}`, `${P}/${p.file}-cry.mp3`, base + t0 + 0.1, 1.8, 0.7]);
     let m = sent;
-    k += 1.4;
+    k += 2.0;
     const choose = (cursorMove, at, menuId, list) => {
       const idx = list.indexOf(cursorMove);
       menus += `<div id="${menuId}" class="clip" data-start="${r(at)}" data-duration="0.6" style="position:absolute;inset:0">
@@ -296,7 +296,7 @@ TRAINERS.forEach((tr, ti) => {
       audioCues.push([`sel-${menuId}`, "assets/sfx/select.wav", base + at + 0.45, 0.1, 0.5]);
     };
     const attack = (move, at, good) => {
-      m += msg(`${fid}-u${Math.round(at * 10)}`, at, 0.7, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
+      m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? 0.9 : 0.7, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
       script += `  tl.fromTo("#${id}-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, ${r(at + 0.15)});
   tl.fromTo("#${id}-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, ${r(at + 0.25)});
 `;
@@ -323,10 +323,10 @@ TRAINERS.forEach((tr, ti) => {
       k += 0.6;
     }
     attack(p.move, k, true);
-    k += 0.7;
-    m += msg(`${fid}-good`, k, 0.7, ["效果絕佳！"]);
+    k += 0.9;
+    m += msg(`${fid}-good`, k, 0.8, ["效果絕佳！"]);
     script += `  tl.fromTo("#${id}-bar", { width: ${gag ? 70 : 77}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
-    k += 0.7;
+    k += 0.8;
     m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`]);
     script += `  tl.fromTo("#${fid}-s", { y: 0 }, { y: ${sh.h}, duration: 0.3, ease: "power2.in", snap: "y" }, ${r(k + 0.05)});
   tl.fromTo("#${id}-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, ${r(t0 + len - 0.3)});
