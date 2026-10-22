@@ -12,7 +12,9 @@
 ```bash
 bash scripts/fetch-media.sh          # PokeAPI 圖、Showdown 訓練家圖與叫聲、archive.org《火紅／葉綠》配樂
 node scripts/build-sprites.mjs       # Clawd 等像素圖與精靈球
-# JoJo「To Be Continued」箭頭：由使用者提供的綠幕影片去背，放在 assets/pokemon/jojo-arrow.png（不進 git）
+# JoJo「To Be Continued」箭頭與配樂：
+# ffmpeg -i <綠幕影片> -vn -c:a libmp3lame -q:a 2 assets/pokemon/jojo-roundabout.mp3
+# 箭頭：由使用者提供的綠幕影片去背，放在 assets/pokemon/jojo-arrow.png（不進 git）
 # ffmpeg -ss 6 -i <綠幕影片> -frames:v 1 -vf "colorkey=0x00FF00:0.35:0.08,despill=type=green,format=rgba,crop=670:158:38:524" assets/pokemon/jojo-arrow.png
 node scripts/bake-backgrounds.mjs <playwright-core 所在資料夾>   # 用 design/ 的風格圖烤出背景
 node scripts/build-league.mjs        # 產生 compositions/ 與 parts/ep1、parts/ep2

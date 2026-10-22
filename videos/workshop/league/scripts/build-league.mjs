@@ -51,8 +51,8 @@ const battleLength = (t) => t.team.length * ROUND + GAG;
 
 // 兩集的場景順序與長度（秒）；每集的時間從 0 開始
 const PARTS = {
-  ep1: [["oak", 6], ["lab", 6.5], ["hall", 5.5], ["vs1", 3.5], ["bat1", battleLength(TRAINERS[0])], ["win1", 6], ["tease1", 7]],
-  ep2: [["recap2", 5], ["vs2", 3.5], ["bat2", battleLength(TRAINERS[1])], ["win2", 6], ["tbc", 9]],
+  ep1: [["oak", 6], ["lab", 6.5], ["hall", 5.5], ["vs1", 3.5], ["bat1", battleLength(TRAINERS[0])], ["win1", 6], ["tease1", 8]],
+  ep2: [["recap2", 5], ["vs2", 3.5], ["bat2", battleLength(TRAINERS[1])], ["win2", 6], ["tbc", 10]],
 };
 const AT = {};
 const PART_OF = {};
@@ -394,7 +394,7 @@ const JOJO = (id, start, dur) => `<div id="${id}" class="clip" data-start="${sta
   <img id="${id}-arrow" src="${P}/jojo-arrow.png" style="position:absolute;left:60px;top:572px;width:838px;height:198px" alt="" />
 </div>`;
 const JOJO_JS = (id, start) => `  tl.fromTo("#${id}-tint", { opacity: 0 }, { opacity: 0.7, duration: 0.15, ease: "power1.out" }, ${start});
-  tl.fromTo("#${id}-arrow", { x: 1900 }, { x: 0, duration: 0.45, ease: "power3.out" }, ${start});`;
+  tl.fromTo("#${id}-arrow", { x: 1900 }, { x: 0, duration: 0.2, ease: "power2.out" }, ${start});`;
 const OPEN_DOOR = (x) =>
   `<div class="px" style="left:${x}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E"></div>`;
 const FLAG = `<img src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
@@ -407,9 +407,9 @@ scene(
   `${NIGHT}
 <img id="tease1-sil" src="${P}/phoebe-silhouette.png" style="left:120px;top:14px;width:80px;height:80px" alt="" />
 ${BOX}
-${msg("tease1-m1", 1.0, 6.0, ['下一位天王：<span class="hl">芙蓉</span>', "守著 Step 3，帶著 6 隻寶可夢"])}
+${msg("tease1-m1", 1.0, 7.0, ['下一位天王：<span class="hl">芙蓉</span>', "守著 Step 3，帶著 6 隻寶可夢"])}
 <div id="tease1-fade" class="layer" style="background:#000"></div>`,
-  JOJO("tease1-jojo", 3.6, 3.4),
+  JOJO("tease1-jojo", 3.6, 4.4),
   `  tl.fromTo("#tease1-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
   tl.fromTo("#tease1-sil", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "steps(6)" }, 0.2);
 ${JOJO_JS("tease1-jojo", 3.6)}`,
@@ -444,14 +444,14 @@ ${FLAG}
 <div id="tbc-door-r" class="px" style="left:184px;top:38px;width:16px;height:61px;border-radius:0 16px 0 0;background:#8A4A22;box-shadow:inset 1px 0 0 #5A2A12;transform-origin:100% 50%"></div>
 ${msg("tbc-m0", 0.2, 1.4, ['<span class="hl">Step 4</span> 的門……打開了？'])}
 <div id="tbc-glow" class="layer" style="background:#FFF4C0"></div>
-<div id="tbc-sky" class="clip" data-start="1.8" data-duration="7.2" style="position:absolute;inset:0">
+<div id="tbc-sky" class="clip" data-start="1.8" data-duration="8.2" style="position:absolute;inset:0">
   ${NIGHT}
   <img id="tbc-ray" src="${P}/rayquaza-silhouette.png" style="left:112px;top:20px;width:96px;height:96px" alt="" />
   <div id="tbc-flash" class="layer" style="background:#F0F4FF"></div>
-  <div id="tbc-box" class="clip" data-start="3.2" data-duration="5.8" style="position:absolute;inset:0">${BOX}</div>
+  <div id="tbc-box" class="clip" data-start="3.2" data-duration="6.8" style="position:absolute;inset:0">${BOX}</div>
 </div>
-${msg("tbc-m1", 3.3, 5.7, ['<span class="hl">Step 4</span>・再往後', "人用意圖決定方向"])}`,
-  JOJO("tbc-jojo", 5.8, 3.2),
+${msg("tbc-m1", 3.3, 6.7, ['<span class="hl">Step 4</span>・再往後', "人用意圖決定方向"])}`,
+  JOJO("tbc-jojo", 5.8, 4.2),
   `  tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
@@ -465,7 +465,7 @@ ${JOJO_JS("tbc-jojo", 5.8)}`,
 audioCues.push([CUR, "tbc-door", "assets/sfx/bump.wav", AT.tbc.start + 0.4, 0.15, 0.6]);
 audioCues.push([CUR, "tbc-thunder1", "assets/sfx/thunder.wav", AT.tbc.start + 1.8, 2.2, 0.9]);
 audioCues.push([CUR, "tbc-boom", "assets/sfx/boom.wav", AT.tbc.start + 1.9, 2.5, 0.9]);
-audioCues.push([CUR, "tbc-thunder2", "assets/sfx/thunder.wav", AT.tbc.start + 4.4, 2.2, 0.8]);
+audioCues.push([CUR, "tbc-thunder2", "assets/sfx/thunder.wav", AT.tbc.start + 4.4, 2.2, 0.45]);
 
 // ── 配樂（每集各自的時間）──────────────────────────────────
 const MUSIC = {
@@ -474,11 +474,13 @@ const MUSIC = {
     ["bgm-keyitem", `${P}/bgm-key-item.mp3`, AT.lab.start + 1.2, 3.4, 0.8, 0],
     ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs1.start, AT.win1.start - AT.vs1.start, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win1.start, AT.win1.dur, 0.55, 1.0],
+    ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tease1.start + 3.6 - 3.6, AT.tease1.dur, 0.8, 0.8],
   ],
   ep2: [
     ["bgm-oak", `${P}/bgm-oak.mp3`, 0, AT.vs2.start, 0.45, 0.8],
     ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs2.start, AT.win2.start - AT.vs2.start, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win2.start, AT.win2.dur, 0.55, 1.0],
+    ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tbc.start + 5.8 - 3.6, AT.tbc.dur - 2.2, 0.8, 0.8],
   ],
 };
 
