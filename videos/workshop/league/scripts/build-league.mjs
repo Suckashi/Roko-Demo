@@ -35,14 +35,13 @@ const TRAINERS = [
     step: 3,
     intro: "Step 3 的門檻是信任。你準備好了嗎？",
     outro: "……好，我願意讓 Agent 自己合併了。",
-    moves: ["低風險試行", "只放手測得到的", "打好測試環境", "grill-with-docs", "/retro"],
-    learned: [["低風險試行", "先小範圍放手"], ["只放手測得到的", "其餘照舊人審"], ["打好測試環境", "把基礎補齊"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"]],
+    moves: ["低風險試行", "打好測試環境", "grill-with-docs", "/retro"],
+    learned: [["低風險試行", "先小範圍放手"], ["打好測試環境", "測得到才放手"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"]],
     team: [
-      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併", tip: "先從測試、文件這類小地方開始放手", move: "低風險試行", gag: "直接全面開放" },
-      { name: "百變怪", file: "ditto", problem: "敢不敢放手，要看測不測得到", tip: "測得到的才放手，抽查有問題就改環境", move: "只放手測得到的" },
-      { name: "樹才怪", file: "sudowoodo", problem: "測試環境不完整，上線前才測得出來", tip: "把測試環境補完整，問題才測得出來", move: "打好測試環境" },
-      { name: "天然鳥", file: "xatu", problem: "業務規則還有一部分沒寫下來", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
-      { name: "小拉達", file: "rattata", problem: "自動驗證抓不到 Reviewer 會挑的問題", tip: "回顧漏掉什麼，補 Skill、MCP 和 lint", move: "/retro" },
+      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併 PR", tip: "先從測試、文件這類小地方開始放手", move: "低風險試行" },
+      { name: "百變怪", file: "ditto", problem: "測試環境測不到，不敢放手", tip: "把測試環境補完整，測得到的才放手", move: "打好測試環境" },
+      { name: "天然鳥", file: "xatu", problem: "AI 不懂你在說什麼", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
+      { name: "小拉達", file: "rattata", problem: "重複出現同樣的問題", tip: "回顧漏掉什麼，補 Skill、MCP 和 lint", move: "/retro" },
     ],
   },
 ];
@@ -342,13 +341,7 @@ const MOVE_FX = {
     const parts = [0, 1, 2].map((i) => fly(`${id}-s${i}`, `<div class="px" style="left:0;top:0;width:14px;height:14px;background:#F8B048;box-shadow:inset -2px -2px 0 #C87020, inset 2px 2px 0 #FFD890, 0 0 0 1px #784010"></div>`, [CLAWD_C[0] - 7, CLAWD_C[1] - 7], [fx - 24 + i * 16, fy + 4], at + i * 0.22, 0.4, 24));
     return [fxClip(id, at, parts.map((p) => p[0]).join("\n")), parts.map((p) => p[1]).join("\n")];
   },
-  // 綠框鎖定對手，掃描線上下掃兩次：測得到才放手
-  "只放手測得到的": (id, at, [fx, fy]) => [
-    fxClip(id, at, `  <div id="${id}-box" class="px" style="left:${fx - 26}px;top:${fy - 26}px;width:52px;height:52px;border:2px dashed #48D048;opacity:0"></div>
-  <div id="${id}-scan" class="px" style="left:${fx - 26}px;top:${fy - 26}px;width:52px;height:3px;background:#88F888;box-shadow:0 0 0 1px #208020;opacity:0"></div>`),
-    `  tl.fromTo("#${id}-box", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.2, ease: "steps(4)", immediateRender: false }, ${r(at + 0.05)});
-  tl.fromTo("#${id}-scan", { y: 0, opacity: 1 }, { y: 49, opacity: 1, duration: 0.3, ease: "steps(10)", yoyo: true, repeat: 1, snap: "y", immediateRender: false }, ${r(at + 0.3)});`],
-  // 磚塊一層層疊起來：把測試環境的基礎打好
+  // 磚塊一層層疊起來：把測試環境的基礎打好，測得到才放手
   "打好測試環境": (id, at, [fx]) => {
     const bricks = [];
     for (let row = 0; row < 3; row++) for (let c = 0; c < 4 - (row % 2); c++) bricks.push([fx - 30 + c * 15 + (row % 2) * 7, FOE_FEET + 2 - row * 7, row]);
