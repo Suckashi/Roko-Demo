@@ -745,6 +745,49 @@ body{background:#080d17;color:var(--text);font-family:Inter,"Noto Sans TC","Ping
 .dual-how b{white-space:nowrap;color:#a7c7ef}
 @media(max-width:800px){.dual-grid{grid-template-columns:1fr}.dual-arrows{grid-template-columns:1fr}.dual-arrows span:last-child{display:none}.dual-how{display:block}}
 @media(min-width:1500px){.slide{padding-top:100px;padding-bottom:85px}.slide-mast{margin-bottom:46px}}
+/* Compact vertical rhythm for 720p-class screens */
+@media (max-height: 820px){
+  main .slide{padding-top:40px!important;padding-bottom:28px!important}
+  main .slide-mast{margin-bottom:12px!important;padding-top:6px}
+  main .slide-mast b{display:none}
+  main .slide .eyebrow{margin-bottom:10px}
+  main .slide h2{font-size:clamp(1.5rem,2.4vw,2.2rem)!important;margin-bottom:8px!important}
+  main .slide .slide-lead{font-size:.95rem!important;margin-bottom:12px!important;line-height:1.55}
+  main .key-line{margin-top:10px!important;font-size:1rem!important;padding:3px 0 3px 14px}
+  main .source-line{margin:6px 0 0!important;font-size:.7rem}
+  main .table-scroll{margin:10px 0!important}
+  main .evidence-table{font-size:.88rem}
+  main .evidence-table td{padding:8px 14px!important;line-height:1.5}
+  main .evidence-table th{padding:8px 14px!important}
+  main .timeline-row{padding:7px 4px!important}
+  main .diagram-frame{padding:12px!important;margin:10px 0!important}
+  main .diagram-caption{margin-bottom:10px}
+  main .diagram-node{padding:12px!important}
+  main .outcome-grid article,main .route-grid article,main .poll-grid article,main .rb-card,main .worker-card{padding:12px 16px!important}
+  main .outcome-grid h3{margin:16px 0 8px;font-size:1.25rem}
+  main .adoption-stage{min-height:0!important;padding:12px!important}
+  main .rb-layer{padding:9px 14px!important}
+  main .rb-grid{gap:10px!important}
+  main .rb-steps{margin-top:10px!important}
+  main .rb-card ul{margin-top:8px}
+  main .cover-composition{margin-top:14px}
+  main .mission-panel>div:not(.mission-head){padding:10px 20px}
+  main .stairs{margin-top:8px}
+  main .system-body{margin-top:10px}
+  main #environment .env-card{padding:14px 16px 12px}
+  main .dual-flow{padding:10px!important;margin:8px 0 6px!important}
+  main .dual-grid article{padding:12px 16px!important}
+  main .dual-top{padding:9px 16px!important}
+  main .dual-how{padding-top:8px!important}
+  main .wt-tree{margin:6px 0!important}
+  main .wt-command{padding:10px 14px}
+  main .flow-strip .diagram-node p{margin-top:6px}
+  main .worker-card h3{margin:8px 0!important;font-size:1.3rem!important}
+  main .worker-card dl{gap:6px}
+  main .worker-card p{padding-top:10px!important;margin-top:8px}
+}
+}
+
 @media(max-width:950px){.cover-composition{gap:28px}.outcome-grid{gap:14px}.outcome-grid article,.route-grid article{padding:22px}.outcome-grid h3{font-size:1.3rem}.system-body{gap:12px}.system-agent{padding:25px 15px}.timeline-row{grid-template-columns:88px 170px 1fr}.flow-strip{gap:8px}.diagram-node{padding:18px 14px}}
 @media(max-width:800px){.slide{padding:80px 24px 70px}.slide-mast{margin-bottom:25px;font-size:.61rem}.slide h2{font-size:1.9rem}.cover-composition,.outcome-grid,.route-grid,.worker-grid,.review-outcomes{grid-template-columns:1fr}.cover-statement>p{font-size:1.6rem}.cover-composition{margin-top:24px}.outcome-grid h3{margin-top:18px}.outcome-grid footer{margin-top:22px}.contract-strip{grid-template-columns:1fr 1fr}.contract-strip span:nth-child(2){border-right:0}.contract-strip span:nth-child(-n+2){border-bottom:1px solid #354a66}.diagram-frame{padding:20px 16px}.flow-strip{gap:12px}.system-body{grid-template-columns:1fr;gap:18px}.timeline-row{grid-template-columns:82px 1fr;gap:8px 12px}.timeline-row>span{grid-column:2}.chapter-status{font-size:.67rem;left:14px;max-width:calc(100vw - 125px)}.chrome{right:14px}.rail{right:7px}.site-doc-link{left:14px;bottom:14px;font-size:.6rem;padding:10px}.slide .bridge{display:block}.bridge b{display:inline-block;margin-bottom:10px;margin-right:10px}.worker-card{padding:22px}.explain-row{grid-template-columns:1fr;gap:10px}.presenter-toggle{font-size:.75rem}.cover-meta{gap:13px}}
 @media print{.slide{break-before:page;min-height:0;background:white!important;color:#111;padding:20px}.slide-mast,.chapter-status,.chrome,.rail,.presenter-toggle,.presenter-panel,.site-doc-link,.progress{display:none!important}.slide h2,.slide p,.slide td,.slide b,.slide strong{color:#111!important}.slide a{color:#234!important}}
