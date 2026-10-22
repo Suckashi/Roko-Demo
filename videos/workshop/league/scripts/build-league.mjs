@@ -17,11 +17,10 @@ const TRAINERS = [
     name: "花月",
     sprite: "trainer-sidney-gen3.png",
     step: 2,
-    gag: "乾等",
     moves: ["TDD 自我驗證", "多開 Session", "grill-with-docs", "Git Worktree"],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證" },
-      { name: "呆呆獸", file: "slowpoke", problem: "等它跑完，順便泡咖啡", move: "多開 Session" },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證", gag: "乾等" },
+      { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", move: "多開 Session", gag: "泡咖啡等它" },
       { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", move: "grill-with-docs" },
       { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", move: "Git Worktree" },
     ],
@@ -31,10 +30,9 @@ const TRAINERS = [
     name: "芙蓉",
     sprite: "trainer-phoebe-gen3.png",
     step: 3,
-    gag: "直接全面開放",
     moves: ["低風險試行", "只放手測得到的", "打好測試環境", "grill-with-docs", "/retro"],
     team: [
-      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併", move: "低風險試行" },
+      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併", move: "低風險試行", gag: "直接全面開放" },
       { name: "百變怪", file: "ditto", problem: "敢不敢放手，要看測不測得到", move: "只放手測得到的" },
       { name: "樹才怪", file: "sudowoodo", problem: "測試環境不完整，上線前才測得出來", move: "打好測試環境" },
       { name: "天然鳥", file: "xatu", problem: "業務規則還有一部分沒寫下來", move: "grill-with-docs" },
@@ -46,7 +44,8 @@ const TRAINERS = [
 // 每場 6 秒；每位天王第一場先選錯招，多 2.6 秒
 const ROUND = 6;
 const GAG = 2.6;
-const battleLength = (t) => t.team.length * ROUND + GAG;
+// 有 gag 的回合先誤用一招、效果不太好，再換對的招式
+const battleLength = (t) => t.team.length * ROUND + t.team.filter((p) => p.gag).length * GAG;
 
 // 兩集的場景順序與長度（秒）；每集的時間從 0 開始
 const PARTS = {
@@ -217,12 +216,12 @@ TRAINERS.forEach((tr, i) => {
 // ── 對戰 ───────────────────────────────────────────────────
 const FOE_X = 250; // 對手台座中心
 const FOE_FEET = 67;
-function menuFor(tr, correct, gagged) {
+function menuFor(tr, correct, gag) {
   const order = tr.moves;
   let pick = [correct];
   for (let k = 1; pick.length < 4; k++) pick.push(order[(order.indexOf(correct) + k) % order.length]);
   pick = [...new Set(pick)].sort((a, b) => order.indexOf(a) - order.indexOf(b));
-  if (gagged) pick[3] = tr.gag;
+  if (gag) pick[3] = gag;
   return pick;
 }
 const MENU_POS = [
@@ -259,7 +258,7 @@ TRAINERS.forEach((tr, ti) => {
   let menus = "";
   let t0 = 0;
   tr.team.forEach((p, pi) => {
-    const gag = pi === 0;
+    const gag = p.gag;
     const len = ROUND + (gag ? GAG : 0);
     const sh = sheet(p.file);
     const left = Math.round(FOE_X - sh.w / 2);
@@ -311,9 +310,9 @@ TRAINERS.forEach((tr, ti) => {
     };
     const menu = menuFor(tr, p.move, gag);
     if (gag) {
-      choose(tr.gag, k, `${fid}-g1`, menu);
+      choose(gag, k, `${fid}-g1`, menu);
       k += 0.8;
-      attack(tr.gag, k, false);
+      attack(gag, k, false);
       k += 0.9;
       m += msg(`${fid}-bad`, k, 0.9, ["效果不太好…"]);
       script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
