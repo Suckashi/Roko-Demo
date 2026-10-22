@@ -58,6 +58,7 @@
   <div id="bat1-p0-fx-r4" class="px" style="left:240px;top:34px;width:20px;height:12px;border-radius:50%;border:3px solid #C060D8;opacity:0"></div>
   <div id="bat1-p0-fx-r5" class="px" style="left:240px;top:34px;width:20px;height:12px;border-radius:50%;border:3px solid #F8A0E0;opacity:0"></div>
 </div><div id="bat1-p0-zz-fx" class="clip" data-start="5.5" data-duration="1.1" style="position:absolute;inset:0">
+  <img id="bat1-p0-zz-fx-clawd" src="assets/sprites/clawd-sleep.svg" style="left:41px;top:66px;width:70px;height:54px" alt="" />
   <div id="bat1-p0-zz-fx-z0" class="t outline" style="left:104px;top:62px;opacity:0">Z</div>
   <div id="bat1-p0-zz-fx-z1" class="t outline" style="left:112px;top:54px;opacity:0">z</div>
   <div id="bat1-p0-zz-fx-z2" class="t outline" style="left:120px;top:46px;opacity:0">z</div>
@@ -177,6 +178,8 @@
   tl.fromTo("#bat1-p0-fx-r5", { x: 0, y: 0, scale: 0.6, opacity: 1 }, { x: -174, y: 53, scale: 2.6, opacity: 0.2, duration: 0.6, ease: "steps(6)", immediateRender: false }, 5);
   tl.fromTo("#bat1-p0-fx-tint", { opacity: 0 }, { opacity: 0.25, duration: 0.2, ease: "steps(2)", yoyo: true, repeat: 3, immediateRender: false }, 4.4);
   tl.fromTo("#bat1-clawd", { x: 0 }, { x: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, 4.8);
+  tl.set("#bat1-clawd", { opacity: 0 }, 5.5);
+  tl.set("#bat1-clawd", { opacity: 1 }, 6.6);
   tl.fromTo("#bat1-p0-zz-fx-z0", { y: 4, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "steps(3)", immediateRender: false }, 5.6);
   tl.fromTo("#bat1-p0-zz-fx-z1", { y: 4, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "steps(3)", immediateRender: false }, 5.85);
   tl.fromTo("#bat1-p0-zz-fx-z2", { y: 4, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "steps(3)", immediateRender: false }, 6.1);

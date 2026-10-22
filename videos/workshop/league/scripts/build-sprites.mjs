@@ -38,8 +38,8 @@ function save(dir, name, rows, pal) {
 const CLAWD = [".XXXXXXXXX.", ".XXXXXXXXX.", "XXEXXXXXEXX", "XXXXXXXXXXX", ".XXXXXXXXX.", ".XXXXXXXXX.", ".X.X...X.X.", ".X.X...X.X."];
 const lookRight = (rows) => rows.map((r, i) => (i === 2 ? "XXXEXXXXXEX" : r));
 
-// 對戰用：放大 3 倍，削圓外角，加外框、明暗與眼睛反光；bob=1 時身體下沉 1 格（腳不動）
-function clawdBattle(bob) {
+// 對戰用：放大 3 倍，削圓外角，加外框、明暗與眼睛反光；bob=1 時身體下沉 1 格（腳不動）；closed=true 時閉眼（一條橫線）
+function clawdBattle(bob, closed = false) {
   const base = lookRight(CLAWD);
   const k = 3, W = 11 * k + 2, H = 8 * k + 3;
   const grid = Array.from({ length: H }, () => Array(W).fill("."));
@@ -49,7 +49,8 @@ function clawdBattle(bob) {
     for (let dy = 0; dy < k; dy++) for (let dx = 0; dx < k; dx++) {
       const yy = y * k + dy;
       const shift = yy < legTop ? bob : 0;
-      const val = c === "E" ? (dx === 0 && dy === 0 ? "s" : "e") : yy >= legTop ? "l" : "b";
+      const eye = closed ? (dy === 1 ? "e" : "b") : dx === 0 && dy === 0 ? "s" : "e";
+      const val = c === "E" ? eye : yy >= legTop ? "l" : "b";
       grid[2 + yy + shift][1 + x * k + dx] = val;
     }
   }));
@@ -85,6 +86,7 @@ const CLAWD_PAL = {
 const sheet = (frames) => frames[0].map((_, y) => frames.map((f) => f[y]).join(""));
 save(OUT, "clawd-battle-sheet.svg", sheet([clawdBattle(0), clawdBattle(1)]), CLAWD_PAL);
 save(OUT, "clawd-front.svg", clawdBattle(0), CLAWD_PAL);
+save(OUT, "clawd-sleep.svg", clawdBattle(0, true), CLAWD_PAL);
 
 // 地圖用：原尺寸加外框，兩格走路動作
 function withOutline(rows) {

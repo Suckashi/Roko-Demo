@@ -251,11 +251,13 @@ const hypnosisJs = (id, clawd, at) => {
   js += `\n  tl.fromTo("${clawd}", { x: 0 }, { x: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, ${r(at + 0.7)});\n`;
   return js;
 };
-// 睡著：Clawd 頭上冒出 Z z z
+// 睡著：Clawd 閉上眼睛，頭上冒出 Z z z
 const sleepFx = (id, start, dur) => `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="${r(dur)}" style="position:absolute;inset:0">
+  <img id="${id}-clawd" src="${S}/clawd-sleep.svg" style="left:41px;top:66px;width:70px;height:54px" alt="" />
 ${["Z", "z", "z"].map((c, i) => `  <div id="${id}-z${i}" class="t outline" style="left:${104 + i * 8}px;top:${62 - i * 8}px;opacity:0">${c}</div>`).join("\n")}
 </div>`;
-const sleepJs = (id, at) =>
+const sleepJs = (id, at, clawd, dur) =>
+  `  tl.set("${clawd}", { opacity: 0 }, ${r(at)});\n  tl.set("${clawd}", { opacity: 1 }, ${r(at + dur)});\n` +
   [0, 1, 2].map((i) => `  tl.fromTo("#${id}-z${i}", { y: 4, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "steps(3)", immediateRender: false }, ${r(at + 0.1 + i * 0.25)});`).join("\n") + "\n";
 let CUR = "";
 
@@ -349,7 +351,7 @@ TRAINERS.forEach((tr, ti) => {
         k += 1.4;
         m += msg(`${fid}-zz`, k, 1.1, [p.counter.after]);
         foes += sleepFx(`${fid}-zz-fx`, k, 1.1);
-        script += sleepJs(`${fid}-zz-fx`, k);
+        script += sleepJs(`${fid}-zz-fx`, k, `#${id}-clawd`, 1.1);
         k += 1.1;
       } else {
         m += msg(`${fid}-bad`, k, 0.9, ["效果不太好…"]);
@@ -393,26 +395,39 @@ for (const id of ["bat1", "bat2"]) {
   writeFileSync(f, readFileSync(f, "utf8").replace("</style>", HPCSS + "</style>"));
 }
 
-// ── 過關：門打開 ───────────────────────────────────────────
+// 已經打開的門（暗色門洞）
+const OPEN_DOOR = (x) =>
+  `<div class="px" style="left:${x}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E"></div>`;
+
+// ── 過關：門打開，Clawd 走過去 ─────────────────────────────
 const DOOR = { 3: 96, 4: 168 }; // Step 3、Step 4 門板左緣
+const CLAWD_AT = { 2: 23, 3: 94, 4: 166 }; // Clawd 站在各 Step 門前的位置
+const HALL_CLAWD = (id, step) =>
+  `<div id="${id}" class="px" style="left:${CLAWD_AT[step]}px;top:74px;width:35px;height:27px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>`;
 TRAINERS.forEach((tr, i) => {
   const id = `win${i + 1}`;
   CUR = id;
   const next = tr.step + 1;
+  const last = i === TRAINERS.length - 1; // 最後一位：門留到 To be continued 再開
   const flag = `<img id="${id}-flag" src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
 <div id="${id}-tag" class="t outline" style="left:58px;top:110px;padding:0 3px;line-height:14px;height:14px;background:#2C3458">今天走到這裡</div>`;
+  const walk = CLAWD_AT[next] - CLAWD_AT[tr.step];
   scene(
     id,
     `<img class="bg" src="${P}/bg-hall.png" alt="" />
-${i === 1 ? `<div class="px" style="left:${DOOR[3]}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E"></div>` : ""}
+${i === 1 ? OPEN_DOOR(DOOR[3]) : ""}
 ${flag}
-<div id="${id}-door" class="px" style="left:${DOOR[next]}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E;transform-origin:50% 100%"></div>
-${msg(`${id}-m1`, 0.2, 4.8, [`打贏了四大天王・<span class="hl">${tr.name}</span>！`, `走到 <span class="hl">Step ${tr.step}</span> 了！Step ${next} 的門打開了`])}`,
+${last ? "" : `<div id="${id}-door" class="px" style="left:${DOOR[next]}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E;transform-origin:50% 100%"></div>`}
+${HALL_CLAWD(`${id}-clawd`, tr.step)}
+${msg(`${id}-m1`, 0.2, 4.8, [`打贏了四大天王・<span class="hl">${tr.name}</span>！`, last ? `走到 <span class="hl">Step ${tr.step}</span> 了！前面就是 Step ${next}` : `走到 <span class="hl">Step ${tr.step}</span> 了！Step ${next} 的門打開了`])}`,
     `  ${i === 0 ? `tl.fromTo("#${id}-flag", { y: -40 }, { y: 0, duration: 0.3, ease: "bounce.out", snap: "y" }, 1.0);
   tl.fromTo("#${id}-tag", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "steps(2)" }, 1.3);` : ""}
-  tl.fromTo("#${id}-door", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "steps(5)" }, 2.0);`,
+  ${last ? "" : `tl.fromTo("#${id}-door", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "steps(5)" }, 2.0);`}
+  playSheet($("#${id}-clawd"), 2, 5, 35, 0, ${AT[id].dur});
+  tl.fromTo("#${id}-clawd", { x: 0 }, { x: ${walk}, duration: 1.4, ease: "none", snap: "x" }, 2.6);
+  ${last ? "" : `tl.fromTo("#${id}-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 4.2);`}`,
   );
-  audioCues.push([CUR, `open-${id}`, "assets/sfx/bump.wav", AT[id].start + 2.0, 0.15, 0.6]);
+  if (!last) audioCues.push([CUR, `open-${id}`, "assets/sfx/bump.wav", AT[id].start + 2.0, 0.15, 0.6]);
 });
 
 // ── 共用：夜空、月暈、自繪訊息框 ───────────────────────────
@@ -432,8 +447,6 @@ const JOJO = (id, start, dur) => `<div id="${id}" class="clip" data-start="${sta
 </div>`;
 const JOJO_JS = (id, start) => `  tl.fromTo("#${id}-tint", { opacity: 0 }, { opacity: 0.7, duration: 0.15, ease: "power1.out" }, ${start});
   tl.fromTo("#${id}-arrow", { x: 1900 }, { x: 0, duration: 0.2, ease: "power2.out" }, ${start});`;
-const OPEN_DOOR = (x) =>
-  `<div class="px" style="left:${x}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E"></div>`;
 const FLAG = (id) => `<img src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
 <div class="px" style="left:58px;top:110px;width:78px;height:14px;background:#2C3458"></div>
 <div id="${id}-tag" class="t outline" style="left:61px;top:110px;line-height:14px">今天走到這裡</div>`;
@@ -462,7 +475,7 @@ scene(
 ${OPEN_DOOR(96)}
 ${FLAG("recap2")}
 <div id="recap2-arrow" class="t" style="left:107px;top:2px;color:#F8D030;text-shadow:1px 1px #383838">▼</div>
-<div id="recap2-clawd" class="px" style="left:23px;top:100px;width:35px;height:27px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
+${HALL_CLAWD("recap2-clawd", 3)}
 ${msg("recap2-m1", 0.4, 4.6, ['上一集：打贏花月，走到了 <span class="hl">Step 2</span>', '這次的目標：走到 <span class="hl">Step 3</span>'])}
 <div id="recap2-fade" class="layer" style="background:#000"></div>`,
   `  tl.fromTo("#recap2-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
@@ -480,6 +493,7 @@ ${FLAG("tbc")}
 <div class="px" style="left:168px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#FFF4C0"></div>
 <div id="tbc-door-l" class="px" style="left:168px;top:38px;width:16px;height:61px;border-radius:16px 0 0 0;background:#8A4A22;box-shadow:inset -1px 0 0 #5A2A12;transform-origin:0 50%"></div>
 <div id="tbc-door-r" class="px" style="left:184px;top:38px;width:16px;height:61px;border-radius:0 16px 0 0;background:#8A4A22;box-shadow:inset 1px 0 0 #5A2A12;transform-origin:100% 50%"></div>
+${HALL_CLAWD("tbc-clawd", 4)}
 ${msg("tbc-m0", 0.2, 1.4, ['<span class="hl">Step 4</span> 的門……打開了？'])}
 <div id="tbc-glow" class="layer" style="background:#FFF4C0"></div>
 <div id="tbc-sky" class="clip" data-start="1.8" data-duration="8.2" style="position:absolute;inset:0">
@@ -490,7 +504,8 @@ ${msg("tbc-m0", 0.2, 1.4, ['<span class="hl">Step 4</span> 的門……打開了
 </div>
 ${msg("tbc-m1", 3.3, 6.7, ['<span class="hl">Step 4</span>・再往後', "人用意圖決定方向"])}`,
   JOJO("tbc-jojo", 5.8, 4.2),
-  `  tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
+  `  playSheet($("#tbc-clawd"), 2, 2.5, 35, 0, 1.8);
+  tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
   tl.fromTo("#tbc-ray", { y: -80 }, { y: 0, duration: 1.0, ease: "steps(10)" }, 1.9);
