@@ -124,7 +124,8 @@ function msg(id, start, dur, lines) {
   msgs.push([id, start]);
   // 對應 JS 的 type()：每字 0.035 秒，行與行之間停 0.08 秒
   const typing = lines.reduce((sum, l) => sum + [...plain(l)].length * 0.035, 0) + (lines.length - 1) * 0.08;
-  audioCues.push([CUR, `blip-${id}`, "assets/sfx/blip.wav", AT[CUR].start + start, r(Math.min(typing, dur)), 0.2]);
+  // 只在每則訊息開頭響一小段，不要整句一路嗶到底
+  audioCues.push([CUR, `blip-${id}`, "assets/sfx/blip.wav", AT[CUR].start + start, r(Math.min(typing, dur, 0.5)), 0.2]);
   return `<div id="${id}" class="msg clip" data-start="${r(start)}" data-duration="${r(dur)}">${lines
     .map((l) => `<div class="line gtx">${l}</div>`)
     .join("")}</div>`;
@@ -709,15 +710,24 @@ const MUSIC = {
     ["bgm-keyitem", `${P}/bgm-key-item.mp3`, AT.lab.start + 1.2, 3.4, 0.8, 0],
     ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs1.start, AT.win1.start - AT.vs1.start, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win1.start, AT.win1.dur + LEARN, 0.55, 1.0],
-    ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tease1.start + 3.6 - 3.6, AT.tease1.dur, 0.8, 0.8],
+    ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tease1.start + 3.6 - 3.6, AT.tease1.dur, 0.55, 0.8],
   ],
   ep2: [
     ["bgm-oak", `${P}/bgm-oak.mp3`, 0, AT.vs2.start, 0.45, 0.8],
     ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs2.start, AT.win2.start - AT.vs2.start, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win2.start, AT.win2.dur + LEARN, 0.55, 1.0],
-    ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tbc.start + 5.8 - 3.6, AT.tbc.dur - 2.2, 0.8, 0.8],
+    ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tbc.start + 5.8 - 3.6, AT.tbc.dur - 2.2, 0.55, 0.8],
   ],
 };
+
+// ── 混音：依每個檔案實測的平均音量（ffmpeg volumedetect）換算，
+// 讓配樂約 -24 dB、提示音效壓在配樂底下、打擊和叫聲略高一點 ──
+const MIX = {
+  "blip.wav": 0.12, "select.wav": 0.16, "bump.wav": 0.22, "faint.wav": 0.19, "throw.wav": 0.45,
+  "hit.wav": 0.8, "crit.wav": 0.35, "hypnosis.wav": 0.5, "levelup.wav": 0.4,
+  "thunder.wav": 0.5, "boom.wav": 0.55, "rayquaza-cry.mp3": 0.5,
+};
+const mixVolume = (src, v) => MIX[src.split("/").pop()] ?? (src.endsWith("-cry.mp3") ? 0.32 : v);
 
 // ── 每集一個 HyperFrames 專案（parts/ep1、parts/ep2），共用 assets 與 compositions ──
 for (const [part, list] of Object.entries(PARTS)) {
@@ -745,7 +755,7 @@ for (const [part, list] of Object.entries(PARTS)) {
     ),
     ...audioCues
       .filter(([sc]) => PART_OF[sc] === part)
-      .map(([, id, src, s, d, v]) => `<audio id="${id}" src="${src}" data-start="${r(s)}" data-duration="${r(d)}" data-volume="${v}"></audio>`),
+      .map(([, id, src, s, d, v]) => `<audio id="${id}" src="${src}" data-start="${r(s)}" data-duration="${r(d)}" data-volume="${mixVolume(src, v)}"></audio>`),
   ];
   writeFileSync(
     join(dir, "index.html"),
