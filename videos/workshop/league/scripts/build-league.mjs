@@ -323,7 +323,7 @@ const MOVE_FX = {
   },
   // 小方塊一個一個跳過去：先從一小塊開始
   "低風險試行": (id, at, [fx, fy]) => {
-    const parts = [0, 1, 2].map((i) => fly(`${id}-s${i}`, `<div class="px" style="left:0;top:0;width:7px;height:7px;background:#F8B048;box-shadow:0 0 0 1px #784010"></div>`, [CLAWD_C[0] - 3, CLAWD_C[1] - 3], [fx - 10 + i * 8, fy + 8], at + i * 0.22, 0.4, 22));
+    const parts = [0, 1, 2].map((i) => fly(`${id}-s${i}`, `<div class="px" style="left:0;top:0;width:14px;height:14px;background:#F8B048;box-shadow:inset -2px -2px 0 #C87020, inset 2px 2px 0 #FFD890, 0 0 0 1px #784010"></div>`, [CLAWD_C[0] - 7, CLAWD_C[1] - 7], [fx - 24 + i * 16, fy + 4], at + i * 0.22, 0.4, 24));
     return [fxClip(id, at, parts.map((p) => p[0]).join("\n")), parts.map((p) => p[1]).join("\n")];
   },
   // 綠框鎖定對手，掃描線上下掃兩次：測得到才放手
