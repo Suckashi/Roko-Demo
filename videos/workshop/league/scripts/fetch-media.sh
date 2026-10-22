@@ -46,6 +46,7 @@ pokemon 178 xatu       # 天然鳥
 
 # 烈空坐（Step 4，To be continued）只露剪影
 get "$TMP/384.png" "$SPR/384.png"
+get "$OUT/rayquaza-cry.mp3" "$SD/audio/cries/rayquaza.mp3"
 ffmpeg -v error -y -i "$TMP/384.png" -vf "format=rgba,lutrgb=r=40:g=48:b=72" "$OUT/rayquaza-silhouette.png"
 
 # 訓練家（80×80）
