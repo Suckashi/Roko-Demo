@@ -19,12 +19,12 @@ const TRAINERS = [
     step: 2,
     intro: "一個人帶好幾個 Agent？先過我這關！",
     outro: "……好吧，Step 2 的門為你打開。",
-    moves: ["dev-workflow-tdd", "多開 Session", "grill-with-docs", "Git Worktree"],
-    learned: [["dev-workflow-tdd", "附驗證證據"], ["多開 Session", "不用乾等"], ["grill-with-docs", "先問清楚"], ["Git Worktree", "各改各的"]],
+    moves: ["dev-workflow-tdd", "多開 Session", "grill-me", "Git Worktree"],
+    learned: [["dev-workflow-tdd", "整套流程走完"], ["多開 Session", "效率翻倍"], ["grill-me", "先問清楚"], ["Git Worktree", "各改各的"]],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "人不用盯每一步；成果還是要過人，看的是證據", move: "dev-workflow-tdd", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
-      { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", tip: "它在跑的時候，再開一個做別的事", move: "多開 Session", gag: "泡咖啡等它" },
-      { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", tip: "讓 Agent 先追問，需求清楚再動手", move: "grill-with-docs" },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "整套開發流程自動走完，人只在關鍵處審核", move: "dev-workflow-tdd", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
+      { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", tip: "平行處理，效率翻倍", move: "多開 Session", gag: "泡咖啡等它" },
+      { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", tip: "讓 Agent 先追問，需求清楚再動手", move: "grill-me" },
       { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", tip: "每個 Agent 一份 worktree，互不干擾", move: "Git Worktree" },
     ],
   },
@@ -35,9 +35,10 @@ const TRAINERS = [
     step: 3,
     intro: "Step 3 的門檻是信任。你準備好了嗎？",
     outro: "……好，我願意讓 Agent 自己合併了。",
-    moves: ["低風險試行", "打好測試環境", "grill-with-docs", "/retro"],
-    learned: [["低風險試行", "先小範圍放手"], ["打好測試環境", "測得到才放手"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"]],
+    moves: ["三層煞車", "低風險試行", "打好測試環境", "grill-with-docs", "/retro"],
+    learned: [["三層煞車", "依風險審"], ["低風險試行", "先小範圍放手"], ["打好測試環境", "測得到才放手"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"]],
     team: [
+      { name: "卡比獸", file: "snorlax", problem: "好幾份 PR 同時要審，審不完", tip: "自動檢查、AI Review 先擋，人只細審高風險的", move: "三層煞車" },
       { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併 PR", tip: "先從測試、文件這類小地方開始放手", move: "低風險試行" },
       { name: "百變怪", file: "ditto", problem: "測試環境測不到，不敢放手", tip: "把測試環境補完整，測得到的才放手", move: "打好測試環境" },
       { name: "天然鳥", file: "xatu", problem: "AI 不懂你在說什麼", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
@@ -319,6 +320,16 @@ const MOVE_FX = {
     return [fxClip(id, at, parts.map((p) => p[0]).join("\n")), parts.map((p) => p[1]).join("\n")];
   },
   // 一連串問號飛向對手：連環追問
+  // 三道關卡依序亮起：自動化檢查 → 自動化 Review → 人工 Review（依風險）
+  "三層煞車": (id, at, [fx, fy]) => {
+    const gates = [0, 1, 2].map((i) => Math.round(CLAWD_C[0] + 40 + i * ((fx - CLAWD_C[0] - 70) / 2)));
+    const ys = gates.map((x) => Math.round(CLAWD_C[1] + ((x - CLAWD_C[0]) / (fx - CLAWD_C[0])) * (fy - CLAWD_C[1])));
+    const colors = ["#58D058", "#58A8F8", "#F8C030"];
+    return [fxClip(id, at, gates.map((x, i) => `  <div id="${id}-g${i}" class="px" style="left:${x - 3}px;top:${ys[i] - 16}px;width:6px;height:32px;background:${colors[i]};box-shadow:0 0 0 1px #303030;opacity:0;transform-origin:50% 100%"></div>`).join("\n")),
+      gates.map((_, i) => `  tl.fromTo("#${id}-g${i}", { opacity: 1, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.15, ease: "steps(3)", immediateRender: false }, ${r(at + 0.05 + i * 0.2)});
+  tl.fromTo("#${id}-g${i}", { opacity: 1 }, { opacity: 0.3, duration: 0.06, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, ${r(at + 0.65)});`).join("\n")];
+  },
+  "grill-me": (...a) => MOVE_FX["grill-with-docs"](...a),
   "grill-with-docs": (id, at, [fx, fy]) => {
     const parts = [0, 1, 2, 3, 4].map((i) => fly(`${id}-q${i}`, `<div class="t outline" style="left:0;top:0;color:#F8D030;font-size:24px;line-height:26px">？</div>`, [CLAWD_C[0], CLAWD_C[1] - 14], [fx - 16 + i * 7, fy - 10 + (i % 2) * 10], at + i * 0.1, 0.4, 18));
     return [fxClip(id, at, parts.map((p) => p[0]).join("\n")), parts.map((p) => p[1]).join("\n")];
