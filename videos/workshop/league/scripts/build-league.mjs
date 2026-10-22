@@ -19,10 +19,10 @@ const TRAINERS = [
     step: 2,
     intro: "一個人帶好幾個 Agent？先過我這關！",
     outro: "……好吧，Step 2 的門為你打開。",
-    moves: ["TDD 自我驗證", "多開 Session", "grill-with-docs", "Git Worktree"],
-    learned: [["TDD 自我驗證", "它自己跑測試"], ["多開 Session", "不用乾等"], ["grill-with-docs", "先問清楚"], ["Git Worktree", "各改各的"]],
+    moves: ["dev-workflow-tdd", "多開 Session", "grill-with-docs", "Git Worktree"],
+    learned: [["dev-workflow-tdd", "它自己跑測試"], ["多開 Session", "不用乾等"], ["grill-with-docs", "先問清楚"], ["Git Worktree", "各改各的"]],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "Agent 自己跑測試，你看證據就好", move: "TDD 自我驗證", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "Agent 自己跑測試，你看證據就好", move: "dev-workflow-tdd", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
       { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", tip: "它在跑的時候，再開一個做別的事", move: "多開 Session", gag: "泡咖啡等它" },
       { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", tip: "讓 Agent 先追問，需求清楚再動手", move: "grill-with-docs" },
       { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", tip: "每個 Agent 一份 worktree，互不干擾", move: "Git Worktree" },
@@ -268,9 +268,9 @@ function menuFor(tr, correct, gag) {
 }
 const MENU_POS = [
   [18, 136],
-  [112, 136],
+  [128, 136],
   [18, 154],
-  [112, 154],
+  [128, 154],
 ];
 // 精靈球：從 from 出發；pokeballJs 讓它飛到 to（0.3 秒、邊飛邊轉），到了就打開不見
 const pokeball = (id, start, from) => `<div id="${id}" class="clip" data-start="${r(start)}" data-duration="0.4" style="position:absolute;inset:0">
@@ -308,7 +308,7 @@ const fly = (id, el, from, to, at, dur, hop) =>
   tl.set("#${id}", { opacity: 0 }, ${r(at + dur + 0.05)});`];
 const MOVE_FX = {
   // 綠色勾勾一個個跳出來：測試通過
-  "TDD 自我驗證": (id, at, [fx, fy]) => {
+  "dev-workflow-tdd": (id, at, [fx, fy]) => {
     const pos = [[-22, -12], [8, -18], [-6, 6]];
     return [fxClip(id, at, pos.map(([dx, dy], i) => `  <div id="${id}-c${i}" class="px" style="left:${fx + dx}px;top:${fy + dy}px;width:14px;height:12px;transform-origin:50% 50%;opacity:0">${CHECK}</div>`).join("\n")),
       pos.map((_, i) => `  tl.fromTo("#${id}-c${i}", { scale: 0, opacity: 1 }, { scale: 1.4, opacity: 1, duration: 0.15, ease: "steps(3)", immediateRender: false }, ${r(at + 0.1 + i * 0.18)});`).join("\n")];
@@ -595,7 +595,7 @@ TRAINERS.forEach((tr, i) => {
     .map(([mv, desc], j) => `<div id="${id}-r${j}" class="layer" style="opacity:0">
   <div class="t gtx" style="left:122px;top:${ROW0 + j * 19}px">▸</div>
   <div class="t hl" style="left:132px;top:${ROW0 + j * 19}px">${mv}</div>
-  <div class="t gtx" style="left:232px;top:${ROW0 + j * 19}px">${desc}</div>
+  <div class="t gtx" style="left:238px;top:${ROW0 + j * 19}px">${desc}</div>
 </div>`)
     .join("\n");
   scene(
