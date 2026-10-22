@@ -732,16 +732,16 @@ body{background:#080d17;color:var(--text);font-family:Inter,"Noto Sans TC","Ping
 .poll-options li b{display:inline-block;margin-top:6px;padding:2px 9px;border:1px solid #3d5a80;border-radius:20px;color:#a9caff;font:600 .72rem/1.6 ui-monospace,Consolas,monospace;letter-spacing:.04em}
 .poll-note{margin:14px 0 0;font-size:.82rem;color:#94a8c5;line-height:1.6}
 @media(max-width:950px){.poll-grid{grid-template-columns:1fr}}
-.dual-flow{border:1px solid #2b405c;border-radius:18px;background:linear-gradient(145deg,#122137,#0d1726);padding:24px;margin:22px 0 18px}
-.dual-top{display:flex;gap:18px;align-items:baseline;justify-content:center;text-align:center;flex-wrap:wrap;padding:16px 20px;border:1px solid #72a8ee;border-radius:14px;background:radial-gradient(circle at 50% 0,#274e7c,#102037 80%)}
+.dual-flow{border:1px solid #2b405c;border-radius:18px;background:linear-gradient(145deg,#122137,#0d1726);padding:16px;margin:14px 0 12px}
+.dual-top{display:flex;gap:18px;align-items:baseline;justify-content:center;text-align:center;flex-wrap:wrap;padding:12px 20px;border:1px solid #72a8ee;border-radius:14px;background:radial-gradient(circle at 50% 0,#274e7c,#102037 80%)}
 .dual-top b{font-size:1.4rem;color:#e4efff}.dual-top span{color:#a9c7e6;font-size:.95rem}
-.dual-arrows{display:grid;grid-template-columns:1fr 1fr;color:#91b8e5;font-size:1.6rem;text-align:center;padding:6px 0}
+.dual-arrows{display:grid;grid-template-columns:1fr 1fr;color:#91b8e5;font-size:1.3rem;line-height:1;text-align:center;padding:4px 0}
 .dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.dual-grid article{padding:22px 24px;border:1px solid #345175;border-top:3px solid #7baee9;border-radius:12px;background:#122238}
+.dual-grid article{padding:16px 20px;border:1px solid #345175;border-top:3px solid #7baee9;border-radius:12px;background:#122238}
 .dual-grid article:nth-child(2){border-color:#577390;border-top-color:#a2c8ef;background:#1f2a35}
 .dual-grid h3{font-size:1.35rem;margin:10px 0 8px;color:#e4efff}.dual-grid p{margin:0;color:#b5c6dd;font-size:.95rem;line-height:1.7}
 .dual-grid .dual-out{margin-top:12px;padding-top:12px;border-top:1px solid #2f4461;color:#a9caff}
-.dual-how{display:flex;gap:18px;align-items:baseline;border-top:1px solid #2a3b52;padding-top:18px;font-size:.95rem;color:#a7b8d0;line-height:1.7}
+.dual-how{display:flex;gap:18px;align-items:baseline;border-top:1px solid #2a3b52;padding-top:12px;font-size:.93rem;color:#a7b8d0;line-height:1.6}
 .dual-how b{white-space:nowrap;color:#a7c7ef}
 @media(max-width:800px){.dual-grid{grid-template-columns:1fr}.dual-arrows{grid-template-columns:1fr}.dual-arrows span:last-child{display:none}.dual-how{display:block}}
 @media(min-width:1500px){.slide{padding-top:100px;padding-bottom:85px}.slide-mast{margin-bottom:46px}}
@@ -1095,10 +1095,11 @@ html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .recap-ta
 <li><span>一段程式：寫個函式、修個 bug</span></li>
 <li><span>一個功能：做法我先想好，它照著寫</span></li>
 <li><span>一張 Work Item：需求丟給它，自己規劃、寫、測、開 PR</span></li>
+<li><span>所有事情都交給它了</span></li>
 </ol></article>
-<article><span class="micro-label">Q3</span><h3>要你同時開兩個 Agent 做兩件事，最先擔心什麼？</h3><ol class="poll-options">
+<article><span class="micro-label">Q3</span><h3>要你同時開多個 Agent 做不同的事，最先擔心什麼？</h3><ol class="poll-options">
 <li><span>需求講不清楚，它會做歪</span></li>
-<li><span>兩個改同一份 code，會打架</span></li>
+<li><span>同時改同一份 code，會打架</span></li>
 <li><span>做太快，來不及 Review</span></li>
 </ol></article>
 </div></div></section>
@@ -1314,9 +1315,9 @@ git worktree add -b feature/b ../project-b main</code></pre></div><p class="sour
 </div>
 </div></section>
 
-<section class="slide" id="setup-mine" data-title="先建立約定：Agent 去哪裡讀、怎麼用團隊知識" data-chapter="設定環境與 Repo" data-folio="13"><div class="inner"><div class="slide-mast"><span>02 / SETUP</span><span>AGENTIC SDLC <b>13</b></span></div><p class="eyebrow">設定環境與 Repo</p><h2>先建立約定：Agent 去哪裡讀、怎麼用團隊知識</h2><p class="slide-lead">setup-matt-pocock-skills 設定每個 Repo 的知識入口與讀取規則；Domain 內容在後續討論中逐步累積。</p><div class="flow-strip"><div class="diagram-node" data-tone="guides"><b>探索現有 Repo</b><p>找既有入口、文件與工作追蹤方式</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="oversight"><b>確認設定草稿</b><p>沿用團隊慣例，確認後才寫入</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="guides"><b>留下讀取約定</b><p>後續 Skills 知道先讀什麼、遇到衝突怎麼辦</p></div></div><div class="table-scroll"><table class="evidence-table"><thead><tr><th>文件</th><th>實際用途</th></tr></thead><tbody><tr><td>AGENTS.md 或 CLAUDE.md</td><td>更新既有入口的 Agent skills 區塊，連到 docs/agents/*.md</td></tr><tr><td>docs/agents/domain.md</td><td>指定 GLOSSARY.md／GLOSSARY-MAP.md 與相關 ADR 的讀取規則；沿用術語，明確提出 ADR 衝突</td></tr><tr><td>docs/agents/issue-tracker.md</td><td>記錄工作追蹤方式；今天的答案是 Work Item 與 PR 都在 Azure DevOps</td></tr><tr><td>docs/agents/triage-labels.md</td><td>Azure DevOps 沒有 GitHub 式的 Label，改用 Tag 對應；State 照走團隊的工作流程進度，兩者不衝突</td></tr></tbody></table></div><p class="key-line">先把知識的入口接好，再讓每次工作都有機會把它補完整。</p><p class="source-line">來源：<a href="https://github.com/mattpocock/skills/blob/4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d/skills/engineering/setup-matt-pocock-skills/SKILL.md">setup-matt-pocock-skills</a> · <a href="https://github.com/mattpocock/skills/blob/4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d/skills/engineering/setup-matt-pocock-skills/domain.md">Domain 讀取約定</a></p></div></section>
+<section class="slide" id="setup-mine" data-title="先建立約定：Agent 去哪裡讀、怎麼用團隊知識" data-chapter="設定環境與 Repo" data-folio="13"><div class="inner"><div class="slide-mast"><span>02 / SETUP</span><span>AGENTIC SDLC <b>13</b></span></div><p class="eyebrow">設定環境與 Repo</p><h2>先建立約定：Agent 去哪裡讀、怎麼用團隊知識</h2><p class="slide-lead">setup-matt-pocock-skills 設定每個 Repo 的知識入口與讀取規則；Domain 內容在後續討論中逐步累積。</p><div class="flow-strip"><div class="diagram-node" data-tone="guides"><b>探索現有 Repo</b><p>找既有入口、文件與工作追蹤方式</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="oversight"><b>確認設定草稿</b><p>沿用團隊慣例，確認後才寫入</p></div><div class="flow-link" aria-hidden="true">→</div><div class="diagram-node" data-tone="guides"><b>留下讀取約定</b><p>後續 Skills 知道先讀什麼、遇到衝突怎麼辦</p></div></div><div class="table-scroll"><table class="evidence-table"><thead><tr><th>文件</th><th>實際用途</th></tr></thead><tbody><tr><td>AGENTS.md 或 CLAUDE.md</td><td>更新既有入口的 Agent skills 區塊，連到 docs/agents/*.md；Repo 還沒有 AGENTS.md，先用 write-agents-md 寫一份</td></tr><tr><td>docs/agents/domain.md</td><td>指定 GLOSSARY.md／GLOSSARY-MAP.md 與相關 ADR 的讀取規則；沿用術語，明確提出 ADR 衝突</td></tr><tr><td>docs/agents/issue-tracker.md</td><td>記錄工作追蹤方式；今天的答案是 Work Item 與 PR 都在 Azure DevOps</td></tr><tr><td>docs/agents/triage-labels.md</td><td>Azure DevOps 沒有 GitHub 式的 Label，改用 Tag 對應；State 照走團隊的工作流程進度，兩者不衝突</td></tr></tbody></table></div><p class="key-line">先把知識的入口接好，再讓每次工作都有機會把它補完整。</p><p class="source-line">來源：<a href="https://github.com/mattpocock/skills/blob/4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d/skills/engineering/setup-matt-pocock-skills/SKILL.md">setup-matt-pocock-skills</a> · <a href="https://github.com/mattpocock/skills/blob/4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d/skills/engineering/setup-matt-pocock-skills/domain.md">Domain 讀取約定</a></p></div></section>
 
-<section class="slide" id="experience-one" data-title="Demo：在 Roko 上完成兩個小功能" data-chapter="Demo · 兩個功能到 PR" data-folio="14"><div class="inner"><div class="slide-mast"><span>03 / BUILD</span><span>AGENTIC SDLC <b>14</b></span></div><p class="eyebrow">Demo · 兩個功能到 PR</p><h2>Demo：在 Roko 上完成兩個小功能</h2><p class="slide-lead">今天要改的是 Roko：以 Deep Agents 打造、可串接 OpenAI 相容 API 的聊天 Agent。</p><div class="worker-grid"><article class="worker-card" data-tone="execution"><span class="worker-tag">TASK A · 後端</span><h3>TSMC Week 工具</h3><p>新增自訂工具：日期與週別互相換算，例如 W641 ↔ 10/4–10/10；Roko 在對話中自動使用。</p><dl><dt>起點</dt><dd>Azure DevOps Work Item 2901321：透過 Azure DevOps MCP 讀單，沒寫清楚的再用 grill-with-docs 問</dd><dt>驗收</dt><dd>週別規則、跨年週與錯誤輸入可測試；對話中出現工具卡片</dd></dl></article><article class="worker-card" data-tone="guides"><span class="worker-tag">TASK B · 前端</span><h3>匯出對話</h3><p>將目前的可見對話（使用者訊息與 Roko 回覆）下載為 Markdown，保留順序與 Code Block。</p><dl><dt>起點</dt><dd>Spec 檔 docs/specs/export-conversation.md，課前用 to-spec 寫好</dd><dt>驗收</dt><dd>空對話與處理中停用；排除 Agent 步驟、錯誤訊息與思考中提示</dd></dl></article></div><p class="key-line">需求來自 Work Item 還是 Spec 檔，都交給同一個 Workflow。</p></div></section>
+<section class="slide" id="experience-one" data-title="Demo：在 Roko 上完成兩個小功能" data-chapter="Demo · 兩個功能到 PR" data-folio="14"><div class="inner"><div class="slide-mast"><span>03 / BUILD</span><span>AGENTIC SDLC <b>14</b></span></div><p class="eyebrow">Demo · 兩個功能到 PR</p><h2>Demo：在 Roko 上完成兩個小功能</h2><p class="slide-lead">今天要改的是 Roko：以 Deep Agents 打造、可串接 OpenAI 相容 API 的聊天 Agent。</p><div class="worker-grid"><article class="worker-card" data-tone="execution"><span class="worker-tag">TASK A · 後端</span><h3>TSMC Week 工具</h3><p>新增自訂工具：日期與週別互相換算，例如 W641 ↔ 10/4–10/10；Roko 在對話中自動使用。</p><dl><dt>起點</dt><dd>Azure DevOps Work Item 2901321：透過 Azure DevOps MCP 讀單，沒寫清楚的再用 grill-with-docs 問</dd><dt>驗收</dt><dd>週別規則、跨年週與錯誤輸入可測試；對話中出現工具卡片</dd></dl></article><article class="worker-card" data-tone="guides"><span class="worker-tag">TASK B · 前端</span><h3>匯出對話</h3><p>將目前的可見對話（使用者訊息與 Roko 回覆）下載為 Markdown，保留順序與 Code Block。</p><dl><dt>起點</dt><dd>Spec 檔 docs/specs/export-conversation.md，已經準備好在 Repo 裡，不用自己寫</dd><dt>驗收</dt><dd>空對話與處理中停用；排除 Agent 步驟、錯誤訊息與思考中提示</dd></dl></article></div><p class="key-line">需求來自 Work Item 還是 Spec 檔，都交給同一個 Workflow。</p></div></section>
 
 <section class="slide" id="tdd" data-title="開始實作" data-chapter="Demo · 兩個功能到 PR" data-folio="15"><div class="inner"><div class="slide-mast"><span>03 / BUILD</span><span>AGENTIC SDLC <b>15</b></span></div><p class="eyebrow">Demo · 兩個功能到 PR</p><p class="demo-position"><a href="#workflow">Demo 地圖</a><span>Step 1–7 · 從需求到 PR</span><small>TSMC Week 工具 ＋ 匯出對話</small></p><h2>開始實作</h2><p class="slide-lead">兩個 Session 各下 dev-workflow-tdd，開 Branch 時選擇開 Worktree；都是 Skill，不綁 Agent 工具。</p><div class="step-groups" aria-hidden="true"><span style="grid-column:span 6">兩個 Session 各自在自己的 Worktree 做（需求也各自問）</span><span>各自交付</span></div><ol class="step-strip" aria-label="dev-workflow-tdd 七步：Demo 進度"><li data-tone="oversight"><small>各自做</small><b>1</b><span>接收任務</span></li><li data-tone="oversight"><small>各自做</small><b>2</b><span>grill-with-docs<br>A 讀 Work Item · B 讀 Spec</span></li><li data-tone="execution"><small>各自做</small><b>3</b><span>開新的 Branch<br>可選開 Worktree</span></li><li data-tone="execution"><small>各自做</small><b>4</b><span>TDD 開發</span></li><li data-tone="execution"><small>各自做</small><b>5</b><span>驗證與 Code Review</span></li><li data-tone="execution"><small>各自做</small><b>6</b><span>Commit</span></li><li data-tone="feedback"><small>各自交付</small><b>7</b><span>各自開 PR</span></li></ol></div></section>
 
@@ -1361,7 +1362,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 </style>
 <div class="table-scroll"><table class="evidence-table"><thead><tr><th>要問團隊</th><th>為什麼會改變流程</th></tr></thead><tbody><tr><td>工作從哪裡進來？需求不足找誰？</td><td>決定入口與提問對象</td></tr><tr><td>哪些測試必跑？UI 怎麼驗？</td><td>決定驗收證據</td></tr><tr><td>Done 到 PR、部署，還是要寫 TKMS？</td><td>決定停止與交付條件</td></tr></tbody></table></div></div></section>
 
-<section class="slide" id="closing" data-title="從盯著一個 Agent，到協調兩個任務" data-chapter="收尾" data-folio="18"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>18</b></span></div><p class="eyebrow">收尾</p><h2>從盯著一個 Agent，到協調兩個任務</h2><p class="slide-lead">開場問的三個擔心：講不清楚、會打架、看不完，今天各給了一個做法。Step 1→2 的改變，是你開始負責交代、協調、驗收與交付；兩個 Agent 是練習，可靠交付才是判斷依據。</p><ol class="closing-steps"><li><h3>交代清楚，再分工</h3><p>TSMC Week 從 Work Item 開始、匯出對話直接給 Spec；各開一個 Session 與 Worktree，各自問到可驗收。</p></li><li><h3>看證據，處理例外</h3><p>讓 Agent 自己推進 TDD；人處理決策、檢查畫面與下載內容，確認未驗證項目。</p></li><li><h3>兩份成果，各自交付</h3><p>各自重跑檢查、附上驗證結果，各開一份可 Review 的 PR。同樣的方法，也能用在修弱點、寫文章與團隊流程。</p></li></ol></div></section>
+<section class="slide" id="closing" data-title="從盯著一個 Agent，到協調兩個任務" data-chapter="收尾" data-folio="18"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>18</b></span></div><p class="eyebrow">收尾</p><h2>從盯著一個 Agent，到協調兩個任務</h2><p class="slide-lead">開場問的三個擔心：講不清楚、會打架、來不及 Review，今天各給了一個做法。Step 1→2 的改變，是你開始負責交代、協調、驗收與交付；兩個 Agent 是練習，可靠交付才是判斷依據。</p><ol class="closing-steps"><li><h3>交代清楚，再分工</h3><p>TSMC Week 從 Work Item 開始、匯出對話直接給 Spec；各開一個 Session 與 Worktree，各自問到可驗收。</p></li><li><h3>看證據，處理例外</h3><p>讓 Agent 自己推進 TDD；人處理決策、檢查畫面與下載內容，確認未驗證項目。</p></li><li><h3>兩份成果，各自交付</h3><p>各自重跑檢查、附上驗證結果，各開一份可 Review 的 PR。同樣的方法，也能用在修弱點、寫文章與團隊流程。</p></li></ol></div></section>
 
 
 
@@ -1416,7 +1417,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <text x="781" y="222">找出迴歸，再修一輪</text>
 <text x="1039" y="222">通過驗證才合併</text>
 <text x="1039" y="371">抽樣，不逐一審查</text>
-<text x="781" y="371">retro → 改 Skill、lint</text>
+<text x="781" y="371">/retro → 改 Skill、lint</text>
 </g>
 <text x="536" y="292" font-size="14" fill="#D4BA91">改過的環境，用在下一輪</text>
 </svg>
@@ -1430,7 +1431,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <tr><td>工程師的把握</td><td>敢不敢放手，取決於測不測得到</td><td>測得到的才放手；抽查發現問題就改環境。要和下一列的測試環境一起看</td></tr>
 <tr><td>測試環境</td><td>還不完整，有些問題要到接近 Production 的環境才測得出來；測不到，工程師就沒把握放手</td><td>按變更類型分：測得到的先放手，碰到整合與權限的照舊人審</td></tr>
 <tr><td>Domain 知識</td><td>Reviewer 在看的業務規則，還有一部分沒寫下來</td><td>grill-with-docs：問清楚就寫進 GLOSSARY.md 與 ADR；驗收條件由人確認，測試從它推出來</td></tr>
-<tr><td>Agent 的環境</td><td>自動驗證還蓋不到 Reviewer 會挑的每一種問題</td><td>用 retro 回顧 session 和 PR，找出要優化的 Skill、要串的 MCP、要加的 lint 規則；改好環境，下次不用人看</td></tr>
+<tr><td>Agent 的環境</td><td>自動驗證還蓋不到 Reviewer 會挑的每一種問題</td><td>用 /retro 回顧 session 和 PR，找出要優化的 Skill、要串的 MCP、要加的 lint 規則；改好環境，下次不用人看</td></tr>
 </tbody></table></div></div></section>
 <section class="slide" id="thanks" data-title="謝謝大家" data-chapter="收尾" data-folio="21"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>21</b></span></div><h2 class="thanks-title">謝謝大家</h2></div></section>
 
@@ -1460,7 +1461,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <div class="rb-card"><h3>能修的直接 commit</h3><p>Code Review 環節找到問題就修，有疑問才留 comment。人看到的是修好的成果，而不是一串要自己判斷的意見。</p></div>
 
 </div>
-<p class="key-line">同樣的 Review comment 不寫第二次：人工 Review 發現的問題，就寫進 coding-standards.md、lint 或 Skill，也就是我們說的「改環境」。用 retro 定期回顧 session 和 PR，找出該改哪裡。</p>
+<p class="key-line">同樣的 Review comment 不寫第二次：人工 Review 發現的問題，就寫進 coding-standards.md、lint 或 Skill，也就是我們說的「改環境」。用 /retro 定期回顧 session 和 PR，找出該改哪裡。</p>
 <p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖。</p></div></section>
 <section class="slide" id="one-way-door" data-title="單向門與雙向門" data-chapter="附錄" data-folio="25"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>25</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>不是每個 PR 都一樣危險：單向門與雙向門</h2><p class="slide-lead">大部分 PR 是雙向門，隨時能 revert；要細審的是回不去的、以及爆炸半徑大的——一行設定也可能寄信給六萬人。讓 Agent 在 PR 描述裡先標出來，人就知道力氣該花在哪。</p>
 <div class="rb-grid c2">
@@ -1482,16 +1483,16 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <div class="dual-arrows"><span>↓</span><span>↓</span></div>
 <div class="dual-grid">
 <article><span class="micro-label">AGENT A · KIMI CODE</span><h3>Matt Pocock Skills</h3><p>今天這套：setup-matt-pocock-skills、grill-with-docs、dev-workflow-tdd。</p><p class="dual-out">產出：一份 PR，附驗證證據</p></article>
-<article><span class="micro-label">AGENT B · CLAUDE CODE</span><h3>pstack（Poteto Mode）</h3><p>Poteto（Lauren Tan）的 Skill stack，原生在 Cursor，社群移植到 Claude Code。入口是 poteto-mode：講目標，它挑 playbook；底下有 architect（先設計）、tdd、interrogate（審 diff）、make-pr-easy-to-review、arena／swarm（多 Agent）。</p><p class="dual-out">產出：一份 PR，附驗證證據</p></article>
+<article><span class="micro-label">AGENT B · CLAUDE CODE</span><h3>pstack（Poteto Mode）</h3><p>Poteto（Lauren Tan）的 Skill stack，原生在 Cursor，社群移植到 Claude Code。入口 poteto-mode 依目標挑 playbook；底下有 architect、tdd、interrogate、make-pr-easy-to-review、arena／swarm。</p><p class="dual-out">產出：一份 PR，附驗證證據</p></article>
 </div>
 </div>
 <div class="dual-how"><b>怎麼比</b><span>同一張 Work Item 兩邊各做一次，看哪邊問得準、驗證證據齊、diff 乾淨。順手的留下；另一套的好做法，用 writing-for-agents 併進自己的 SKILL.md。</span></div>
-<p class="key-line">流程可以換，人守的三個關卡不變：交代、看證據、Review PR。</p>
-<p class="source-line">參考：<a href="https://github.com/cursor/plugins/tree/main/pstack" target="_blank" rel="noopener">pstack</a>（Lauren Tan，Cursor plugins） · <a href="https://github.com/michael-denyer/pstack-claude" target="_blank" rel="noopener">pstack-claude</a>（Michael Denyer 移植；在 Claude Code 裡 <code>/plugin marketplace add michael-denyer/pstack-claude</code> 再 <code>/plugin install pstack@pstack-claude</code>）</p></div></section>
+<p class="key-line" style="margin-top:14px">流程可以換，人守的三個關卡不變：交代、看證據、Review PR。</p>
+<p class="source-line">參考：<a href="https://github.com/cursor/plugins/tree/main/pstack" target="_blank" rel="noopener">pstack</a>（Lauren Tan，Cursor plugins） · <a href="https://github.com/michael-denyer/pstack-claude" target="_blank" rel="noopener">pstack-claude</a>（Michael Denyer 移植到 Claude Code／Codex，README 有安裝方式）</p></div></section>
 </main>
 
-  <script>window.workshopPrompts={"A": {"group": "正常流程", "title": "1 · Repo Setup", "text": "用 setup-matt-pocock-skills 幫這個 repo 設定 Agent 的知識入口。\n我們整套都在 Azure DevOps：需求是 Work Item，PR 也開在 Azure DevOps。\n先跟我說你打算怎麼設定，我確認後再寫。寫好 commit 到 workshop/agent-setup-[帳號] 這個 branch（[帳號] 用 git email @ 前面那段）。"}, "J": {"group": "正常流程", "title": "2 · Session A：TSMC Week", "text": "dev-workflow-tdd 2901321\n開 branch 的時候用 worktree，從 workshop/agent-setup-[帳號] 開出 feature/tsmc-week-[帳號]（[帳號] 用 git email @ 前面那段）。\nPR 開到 workshop/agent-setup-[帳號]，開成 Draft，先不要合併。"}, "L": {"group": "正常流程", "title": "3 · Session B：匯出對話", "text": "dev-workflow-tdd docs/specs/export-conversation.md\n開 branch 的時候用 worktree，從 workshop/agent-setup-[帳號] 開出 feature/export-conversation-[帳號]（[帳號] 用 git email @ 前面那段）。\nPR 開到 workshop/agent-setup-[帳號]，開成 Draft，先不要合併。"}, "C": {"group": "正常流程", "title": "4 · azure-fix-security-issue", "text": "azure-fix-security-issue [CI Build URL]"}, "E": {"group": "正常流程", "title": "5 · Team Workflow Skill", "text": "我們想把團隊的開發流程寫成一份新的 Skill。用 grill-me 問我們平常怎麼做，拿 dev-workflow-tdd 當參考，看哪些要留、刪、換或新增；不要改 dev-workflow-tdd 本身。\n問完先停，整理一份訪談結果給我看，等我說可以再用 writing-for-agents 寫成 SKILL.md，還沒確定的先留 TODO。"}, "D": {"group": "延伸範例", "title": "6 · TKMS Draft", "text": "tkms-article 幫我把 Roko 的專案架構寫成 TKMS 文章"}, "O": {"group": "延伸範例", "title": "7 · Oracle MCP 查資料表", "text": "用 Oracle MCP 告訴我目前 RD_DB 裡面有哪些 Table，各自大概存什麼。只用 Read-only 查詢。"}};
-window.workshopSlidePrompts={"title": [], "intent": [], "timeline": [], "step-two": [], "harness": [], "traceability": [], "workflow": [], "domain-trap": [], "worktree": [], "environment": [], "setup-mine": ["A"], "experience-one": [], "tdd": ["J", "L"], "knowledge-reuse": ["C", "D", "O"], "skills-write-skills": ["E"], "closing": [], "review-brakes": [], "own-reviewer": [], "one-way-door": [], "step2-loop": ["J", "L"], "future-loop": [], "gap-to-step3": [], "thanks": []};</script>
+  <script>window.workshopPrompts={"A": {"group": "正常流程", "title": "1 · Repo Setup", "text": "用 setup-matt-pocock-skills 幫這個 repo 設定 Agent 的知識入口。\n我們整套都在 Azure DevOps：需求是 Work Item，PR 也開在 Azure DevOps。\n先跟我說你打算怎麼設定，我確認後再寫。寫好 commit 到 workshop/agent-setup-[帳號] 這個 branch（[帳號] 用 git email @ 前面那段）。"}, "J": {"group": "正常流程", "title": "2 · Session A：TSMC Week", "text": "dev-workflow-tdd 2901321\n開 branch 的時候用 worktree，從 workshop/agent-setup-[帳號] 開出 feature/tsmc-week-[帳號]（[帳號] 用 git email @ 前面那段）。\nPR 開到 workshop/agent-setup-[帳號]，開成 Draft，先不要合併。"}, "L": {"group": "正常流程", "title": "3 · Session B：匯出對話", "text": "dev-workflow-tdd docs/specs/export-conversation.md\n開 branch 的時候用 worktree，從 workshop/agent-setup-[帳號] 開出 feature/export-conversation-[帳號]（[帳號] 用 git email @ 前面那段）。\nPR 開到 workshop/agent-setup-[帳號]，開成 Draft，先不要合併。"}, "C": {"group": "正常流程", "title": "4 · azure-fix-security-issue", "text": "azure-fix-security-issue [CI Build URL]"}, "E": {"group": "正常流程", "title": "5 · Team Workflow Skill", "text": "我們想把團隊的開發流程寫成一份新的 Skill。用 grill-me 問我們平常怎麼做，拿 dev-workflow-tdd 當參考，看哪些要留、刪、換或新增；不要改 dev-workflow-tdd 本身。\n問完先停，整理一份訪談結果給我看，等我說可以再用 writing-for-agents 寫成 SKILL.md，還沒確定的先留 TODO。"}, "D": {"group": "延伸範例", "title": "6 · TKMS Draft", "text": "tkms-article 幫我把 Roko 的專案架構寫成 TKMS 文章"}, "O": {"group": "延伸範例", "title": "7 · Oracle MCP 查資料表", "text": "用 Oracle MCP 告訴我目前 RD_DB 裡面有哪些 Table，各自大概存什麼。只用 Read-only 查詢。"}, "R": {"group": "延伸範例", "title": "8 · /retro 回顧 Session", "text": "/retro\n回顧剛才 Session A 這一段：哪些錯誤本來可以被 lint、型別或測試先抓到？哪些我重複交代的事該寫進 Skill 或 AGENTS.md？照嚴重度排，先列不用改程式就能做的。"}};
+window.workshopSlidePrompts={"title": [], "intent": [], "timeline": [], "step-two": [], "harness": [], "traceability": [], "workflow": [], "domain-trap": [], "worktree": [], "environment": [], "setup-mine": ["A"], "experience-one": [], "tdd": ["J", "L"], "knowledge-reuse": ["C", "D", "O"], "skills-write-skills": ["E"], "closing": [], "review-brakes": [], "own-reviewer": ["R"], "one-way-door": [], "step2-loop": ["J", "L"], "future-loop": [], "gap-to-step3": ["R"], "thanks": []};</script>
 
   <script>
     (() => {
@@ -1542,7 +1543,7 @@ window.workshopSlidePrompts={"title": [], "intent": [], "timeline": [], "step-tw
         return `<details class="prompt-card"${open ? ' open' : ''}><summary>${escapeHtml(prompt.title)}</summary><div class="prompt-body">${usedLine}<pre>${escapeHtml(prompt.text)}</pre><div class="prompt-actions"><button class="copy-button" type="button" data-copy-prompt="${key}">複製 Prompt</button></div></div></details>`;
       };
 
-      const promptOrder = ['A','J','L','C','E','D','O'];
+      const promptOrder = ['A','J','L','C','E','D','O','R'];
       const usedOn = {};
       slides.forEach((sl) => (slidePrompts[sl.id] || []).forEach((k) => { (usedOn[k] = usedOn[k] || []).push(`${sl.dataset.folio} ${sl.dataset.title}`); }));
       const renderAllPrompts = () => {
