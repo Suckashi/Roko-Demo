@@ -1,7 +1,7 @@
 // 由下方的劇情資料產生整支影片的場景（compositions/*.html）與 index.html。
 // 用法：bash scripts/fetch-media.sh && node scripts/bake-backgrounds.mjs <playwright-core> && node scripts/build-league.mjs
 // 所有座標都是原生 320×180 像素；舞台放大 6 倍輸出 1920×1080。
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, symlinkSync, copyFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -44,31 +44,28 @@ const TRAINERS = [
   },
 ];
 
-// 每場 5 秒；每位天王第一場先選錯招，多 2 秒
-const ROUND = 5;
-const GAG = 2;
+// 每場 6 秒；每位天王第一場先選錯招，多 2.6 秒
+const ROUND = 6;
+const GAG = 2.6;
 const battleLength = (t) => t.team.length * ROUND + GAG;
 
-// 場景順序與長度（秒）
-const SCENES = [
-  ["oak", 6],
-  ["lab", 6],
-  ["hall", 5],
-  ["vs1", 3],
-  ["bat1", battleLength(TRAINERS[0])],
-  ["win1", 5],
-  ["vs2", 3],
-  ["bat2", battleLength(TRAINERS[1])],
-  ["win2", 5],
-  ["tbc", 5],
-];
-let clock = 0;
+// 兩集的場景順序與長度（秒）；每集的時間從 0 開始
+const PARTS = {
+  ep1: [["oak", 6], ["lab", 6.5], ["hall", 5.5], ["vs1", 3.5], ["bat1", battleLength(TRAINERS[0])], ["win1", 6], ["tease1", 7]],
+  ep2: [["recap2", 5], ["vs2", 3.5], ["bat2", battleLength(TRAINERS[1])], ["win2", 6], ["tbc", 9]],
+};
 const AT = {};
-for (const [id, dur] of SCENES) {
-  AT[id] = { start: clock, dur };
-  clock += dur;
+const PART_OF = {};
+const TOTAL = {};
+for (const [part, list] of Object.entries(PARTS)) {
+  let clock = 0;
+  for (const [id, dur] of list) {
+    AT[id] = { start: clock, dur };
+    PART_OF[id] = part;
+    clock += dur;
+  }
+  TOTAL[part] = Math.round(clock * 1000) / 1000;
 }
-const TOTAL = clock;
 
 // ── 共用樣式與腳本 ─────────────────────────────────────────
 const CSS = `
@@ -231,11 +228,13 @@ const MENU_POS = [
   [18, 154],
   [112, 154],
 ];
-const audioCues = []; // [id, src, absStart, dur, volume]
+const audioCues = []; // [場景, id, src, 集內時間, 長度, 音量]
+let CUR = "";
 
 TRAINERS.forEach((tr, ti) => {
   const id = `bat${ti + 1}`;
   const base = AT[id].start;
+  CUR = id;
   let body = `<img class="bg" src="${P}/bg-battle.png" alt="" />
 <img src="${S}/base-foe.svg" style="left:194px;top:53px;width:112px;height:22px" alt="" />
 <img src="${S}/base-player.svg" style="left:6px;top:108px;width:140px;height:26px" alt="" />
@@ -274,64 +273,64 @@ TRAINERS.forEach((tr, ti) => {
     // 登場
     body += ""; // (血條框內容在下方組合)
     let k = t0;
-    const sent = msg(`${fid}-a`, k, 2.0, [`${tr.name}派出了<span class="hl">${p.name}</span>！`, `<span class="stuck">卡在：${p.problem}</span>`]);
+    const sent = msg(`${fid}-a`, k, 2.4, [`${tr.name}派出了<span class="hl">${p.name}</span>！`, `<span class="stuck">卡在：${p.problem}</span>`]);
     script += `  playSheet($("#${fid}-s"), ${sh.frames}, ${sh.fps}, ${sh.w}, ${r(t0)}, ${len});
   tl.fromTo("#${fid}-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, ${r(t0 + 0.05)});
   tl.fromTo("#${fid}-burst .px", { scale: 0.2, opacity: 1 }, { scale: 1.5, opacity: 0, duration: 0.35, ease: "power2.out" }, ${r(t0)});
   tl.fromTo("#${id}-fhp", { x: -160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x", immediateRender: ${pi === 0} }, ${r(t0 + 0.1)});
   tl.fromTo("#${id}-bar", { width: 77, backgroundColor: "#58D080" }, { width: 77, duration: 0.01, immediateRender: ${pi === 0} }, ${r(t0)});
 `;
-    audioCues.push([`cry-${fid}`, `${P}/${p.file}-cry.mp3`, base + t0 + 0.1, 1.8, 0.7]);
+    audioCues.push([CUR, `cry-${fid}`, `${P}/${p.file}-cry.mp3`, base + t0 + 0.1, 1.8, 0.7]);
     let m = sent;
-    k += 2.0;
+    k += 2.4;
     const choose = (cursorMove, at, menuId, list) => {
       const idx = list.indexOf(cursorMove);
-      menus += `<div id="${menuId}" class="clip" data-start="${r(at)}" data-duration="0.6" style="position:absolute;inset:0">
+      menus += `<div id="${menuId}" class="clip" data-start="${r(at)}" data-duration="0.8" style="position:absolute;inset:0">
   ${list.map((mv, mi) => `<div class="t gtx" style="left:${MENU_POS[mi][0]}px;top:${MENU_POS[mi][1]}px">${mv}</div>`).join("")}
   <div class="t gtx" style="left:${MENU_POS[idx][0] - 10}px;top:${MENU_POS[idx][1]}px">▶</div>
   <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
   <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
 </div>
 `;
-      audioCues.push([`sel-${menuId}`, "assets/sfx/select.wav", base + at + 0.45, 0.1, 0.5]);
+      audioCues.push([CUR, `sel-${menuId}`, "assets/sfx/select.wav", base + at + 0.6, 0.1, 0.5]);
     };
     const attack = (move, at, good) => {
-      m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? 0.9 : 0.7, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
+      m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? 1.0 : 0.9, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
       script += `  tl.fromTo("#${id}-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, ${r(at + 0.15)});
   tl.fromTo("#${id}-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, ${r(at + 0.25)});
 `;
       if (good) {
         script += [0, 0.08, 0.16, 0.24].map((d, i) => `  tl.set("#${fid}-s", { opacity: ${i % 2} }, ${r(at + 0.35 + d)});`).join("\n") + "\n";
-        audioCues.push([`hit-${fid}`, "assets/sfx/hit.wav", base + at + 0.35, 0.25, 0.6]);
+        audioCues.push([CUR, `hit-${fid}`, "assets/sfx/hit.wav", base + at + 0.35, 0.25, 0.6]);
       } else {
-        audioCues.push([`bump-${fid}`, "assets/sfx/bump.wav", base + at + 0.3, 0.15, 0.5]);
+        audioCues.push([CUR, `bump-${fid}`, "assets/sfx/bump.wav", base + at + 0.3, 0.15, 0.5]);
       }
     };
     const menu = menuFor(tr, p.move, gag);
     if (gag) {
       choose(tr.gag, k, `${fid}-g1`, menu);
-      k += 0.6;
+      k += 0.8;
       attack(tr.gag, k, false);
-      k += 0.7;
-      m += msg(`${fid}-bad`, k, 0.7, ["效果不太好…"]);
+      k += 0.9;
+      m += msg(`${fid}-bad`, k, 0.9, ["效果不太好…"]);
       script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
-      k += 0.7;
+      k += 0.9;
       choose(p.move, k, `${fid}-g2`, menu);
-      k += 0.6;
+      k += 0.8;
     } else {
       choose(p.move, k, `${fid}-m`, menu);
-      k += 0.6;
+      k += 0.8;
     }
     attack(p.move, k, true);
-    k += 0.9;
-    m += msg(`${fid}-good`, k, 0.8, ["效果絕佳！"]);
+    k += 1.0;
+    m += msg(`${fid}-good`, k, 0.9, ["效果絕佳！"]);
     script += `  tl.fromTo("#${id}-bar", { width: ${gag ? 70 : 77}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
-    k += 0.8;
+    k += 0.9;
     m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`]);
     script += `  tl.fromTo("#${fid}-s", { y: 0 }, { y: ${sh.h}, duration: 0.3, ease: "power2.in", snap: "y" }, ${r(k + 0.05)});
   tl.fromTo("#${id}-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, ${r(t0 + len - 0.3)});
 `;
-    audioCues.push([`faint-${fid}`, "assets/sfx/faint.wav", base + k + 0.05, 0.6, 0.5]);
+    audioCues.push([CUR, `faint-${fid}`, "assets/sfx/faint.wav", base + k + 0.05, 0.6, 0.5]);
     menus += m;
     t0 += len;
   });
@@ -344,7 +343,7 @@ const HPCSS = `
   .hpbox { position: absolute; background: #404848; clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 1px, calc(100% - 1px) 1px, calc(100% - 1px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 1px) calc(100% - 2px), calc(100% - 1px) calc(100% - 1px), calc(100% - 2px) calc(100% - 1px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 1px), 1px calc(100% - 1px), 1px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 1px 2px, 1px 1px, 2px 1px); }
   .hpbox .in { position: absolute; left: 2px; top: 2px; right: 2px; bottom: 2px; background: #F8F8D8; box-shadow: inset 0 -2px 0 #E0E0B8; }
   .cap { position: absolute; height: 12px; background: #505858; }
-  .cap .lab { position: absolute; left: 3px; top: 0; line-height: 12px; color: #F8C040; }
+  .cap .lab { position: absolute; left: 3px; top: 0; line-height: 12px; color: #F8E070; }
   .cap .trk { position: absolute; left: 19px; right: 2px; top: 3px; height: 6px; background: #F8F8F8; }
   .cap .trk i { position: absolute; left: 1px; top: 1px; bottom: 1px; display: block; background: #58D080; }
 `;
@@ -357,6 +356,7 @@ for (const id of ["bat1", "bat2"]) {
 const DOOR = { 3: 96, 4: 168 }; // Step 3、Step 4 門板左緣
 TRAINERS.forEach((tr, i) => {
   const id = `win${i + 1}`;
+  CUR = id;
   const next = tr.step + 1;
   const flag = `<img id="${id}-flag" src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
 <div id="${id}-tag" class="t outline" style="left:58px;top:110px;padding:0 3px;background:#2C3458">今天走到這裡</div>`;
@@ -371,47 +371,141 @@ ${msg(`${id}-m1`, 0.2, 4.8, [`打贏了四大天王・<span class="hl">${tr.name
   tl.fromTo("#${id}-tag", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "steps(2)" }, 1.3);` : ""}
   tl.fromTo("#${id}-door", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "steps(5)" }, 2.0);`,
   );
-  audioCues.push([`open-${id}`, "assets/sfx/bump.wav", AT[id].start + 2.0, 0.15, 0.6]);
+  audioCues.push([CUR, `open-${id}`, "assets/sfx/bump.wav", AT[id].start + 2.0, 0.15, 0.6]);
 });
 
-// ── Step 4：To be continued ────────────────────────────────
+// ── 共用：夜空、月暈、自繪訊息框 ───────────────────────────
+const NIGHT = `<div class="px" style="left:0;top:0;width:320px;height:45px;background:#0A1030"></div>
+<div class="px" style="left:0;top:45px;width:320px;height:45px;background:#121A40"></div>
+<div class="px" style="left:0;top:90px;width:320px;height:45px;background:#1A2450"></div>
+<div class="px" style="left:0;top:135px;width:320px;height:45px;background:#222E60"></div>
+<div class="px" style="left:100px;top:6px;width:120px;height:120px;border-radius:50%;background:#3A4A78"></div>
+<div class="px" style="left:116px;top:22px;width:88px;height:88px;border-radius:50%;background:#4E5E90"></div>`;
+const BOX = `<div class="px" style="left:0;top:130px;width:320px;height:50px;background:#F8F8F8;border:3px solid #485868;box-shadow:inset 0 0 0 2px #98B0C8"></div>`;
+const TBC_TEXT = (id, top) =>
+  `<div id="${id}" class="t" style="left:84px;top:${top}px;font-size:24px;line-height:26px;color:#F8D030;text-shadow:2px 0 #383838,-2px 0 #383838,0 2px #383838,0 -2px #383838">To be continued…</div>`;
+const OPEN_DOOR = (x) =>
+  `<div class="px" style="left:${x}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E"></div>`;
+const FLAG = `<img src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
+<div class="t outline" style="left:58px;top:110px;padding:0 3px;background:#2C3458">今天走到這裡</div>`;
+
+// ── 第 1 集結尾：下一位天王預告 ─────────────────────────────
+CUR = "tease1";
+scene(
+  "tease1",
+  `${NIGHT}
+<img id="tease1-sil" src="${P}/phoebe-silhouette.png" style="left:120px;top:14px;width:80px;height:80px" alt="" />
+${BOX}
+${msg("tease1-m1", 1.0, 6.0, ['下一位天王：<span class="hl">芙蓉</span>', "守 Step 3，帶著 6 隻寶可夢"])}
+<div id="tease1-tbc" class="clip" data-start="3.4" data-duration="3.6" style="position:absolute;inset:0">${TBC_TEXT("tease1-tbct", 100)}</div>
+<div id="tease1-fade" class="layer" style="background:#000"></div>`,
+  `  tl.fromTo("#tease1-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
+  tl.fromTo("#tease1-sil", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "steps(6)" }, 0.2);
+  tl.fromTo("#tease1-tbct", { x: 240 }, { x: 0, duration: 0.4, ease: "power3.out", snap: "x" }, 3.4);`,
+);
+audioCues.push([CUR, "tease-boom", "assets/sfx/boom.wav", AT.tease1.start + 0.2, 2.5, 0.8]);
+
+// ── 第 2 集開頭：上集回顧 ───────────────────────────────────
+CUR = "recap2";
+scene(
+  "recap2",
+  `<img class="bg" src="${P}/bg-hall.png" alt="" />
+${OPEN_DOOR(96)}
+${FLAG}
+<div id="recap2-arrow" class="t" style="left:107px;top:2px;color:#F8D030;text-shadow:1px 1px #383838">▼</div>
+<div id="recap2-clawd" class="px" style="left:23px;top:100px;width:35px;height:27px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
+${msg("recap2-m1", 0.4, 4.6, ['上一集：打贏花月，走到了 <span class="hl">Step 2</span>', '這次的目標：走到 <span class="hl">Step 3</span>'])}
+<div id="recap2-fade" class="layer" style="background:#000"></div>`,
+  `  tl.fromTo("#recap2-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
+  playSheet($("#recap2-clawd"), 2, 2.5, 35, 0, 5);
+  tl.fromTo("#recap2-arrow", { y: 0 }, { y: 2, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 17 }, 0.6);`,
+);
+
+// ── 第 2 集結尾：Step 4 的門打開 → 雷雨夜空裡的烈空坐 → To be continued ──
+CUR = "tbc";
 scene(
   "tbc",
-  `<div class="layer" style="background:#5A6A90"></div>
-<div class="px" style="left:100px;top:10px;width:120px;height:120px;border-radius:50%;background:#7888B0"></div>
-<div class="px" style="left:116px;top:26px;width:88px;height:88px;border-radius:50%;background:#98A8C8"></div>
-<img id="tbc-ray" src="${P}/rayquaza-silhouette.png" style="left:112px;top:22px;width:96px;height:96px" alt="" />
-<div id="tbc-m1" class="msg clip" data-start="0.8" data-duration="4.2" style="left:118px;top:124px"><div class="line outline">Step 4・再往後</div></div>
-<div id="tbc-m2" class="clip" data-start="2" data-duration="3" style="position:absolute;left:92px;top:148px">
-  <div id="tbc-tbc" class="t" style="font-size:24px;line-height:26px;color:#F8D030;text-shadow:2px 0 #383838,-2px 0 #383838,0 2px #383838,0 -2px #383838">To be continued…</div>
-</div>`,
-  `  typeMsg("#tbc-m1", 0.8);
-  tl.fromTo("#tbc-ray", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "steps(6)" }, 0.1);
-  tl.fromTo("#tbc-tbc", { x: 180 }, { x: 0, duration: 0.35, ease: "power3.out", snap: "x" }, 2.0);`,
+  `<img class="bg" src="${P}/bg-hall.png" alt="" />
+${OPEN_DOOR(96)}
+${FLAG}
+<div class="px" style="left:168px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#FFF4C0"></div>
+<div id="tbc-door-l" class="px" style="left:168px;top:38px;width:16px;height:61px;border-radius:16px 0 0 0;background:#8A4A22;box-shadow:inset -1px 0 0 #5A2A12;transform-origin:0 50%"></div>
+<div id="tbc-door-r" class="px" style="left:184px;top:38px;width:16px;height:61px;border-radius:0 16px 0 0;background:#8A4A22;box-shadow:inset 1px 0 0 #5A2A12;transform-origin:100% 50%"></div>
+${msg("tbc-m0", 0.2, 1.4, ['<span class="hl">Step 4</span> 的門……打開了？'])}
+<div id="tbc-glow" class="layer" style="background:#FFF4C0"></div>
+<div id="tbc-sky" class="clip" data-start="1.8" data-duration="7.2" style="position:absolute;inset:0">
+  ${NIGHT}
+  <img id="tbc-ray" src="${P}/rayquaza-silhouette.png" style="left:112px;top:20px;width:96px;height:96px" alt="" />
+  <div id="tbc-flash" class="layer" style="background:#F0F4FF"></div>
+  <div id="tbc-box" class="clip" data-start="3.2" data-duration="5.8" style="position:absolute;inset:0">${BOX}</div>
+  <div id="tbc-bar" class="clip" data-start="5.4" data-duration="3.6" style="position:absolute;inset:0">
+    <div id="tbc-barbg" class="px" style="left:0;top:0;width:320px;height:32px;background:#000"></div>
+    ${TBC_TEXT("tbc-tbct", 3)}
+  </div>
+</div>
+${msg("tbc-m1", 3.3, 5.7, ['<span class="hl">Step 4</span>・再往後', "人用意圖決定方向"])}`,
+  `  tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
+  tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
+  tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
+  tl.fromTo("#tbc-ray", { y: -80 }, { y: 0, duration: 1.0, ease: "steps(10)" }, 1.9);
+  tl.fromTo("#tbc-ray", { x: 0 }, { x: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 14, immediateRender: false }, 3.0);
+  tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power2.out" }, 1.8);
+  tl.fromTo("#tbc-flash", { opacity: 0.8 }, { opacity: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, 2.3);
+  tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 4.4);
+  tl.fromTo("#tbc-barbg", { y: -32 }, { y: 0, duration: 0.3, ease: "power2.out", snap: "y" }, 5.4);
+  tl.fromTo("#tbc-tbct", { x: 260 }, { x: 0, duration: 0.45, ease: "power3.out", snap: "x" }, 5.6);`,
 );
-audioCues.push(["boom", "assets/sfx/boom.wav", AT.tbc.start + 0.1, 2.5, 0.9]);
+audioCues.push([CUR, "tbc-door", "assets/sfx/bump.wav", AT.tbc.start + 0.4, 0.15, 0.6]);
+audioCues.push([CUR, "tbc-thunder1", "assets/sfx/thunder.wav", AT.tbc.start + 1.8, 2.2, 0.9]);
+audioCues.push([CUR, "tbc-boom", "assets/sfx/boom.wav", AT.tbc.start + 1.9, 2.5, 0.9]);
+audioCues.push([CUR, "tbc-thunder2", "assets/sfx/thunder.wav", AT.tbc.start + 4.4, 2.2, 0.8]);
 
-// ── 配樂 ───────────────────────────────────────────────────
-const music = [
-  ["bgm-oak", `${P}/bgm-oak.mp3`, 0, AT.vs1.start, 0.55, 1.0],
-  ["bgm-keyitem", `${P}/bgm-key-item.mp3`, AT.lab.start + 1.2, 3.4, 0.8, 0],
-  ["bgm-battle1", `${P}/bgm-battle.mp3`, AT.vs1.start, AT.win1.start - AT.vs1.start, 0.5, 0.4],
-  ["bgm-victory1", `${P}/bgm-victory.mp3`, AT.win1.start, 5, 0.55, 0.8],
-  ["bgm-battle2", `${P}/bgm-battle.mp3`, AT.vs2.start, AT.win2.start - AT.vs2.start, 0.5, 0.4],
-  ["bgm-victory2", `${P}/bgm-victory.mp3`, AT.win2.start, 5, 0.55, 0.8],
-];
-const audio = [
-  ...music.map(([id, src, s, d, v, fo]) => `<audio id="${id}" src="${src}" data-start="${r(s)}" data-duration="${r(d)}" data-volume="${v}"${fo ? ` data-fade-out="${fo}"` : ""}></audio>`),
-  ...audioCues.map(([id, src, s, d, v]) => `<audio id="${id.replace(/\./g, "-")}" src="${src}" data-start="${r(s)}" data-duration="${r(d)}" data-volume="${v}"></audio>`),
-];
+// ── 配樂（每集各自的時間）──────────────────────────────────
+const MUSIC = {
+  ep1: [
+    ["bgm-oak", `${P}/bgm-oak.mp3`, 0, AT.vs1.start, 0.55, 1.0],
+    ["bgm-keyitem", `${P}/bgm-key-item.mp3`, AT.lab.start + 1.2, 3.4, 0.8, 0],
+    ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs1.start, AT.win1.start - AT.vs1.start, 0.5, 0.4],
+    ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win1.start, AT.win1.dur, 0.55, 1.0],
+  ],
+  ep2: [
+    ["bgm-oak", `${P}/bgm-oak.mp3`, 0, AT.vs2.start, 0.45, 0.8],
+    ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs2.start, AT.win2.start - AT.vs2.start, 0.5, 0.4],
+    ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win2.start, AT.win2.dur, 0.55, 1.0],
+  ],
+};
 
-// ── index.html ─────────────────────────────────────────────
-const hosts = SCENES.map(
-  ([id], i) => `      <div id="${id}" data-composition-id="${id}" data-composition-src="compositions/${id}.html" data-start="${r(AT[id].start)}" data-duration="${r(AT[id].dur)}" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>`,
-).join("\n");
-writeFileSync(
-  join(root, "index.html"),
-  `<!doctype html>
+// ── 每集一個 HyperFrames 專案（parts/ep1、parts/ep2），共用 assets 與 compositions ──
+for (const [part, list] of Object.entries(PARTS)) {
+  const dir = join(root, "parts", part);
+  mkdirSync(dir, { recursive: true });
+  for (const link of ["assets", "compositions"]) {
+    try {
+      symlinkSync(join("..", "..", link), join(dir, link));
+    } catch (e) {
+      if (e.code !== "EEXIST") throw e;
+    }
+  }
+  for (const f of ["hyperframes.json", "package.json"]) copyFileSync(join(root, f), join(dir, f));
+  writeFileSync(join(dir, "meta.json"), JSON.stringify({ id: `league-${part}`, name: `league-${part}` }, null, 2));
+  const hosts = list
+    .map(
+      ([id]) =>
+        `      <div id="${id}" data-composition-id="${id}" data-composition-src="compositions/${id}.html" data-start="${r(AT[id].start)}" data-duration="${r(AT[id].dur)}" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>`,
+    )
+    .join("\n");
+  const audio = [
+    ...MUSIC[part].map(
+      ([id, src, s, d, v, fo]) =>
+        `<audio id="${id}" src="${src}" data-start="${r(s)}" data-duration="${r(d)}" data-volume="${v}"${fo ? ` data-fade-out="${fo}"` : ""}></audio>`,
+    ),
+    ...audioCues
+      .filter(([sc]) => PART_OF[sc] === part)
+      .map(([, id, src, s, d, v]) => `<audio id="${id}" src="${src}" data-start="${r(s)}" data-duration="${r(d)}" data-volume="${v}"></audio>`),
+  ];
+  writeFileSync(
+    join(dir, "index.html"),
+    `<!doctype html>
 <html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
@@ -424,7 +518,7 @@ writeFileSync(
   </head>
   <body>
     <!-- 由 scripts/build-league.mjs 產生；要改劇情請改那支腳本裡的資料 -->
-    <div id="root" data-composition-id="main" data-start="0" data-duration="${r(TOTAL)}" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="${TOTAL[part]}" data-width="1920" data-height="1080">
 ${hosts}
       ${audio.join("\n      ")}
     </div>
@@ -435,5 +529,6 @@ ${hosts}
   </body>
 </html>
 `,
-);
-console.log(`總長 ${TOTAL} 秒；場景：${SCENES.map(([id]) => `${id} ${AT[id].start}s`).join("、")}；音效 ${audioCues.length} 個`);
+  );
+  console.log(`${part}：${TOTAL[part]} 秒；${list.map(([id]) => `${id} ${r(AT[id].start)}s`).join("、")}`);
+}

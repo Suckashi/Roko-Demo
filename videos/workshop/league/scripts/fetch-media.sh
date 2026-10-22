@@ -50,6 +50,8 @@ ffmpeg -v error -y -i "$TMP/384.png" -vf "format=rgba,lutrgb=r=40:g=48:b=72" "$O
 
 # 訓練家（80×80）
 for t in oak ash sidney-gen3 phoebe-gen3; do get "$OUT/trainer-$t.png" "$SD/sprites/trainers/$t.png"; done
+# 芙蓉的剪影（第 1 集結尾預告用）
+ffmpeg -v error -y -i "$OUT/trainer-phoebe-gen3.png" -vf "format=rgba,lutrgb=r=40:g=48:b=72" "$OUT/phoebe-silhouette.png"
 
 # 配樂（《火紅／葉綠》原聲帶）
 get "$OUT/bgm-oak.mp3" "$OST/05%20-%20Professor%20Oak.mp3"

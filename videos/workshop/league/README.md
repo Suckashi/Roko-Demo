@@ -1,4 +1,7 @@
-# Roko 工作坊：小智的 Agent 聯盟挑戰（完整版，約 82 秒）
+# Roko 工作坊：小智的 Agent 聯盟挑戰（兩集，各約 1 分鐘）
+
+- 第 1 集 `parts/ep1`：大木博士 → 拿到 Clawd → 四大天王花月（守 Step 2）→ 下一位天王預告
+- 第 2 集 `parts/ep2`：上集回顧 → 四大天王芙蓉（守 Step 3）→ Step 4 To be continued
 
 劇情見 `../STORY.md`。所有場景由 `scripts/build-league.mjs` 的資料產生，要改台詞、寶可夢或時間就改那裡。
 
@@ -10,7 +13,7 @@
 bash scripts/fetch-media.sh          # PokeAPI 圖、Showdown 訓練家圖與叫聲、archive.org《火紅／葉綠》配樂
 node scripts/build-sprites.mjs       # Clawd 等像素圖與精靈球
 node scripts/bake-backgrounds.mjs <playwright-core 所在資料夾>   # 用 design/ 的風格圖烤出背景
-node scripts/build-league.mjs        # 產生 compositions/ 與 index.html
-npx hyperframes check
-npx hyperframes render --quality looks --output renders/league.mp4
+node scripts/build-league.mjs        # 產生 compositions/ 與 parts/ep1、parts/ep2
+cd parts/ep1 && npx hyperframes check && npx hyperframes render --quality looks --output ../../renders/ep1.mp4
+cd ../ep2 && npx hyperframes check && npx hyperframes render --quality looks --output ../../renders/ep2.mp4
 ```
