@@ -41,26 +41,35 @@ const TRAINERS = [
     step: 3,
     intro: "Step 3 的門檻是信任。你準備好了嗎？",
     outro: "……好，我願意讓 Agent 自己合併了。",
-    moves: ["三層煞車", "低風險試行", "打好測試環境", "grill-with-docs", "/retro"],
-    learned: [["三層煞車", "依風險審"], ["低風險試行", "先小範圍放手"], ["打好測試環境", "測得到才放手"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"]],
+    moves: ["低風險試行", "grill-with-docs", "/retro", "打好測試環境", "三層煞車"],
+    learned: [["低風險試行", "先小範圍放手"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"], ["打好測試環境", "測得到才放手"], ["三層煞車", "依風險審"]],
     team: [
-      { name: "卡比獸", file: "snorlax", problem: "好幾份 PR 同時要審，審不完", tip: "自動檢查、AI Review 先擋，人只細審高風險的", move: "三層煞車" },
-      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併 PR", tip: "先從測試、文件這類小地方開始放手", move: "低風險試行" },
+      { name: "魔牆人偶", file: "mrmime", problem: "公司願不願意讓 Agent 自動合併 PR", tip: "先從測試、文件這類小地方開始放手", move: "低風險試行" },
+      { name: "可達鴨", file: "psyduck", problem: "AI 不懂你在說什麼", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
+      { name: "喵喵", file: "meowth", quip: "「我們又回來了！」", problem: "重複出現同樣的問題", tip: "回顧漏掉什麼，補 Skill、MCP 和 lint", move: "/retro" },
       { name: "百變怪", file: "ditto", problem: "測試環境測不到，不敢放手", tip: "把測試環境補完整，測得到的才放手", move: "打好測試環境" },
-      { name: "天然鳥", file: "xatu", problem: "AI 不懂你在說什麼", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
-      { name: "小拉達", file: "rattata", problem: "重複出現同樣的問題", tip: "回顧漏掉什麼，補 Skill、MCP 和 lint", move: "/retro" },
+      {
+        name: "卡比獸", file: "snorlax", problem: "好幾份 PR 同時要審，審不完",
+        tip: "自動檢查、AI Review 先擋，人只細審高風險的", move: "三層煞車",
+        gag: "全部逐行看",
+        // 大魔王：用錯招反而讓牠變大
+        grow: { text: "PR 越堆越多，卡比獸越長越大！", scale: 1.25 },
+        combo: ["自動化檢查", "AI Review"],
+      },
     ],
   },
 ];
 
 // 每則訊息的長度（秒）。字要讓人讀得完：一行約 0.5 秒＋每字 0.1 秒
-const T = { sent: 3.2, menu: 1.1, attack: 1.5, gagAttack: 1.4, bad: 1.1, good: 0.9, down: 3.2, hyp: 1.8, sleep: 1.3 };
+const T = { sent: 3.2, menu: 1.1, attack: 1.5, gagAttack: 1.4, bad: 1.1, good: 0.9, down: 3.2, hyp: 1.8, sleep: 1.3, grow: 2.2 };
 const ROUND = T.sent + T.menu + T.attack + T.good + T.down;
 // 有 gag 的回合先誤用一招、效果不太好，再換對的招式
 const GAG = T.menu + T.gagAttack + T.bad;
 const COUNTER = T.hyp + T.sleep - T.bad; // 對手反擊（例如催眠術）取代「效果不太好」
 const COMBO = (n) => T.menu + n * (T.gagAttack + T.bad); // 連續單招：選一次招式，每招各打一點
-const roundLength = (p) => ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0) + (p.combo ? COMBO(p.combo.length) : 0);
+const GROW = T.grow - T.bad; // 對手變大（取代「效果不太好」）
+const roundLength = (p) =>
+  ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0) + (p.grow ? GROW : 0) + (p.combo ? COMBO(p.combo.length) : 0);
 const INTRO = 4.2; // 對戰開場：天王撂話，小智喊「去吧！Clawd！」丟出精靈球
 const OUTRO = 2.8; // 對戰收場：天王認輸
 const battleLength = (t) => INTRO + t.team.reduce((sum, p) => sum + roundLength(p), 0) + OUTRO;
@@ -441,7 +450,7 @@ TRAINERS.forEach((tr, ti) => {
     const top = FOE_FEET - sh.h;
     const fid = `${id}-p${pi}`;
     names.push(`<div id="${fid}-name" class="t gtx clip" data-start="${r(t0)}" data-duration="${len}" style="left:8px;top:2px">${p.name}</div>`);
-    foes += `<div id="${fid}" class="clip" data-start="${r(t0)}" data-duration="${len}" data-layout-allow-overflow style="position:absolute;left:${left}px;top:${top}px;width:${sh.w}px;height:${sh.h}px;overflow:hidden${p.scale ? `;transform:scale(${p.scale});transform-origin:50% 100%` : ""}">
+    foes += `<div id="${fid}" class="clip" data-start="${r(t0)}" data-duration="${len}" data-layout-allow-overflow style="position:absolute;left:${left}px;top:${top}px;width:${sh.w}px;height:${sh.h}px;overflow:hidden;transform-origin:50% 100%${p.scale ? `;transform:scale(${p.scale})` : ""}">
   <div id="${fid}-s" class="px" style="left:0;top:0;width:${sh.w}px;height:${sh.h}px;background:url('${P}/${p.file}-sheet.png') 0 0 / ${sh.w * sh.frames}px ${sh.h}px;transform-origin:50% 100%"></div>
 </div>
 ${pokeball(`${fid}-ball`, t0, [330, -10])}
@@ -450,7 +459,7 @@ ${pokeball(`${fid}-ball`, t0, [330, -10])}
 </div>
 `;
     let k = t0;
-    let m = msg(`${fid}-a`, k, T.sent, [`${tr.name}派出了<span class="hl">${p.name}</span>！`, `<span class="stuck">卡在：${p.problem}</span>`]);
+    let m = msg(`${fid}-a`, k, T.sent, [`${tr.name}派出了<span class="hl">${p.name}</span>！${p.quip ?? ""}`, `<span class="stuck">卡在：${p.problem}</span>`]);
     script += `  playSheet($("#${fid}-s"), ${sh.frames}, ${sh.fps}, ${sh.w}, ${r(t0)}, ${len});
 ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
   tl.fromTo("#${fid}-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, ${r(t0 + 0.35)});
@@ -513,6 +522,14 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
         foes += sleepFx(`${fid}-zz-fx`, k, T.sleep);
         script += sleepJs(`${fid}-zz-fx`, k, `#${id}-clawd`, T.sleep);
         k += T.sleep;
+      } else if (p.grow) {
+        // 用錯招，對手反而變大，畫面跟著震
+        m += msg(`${fid}-grow`, k, T.grow, [p.grow.text]);
+        script += `  tl.fromTo("#${fid}", { scale: ${p.scale ?? 1} }, { scale: ${p.grow.scale}, duration: 0.6, ease: "steps(6)", immediateRender: false }, ${r(k + 0.3)});
+  tl.fromTo("#${id}-cam", { x: 0 }, { x: 3, duration: 0.05, ease: "steps(1)", yoyo: true, repeat: 7, immediateRender: false }, ${r(k + 0.3)});
+  tl.set("#${id}-cam", { x: 0 }, ${r(k + 0.72)});\n`;
+        audioCues.push([CUR, `grow-${fid}`, `${P}/${p.file}-cry.mp3`, base + k + 0.3, 1.8, 0.7]);
+        k += T.grow;
       } else {
         m += msg(`${fid}-bad`, k, T.bad, ["效果不太好…"]);
         script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
@@ -632,12 +649,17 @@ TRAINERS.forEach((tr, i) => {
   const id = `learn${i + 1}`;
   CUR = id;
   const ROW0 = 30;
+  // 招式少時名稱與說明分兩行（長名稱如 dev-workflow-tdd 才放得下）；多時一行一招
+  const twoLine = tr.learned.length <= 3;
   const rows = tr.learned
-    .map(([mv, desc], j) => `<div id="${id}-r${j}" class="layer" style="opacity:0">
-  <div class="t gtx" style="left:122px;top:${ROW0 + j * 19}px">▸</div>
-  <div class="t hl" style="left:132px;top:${ROW0 + j * 19}px">${mv}</div>
-  <div class="t gtx" style="left:238px;top:${ROW0 + j * 19}px">${desc}</div>
-</div>`)
+    .map(([mv, desc], j) => {
+      const y = twoLine ? ROW0 + j * 31 : ROW0 + j * 19;
+      return `<div id="${id}-r${j}" class="layer" style="opacity:0">
+  <div class="t gtx" style="left:122px;top:${y}px">▸</div>
+  <div class="t hl" style="left:132px;top:${y}px">${mv}</div>
+  <div class="t gtx" style="left:${twoLine ? 144 : 238}px;top:${twoLine ? y + 14 : y}px">${desc}</div>
+</div>`;
+    })
     .join("\n");
   scene(
     id,

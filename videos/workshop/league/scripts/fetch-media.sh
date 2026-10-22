@@ -36,11 +36,11 @@ pokemon 79 slowpoke    # 呆呆獸
 pokemon 51 dugtrio     # 三地鼠
 pokemon 491 darkrai    # 達克萊伊
 # 芙蓉：守 Step 3
-pokemon 143 snorlax    # 卡比獸
-pokemon 19 rattata     # 小拉達
-pokemon 202 wobbuffet  # 果然翁
+pokemon 122 mrmime     # 魔牆人偶
+pokemon 54 psyduck     # 可達鴨
+pokemon 52 meowth      # 喵喵
 pokemon 132 ditto      # 百變怪
-pokemon 178 xatu       # 天然鳥
+pokemon 143 snorlax    # 卡比獸（大魔王）
 
 # 烈空坐（Step 4，To be continued）只露剪影
 get "$TMP/384.png" "$SPR/384.png"
