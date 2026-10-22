@@ -114,7 +114,10 @@ function msg(id, start, dur, lines) {
 }
 const r = (n) => Math.round(n * 1000) / 1000;
 
-function scene(id, body, script) {
+// overlay：放在像素舞台外、用 1920×1080 螢幕座標的圖層（例如 JoJo 箭頭）
+function scene(id, body, overlayOrScript, maybeScript) {
+  const overlay = maybeScript === undefined ? "" : overlayOrScript;
+  const script = maybeScript === undefined ? overlayOrScript : maybeScript;
   const typing = msgs.map(([m, s]) => `typeMsg("#${m}", ${r(s)});`).join("\n  ");
   msgs.length = 0;
   const html = `<template>
@@ -123,6 +126,7 @@ function scene(id, body, script) {
 <div class="stage">
 ${body}
 </div>
+${overlay}
 </div>
 <script>
 (function () {
@@ -384,6 +388,13 @@ const NIGHT = `<div class="px" style="left:0;top:0;width:320px;height:45px;backg
 const BOX = `<div class="px" style="left:0;top:130px;width:320px;height:50px;background:#F8F8F8;border:3px solid #485868;box-shadow:inset 0 0 0 2px #98B0C8"></div>`;
 const TBC_TEXT = (id, top) =>
   `<div id="${id}" class="t" style="left:84px;top:${top}px;font-size:24px;line-height:26px;color:#F8D030;text-shadow:2px 0 #383838,-2px 0 #383838,0 2px #383838,0 -2px #383838">To be continued…</div>`;
+// JoJo 式「To Be Continued」：畫面泛黃定格，箭頭從右邊滑進左下角（素材來自使用者提供的綠幕影片，去背後放在 assets/pokemon/jojo-arrow.png）
+const JOJO = (id, start, dur) => `<div id="${id}" class="clip" data-start="${start}" data-duration="${dur}" style="position:absolute;inset:0">
+  <div id="${id}-tint" style="position:absolute;inset:0;background:#B08850;mix-blend-mode:color;opacity:0.7"></div>
+  <img id="${id}-arrow" src="${P}/jojo-arrow.png" style="position:absolute;left:60px;top:572px;width:838px;height:198px" alt="" />
+</div>`;
+const JOJO_JS = (id, start) => `  tl.fromTo("#${id}-tint", { opacity: 0 }, { opacity: 0.7, duration: 0.15, ease: "power1.out" }, ${start});
+  tl.fromTo("#${id}-arrow", { x: 1900 }, { x: 0, duration: 0.45, ease: "power3.out" }, ${start});`;
 const OPEN_DOOR = (x) =>
   `<div class="px" style="left:${x}px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E"></div>`;
 const FLAG = `<img src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
@@ -396,12 +407,12 @@ scene(
   `${NIGHT}
 <img id="tease1-sil" src="${P}/phoebe-silhouette.png" style="left:120px;top:14px;width:80px;height:80px" alt="" />
 ${BOX}
-${msg("tease1-m1", 1.0, 6.0, ['下一位天王：<span class="hl">芙蓉</span>', "守 Step 3，帶著 6 隻寶可夢"])}
-<div id="tease1-tbc" class="clip" data-start="3.4" data-duration="3.6" style="position:absolute;inset:0">${TBC_TEXT("tease1-tbct", 100)}</div>
+${msg("tease1-m1", 1.0, 6.0, ['下一位天王：<span class="hl">芙蓉</span>', "守著 Step 3，帶著 6 隻寶可夢"])}
 <div id="tease1-fade" class="layer" style="background:#000"></div>`,
+  JOJO("tease1-jojo", 3.6, 3.4),
   `  tl.fromTo("#tease1-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
   tl.fromTo("#tease1-sil", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "steps(6)" }, 0.2);
-  tl.fromTo("#tease1-tbct", { x: 240 }, { x: 0, duration: 0.4, ease: "power3.out", snap: "x" }, 3.4);`,
+${JOJO_JS("tease1-jojo", 3.6)}`,
 );
 audioCues.push([CUR, "tease-boom", "assets/sfx/boom.wav", AT.tease1.start + 0.2, 2.5, 0.8]);
 
@@ -438,22 +449,18 @@ ${msg("tbc-m0", 0.2, 1.4, ['<span class="hl">Step 4</span> 的門……打開了
   <img id="tbc-ray" src="${P}/rayquaza-silhouette.png" style="left:112px;top:20px;width:96px;height:96px" alt="" />
   <div id="tbc-flash" class="layer" style="background:#F0F4FF"></div>
   <div id="tbc-box" class="clip" data-start="3.2" data-duration="5.8" style="position:absolute;inset:0">${BOX}</div>
-  <div id="tbc-bar" class="clip" data-start="5.4" data-duration="3.6" style="position:absolute;inset:0">
-    <div id="tbc-barbg" class="px" style="left:0;top:0;width:320px;height:32px;background:#000"></div>
-    ${TBC_TEXT("tbc-tbct", 3)}
-  </div>
 </div>
 ${msg("tbc-m1", 3.3, 5.7, ['<span class="hl">Step 4</span>・再往後', "人用意圖決定方向"])}`,
+  JOJO("tbc-jojo", 5.8, 3.2),
   `  tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
   tl.fromTo("#tbc-ray", { y: -80 }, { y: 0, duration: 1.0, ease: "steps(10)" }, 1.9);
-  tl.fromTo("#tbc-ray", { x: 0 }, { x: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 14, immediateRender: false }, 3.0);
+  tl.fromTo("#tbc-ray", { x: 0 }, { x: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, 3.0);
   tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power2.out" }, 1.8);
   tl.fromTo("#tbc-flash", { opacity: 0.8 }, { opacity: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, 2.3);
   tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 4.4);
-  tl.fromTo("#tbc-barbg", { y: -32 }, { y: 0, duration: 0.3, ease: "power2.out", snap: "y" }, 5.4);
-  tl.fromTo("#tbc-tbct", { x: 260 }, { x: 0, duration: 0.45, ease: "power3.out", snap: "x" }, 5.6);`,
+${JOJO_JS("tbc-jojo", 5.8)}`,
 );
 audioCues.push([CUR, "tbc-door", "assets/sfx/bump.wav", AT.tbc.start + 0.4, 0.15, 0.6]);
 audioCues.push([CUR, "tbc-thunder1", "assets/sfx/thunder.wav", AT.tbc.start + 1.8, 2.2, 0.9]);

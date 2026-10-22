@@ -36,12 +36,12 @@
   <img id="tbc-ray" src="assets/pokemon/rayquaza-silhouette.png" style="left:112px;top:20px;width:96px;height:96px" alt="" />
   <div id="tbc-flash" class="layer" style="background:#F0F4FF"></div>
   <div id="tbc-box" class="clip" data-start="3.2" data-duration="5.8" style="position:absolute;inset:0"><div class="px" style="left:0;top:130px;width:320px;height:50px;background:#F8F8F8;border:3px solid #485868;box-shadow:inset 0 0 0 2px #98B0C8"></div></div>
-  <div id="tbc-bar" class="clip" data-start="5.4" data-duration="3.6" style="position:absolute;inset:0">
-    <div id="tbc-barbg" class="px" style="left:0;top:0;width:320px;height:32px;background:#000"></div>
-    <div id="tbc-tbct" class="t" style="left:84px;top:3px;font-size:24px;line-height:26px;color:#F8D030;text-shadow:2px 0 #383838,-2px 0 #383838,0 2px #383838,0 -2px #383838">To be continued…</div>
-  </div>
 </div>
 <div id="tbc-m1" class="msg clip" data-start="3.3" data-duration="5.7"><div class="line gtx"><span class="hl">Step 4</span>・再往後</div><div class="line gtx">人用意圖決定方向</div></div>
+</div>
+<div id="tbc-jojo" class="clip" data-start="5.8" data-duration="3.2" style="position:absolute;inset:0">
+  <div id="tbc-jojo-tint" style="position:absolute;inset:0;background:#B08850;mix-blend-mode:color;opacity:0.7"></div>
+  <img id="tbc-jojo-arrow" src="assets/pokemon/jojo-arrow.png" style="position:absolute;left:60px;top:572px;width:838px;height:198px" alt="" />
 </div>
 </div>
 <script>
@@ -71,12 +71,12 @@
   tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
   tl.fromTo("#tbc-ray", { y: -80 }, { y: 0, duration: 1.0, ease: "steps(10)" }, 1.9);
-  tl.fromTo("#tbc-ray", { x: 0 }, { x: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 14, immediateRender: false }, 3.0);
+  tl.fromTo("#tbc-ray", { x: 0 }, { x: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, 3.0);
   tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power2.out" }, 1.8);
   tl.fromTo("#tbc-flash", { opacity: 0.8 }, { opacity: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, 2.3);
   tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 4.4);
-  tl.fromTo("#tbc-barbg", { y: -32 }, { y: 0, duration: 0.3, ease: "power2.out", snap: "y" }, 5.4);
-  tl.fromTo("#tbc-tbct", { x: 260 }, { x: 0, duration: 0.45, ease: "power3.out", snap: "x" }, 5.6);
+  tl.fromTo("#tbc-jojo-tint", { opacity: 0 }, { opacity: 0.7, duration: 0.15, ease: "power1.out" }, 5.8);
+  tl.fromTo("#tbc-jojo-arrow", { x: 1900 }, { x: 0, duration: 0.45, ease: "power3.out" }, 5.8);
   window.__timelines["tbc"] = tl;
 })();
 </script>
