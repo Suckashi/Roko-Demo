@@ -1,0 +1,95 @@
+<template>
+<style>
+  @font-face { font-family: "Fusion Pixel 12px Proportional TC"; src: url("assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2"); }
+  #root { position: absolute; inset: 0; background: #000; overflow: hidden; }
+  .stage { position: absolute; left: 0; top: 0; width: 320px; height: 180px; transform: scale(6); transform-origin: 0 0; overflow: hidden;
+    font-family: "Fusion Pixel 12px Proportional TC", sans-serif; font-size: 12px; line-height: 14px; color: #404040; }
+  .stage img, .stage .px { position: absolute; image-rendering: pixelated; }
+  .bg { left: 0; top: 0; width: 320px; height: 180px; }
+  .t { position: absolute; white-space: nowrap; }
+  .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
+  .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
+  .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
+  .msg { position: absolute; left: 10px; top: 137px; }
+  .line { display: block; width: max-content; white-space: nowrap; margin-bottom: 4px; }
+  .layer { position: absolute; inset: 0; }
+</style>
+<div id="root" data-composition-id="learn2" data-width="1920" data-height="1080">
+<div class="stage">
+<div class="px" style="left:0;top:0;width:320px;height:180px;background:#A8D0F0"></div>
+<div class="px" style="left:0;top:0;width:320px;height:20px;background:#3068B8"></div>
+<div class="t outline" style="left:8px;top:3px">Clawd 學會的招式</div>
+<div class="px" style="left:8px;top:26px;width:100px;height:98px;background:#F8F8F8;box-shadow:0 0 0 2px #485868"></div>
+<div class="px" style="left:116px;top:26px;width:198px;height:98px;background:#F8F8F8;box-shadow:0 0 0 2px #485868"></div>
+<img id="learn2-clawd" src="assets/sprites/clawd-front.svg" style="left:23px;top:36px;width:70px;height:54px;transform-origin:50% 100%" alt="" />
+<div id="learn2-flash" class="px" style="left:18px;top:30px;width:80px;height:64px;border-radius:50%;background:#FFF8C0;opacity:0"></div>
+<div id="learn2-lv0" class="t gtx" style="left:42px;top:100px">Lv.2</div>
+<div id="learn2-lv1" class="t hl" style="left:42px;top:100px;opacity:0">Lv.3</div>
+<div id="learn2-r0" class="layer" style="opacity:0">
+  <div class="t gtx" style="left:122px;top:30px">▸</div>
+  <div class="t hl" style="left:132px;top:30px">低風險試行</div>
+  <div class="t gtx" style="left:232px;top:30px">先小範圍放手</div>
+</div>
+<div id="learn2-r1" class="layer" style="opacity:0">
+  <div class="t gtx" style="left:122px;top:49px">▸</div>
+  <div class="t hl" style="left:132px;top:49px">只放手測得到的</div>
+  <div class="t gtx" style="left:232px;top:49px">其餘照舊人審</div>
+</div>
+<div id="learn2-r2" class="layer" style="opacity:0">
+  <div class="t gtx" style="left:122px;top:68px">▸</div>
+  <div class="t hl" style="left:132px;top:68px">打好測試環境</div>
+  <div class="t gtx" style="left:232px;top:68px">把基礎補齊</div>
+</div>
+<div id="learn2-r3" class="layer" style="opacity:0">
+  <div class="t gtx" style="left:122px;top:87px">▸</div>
+  <div class="t hl" style="left:132px;top:87px">grill-with-docs</div>
+  <div class="t gtx" style="left:232px;top:87px">規則寫下來</div>
+</div>
+<div id="learn2-r4" class="layer" style="opacity:0">
+  <div class="t gtx" style="left:122px;top:106px">▸</div>
+  <div class="t hl" style="left:132px;top:106px">/retro</div>
+  <div class="t gtx" style="left:232px;top:106px">回顧後改環境</div>
+</div>
+<div class="px" style="left:0;top:130px;width:320px;height:50px;background:#F8F8F8;border:3px solid #485868;box-shadow:inset 0 0 0 2px #98B0C8"></div>
+<div id="learn2-m1" class="msg clip" data-start="0.3" data-duration="6.7"><div class="line gtx"><span class="hl">Clawd</span> 升到 Lv.3 了！</div><div class="line gtx">這集學會了 5 個招式</div></div>
+<div id="learn2-fade" class="layer" style="background:#fff"></div>
+</div>
+
+</div>
+<script>
+(function () {
+
+  const tl = gsap.timeline({ paused: true });
+  const $ = (s) => document.querySelector(s);
+  function playSheet(el, frames, fps, w, start, dur) {
+    const p = { t: 0 };
+    tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
+      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+  }
+  function type(line, start) {
+    const n = [...line.textContent].length;
+    const d = n * 0.035;
+    tl.fromTo(line, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: d, ease: "steps(" + n + ")" }, start);
+    return start + d;
+  }
+  function typeMsg(sel, start) {
+    let t = start;
+    document.querySelector(sel).querySelectorAll(".line").forEach((l) => { t = type(l, t) + 0.08; });
+  }
+
+  typeMsg("#learn2-m1", 0.3);
+  tl.fromTo("#learn2-fade", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "steps(3)" }, 0);
+  tl.fromTo("#learn2-flash", { opacity: 0 }, { opacity: 0.9, duration: 0.08, ease: "steps(1)", yoyo: true, repeat: 3 }, 0.9);
+  tl.fromTo("#learn2-clawd", { y: 0 }, { y: -6, duration: 0.12, ease: "steps(2)", yoyo: true, repeat: 3, snap: "y" }, 0.9);
+  tl.set("#learn2-lv0", { opacity: 0 }, 1.1);
+  tl.set("#learn2-lv1", { opacity: 1 }, 1.1);
+  tl.fromTo("#learn2-r0", { opacity: 0, x: 6 }, { opacity: 1, x: 0, duration: 0.15, ease: "steps(3)", snap: "x" }, 1.6);
+  tl.fromTo("#learn2-r1", { opacity: 0, x: 6 }, { opacity: 1, x: 0, duration: 0.15, ease: "steps(3)", snap: "x" }, 2.15);
+  tl.fromTo("#learn2-r2", { opacity: 0, x: 6 }, { opacity: 1, x: 0, duration: 0.15, ease: "steps(3)", snap: "x" }, 2.7);
+  tl.fromTo("#learn2-r3", { opacity: 0, x: 6 }, { opacity: 1, x: 0, duration: 0.15, ease: "steps(3)", snap: "x" }, 3.25);
+  tl.fromTo("#learn2-r4", { opacity: 0, x: 6 }, { opacity: 1, x: 0, duration: 0.15, ease: "steps(3)", snap: "x" }, 3.8);
+  window.__timelines["learn2"] = tl;
+})();
+</script>
+</template>
