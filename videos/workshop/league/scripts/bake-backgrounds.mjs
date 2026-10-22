@@ -13,11 +13,12 @@ mkdirSync(tmp, { recursive: true });
 
 const hideText = "color: transparent !important; text-shadow: none !important;";
 const jobs = {
-  oak: { src: "f1-oak.html", css: ".msgbox .lines{display:none}" },
+  // 人物（大木博士、小智）另外放成會動的角色，背景只留場景
+  oak: { src: "f1-oak.html", css: 'img[src*="trainers/"], .msgbox .lines {display:none}' },
   lab: {
     src: "f2-starter.html",
     css: `img[src*="clawd-front"], div[style*="pokeball"], svg[style*="left:106px"], svg[style*="left:127px"],
-          svg[style*="left:197px"], svg[style*="left:123px"], svg[style*="left:199px"], .msgbox .lines {display:none}`,
+          svg[style*="left:197px"], svg[style*="left:123px"], svg[style*="left:199px"], img[src*="trainers/"], .msgbox .lines {display:none}`,
   },
   hall: {
     src: "f3-league.html",

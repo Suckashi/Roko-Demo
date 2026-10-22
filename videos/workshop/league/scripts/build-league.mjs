@@ -17,13 +17,15 @@ const TRAINERS = [
     name: "花月",
     sprite: "trainer-sidney-gen3.png",
     step: 2,
+    intro: "一個人帶好幾個 Agent？先過我這關！",
+    outro: "……好吧，Step 2 的門為你打開。",
     moves: ["TDD 自我驗證", "多開 Session", "grill-with-docs", "Git Worktree"],
     learned: [["TDD 自我驗證", "它自己跑測試"], ["多開 Session", "不用乾等"], ["grill-with-docs", "先問清楚"], ["Git Worktree", "各改各的"]],
     team: [
-      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", move: "TDD 自我驗證", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
-      { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", move: "多開 Session", gag: "泡咖啡等它" },
-      { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", move: "grill-with-docs" },
-      { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", move: "Git Worktree" },
+      { name: "引夢貘人", file: "hypno", problem: "盯著它，怕它做錯", tip: "Agent 自己跑測試，你看證據就好", move: "TDD 自我驗證", gag: "一直盯著看", counter: { move: "催眠術", after: "<span class=\"hl\">Clawd</span> 睡著了…" } },
+      { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", tip: "它在跑的時候，再開一個做別的事", move: "多開 Session", gag: "泡咖啡等它" },
+      { name: "可達鴨", file: "psyduck", problem: "需求講不清楚，它會做歪", tip: "讓 Agent 先追問，需求清楚再動手", move: "grill-with-docs" },
+      { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", tip: "每個 Agent 一份 worktree，互不干擾", move: "Git Worktree" },
     ],
   },
   {
@@ -31,26 +33,30 @@ const TRAINERS = [
     name: "芙蓉",
     sprite: "trainer-phoebe-gen3.png",
     step: 3,
+    intro: "Step 3 的門檻是信任。你準備好了嗎？",
+    outro: "……好，我願意讓 Agent 自己合併了。",
     moves: ["低風險試行", "只放手測得到的", "打好測試環境", "grill-with-docs", "/retro"],
     learned: [["低風險試行", "先小範圍放手"], ["只放手測得到的", "其餘照舊人審"], ["打好測試環境", "把基礎補齊"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"]],
     team: [
-      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併", move: "低風險試行", gag: "直接全面開放" },
-      { name: "百變怪", file: "ditto", problem: "敢不敢放手，要看測不測得到", move: "只放手測得到的" },
-      { name: "樹才怪", file: "sudowoodo", problem: "測試環境不完整，上線前才測得出來", move: "打好測試環境" },
-      { name: "天然鳥", file: "xatu", problem: "業務規則還有一部分沒寫下來", move: "grill-with-docs" },
-      { name: "小拉達", file: "rattata", problem: "自動驗證抓不到 Reviewer 會挑的問題", move: "/retro" },
+      { name: "果然翁", file: "wobbuffet", problem: "公司願不願意讓 Agent 自動合併", tip: "先從測試、文件這類小地方開始放手", move: "低風險試行", gag: "直接全面開放" },
+      { name: "百變怪", file: "ditto", problem: "敢不敢放手，要看測不測得到", tip: "測得到的才放手，抽查有問題就改環境", move: "只放手測得到的" },
+      { name: "樹才怪", file: "sudowoodo", problem: "測試環境不完整，上線前才測得出來", tip: "把測試環境補完整，問題才測得出來", move: "打好測試環境" },
+      { name: "天然鳥", file: "xatu", problem: "業務規則還有一部分沒寫下來", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
+      { name: "小拉達", file: "rattata", problem: "自動驗證抓不到 Reviewer 會挑的問題", tip: "回顧漏掉什麼，補 Skill、MCP 和 lint", move: "/retro" },
     ],
   },
 ];
 
-// 每場 6 秒；每位天王第一場先選錯招，多 2.6 秒
-const ROUND = 6;
-const GAG = 2.6;
+// 每則訊息的長度（秒）。字要讓人讀得完：一行約 0.5 秒＋每字 0.1 秒
+const T = { sent: 3.2, menu: 1.1, attack: 1.5, gagAttack: 1.4, bad: 1.1, good: 0.9, down: 3.2, hyp: 1.8, sleep: 1.3 };
+const ROUND = T.sent + T.menu + T.attack + T.good + T.down;
 // 有 gag 的回合先誤用一招、效果不太好，再換對的招式
-const COUNTER = 1.6; // 對手反擊（例如催眠術）多出來的時間
+const GAG = T.menu + T.gagAttack + T.bad;
+const COUNTER = T.hyp + T.sleep - T.bad; // 對手反擊（例如催眠術）取代「效果不太好」
 const roundLength = (p) => ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0);
-const INTRO = 1.4; // 對戰開場：「去吧！Clawd！」丟出精靈球
-const battleLength = (t) => INTRO + t.team.reduce((sum, p) => sum + roundLength(p), 0);
+const INTRO = 4.2; // 對戰開場：天王撂話，小智喊「去吧！Clawd！」丟出精靈球
+const OUTRO = 2.8; // 對戰收場：天王認輸
+const battleLength = (t) => INTRO + t.team.reduce((sum, p) => sum + roundLength(p), 0) + OUTRO;
 const LEARN = 7; // 每集結尾：Clawd 升級、列出學會的招式
 
 // 兩集的場景順序與長度（秒）；每集的時間從 0 開始
@@ -82,6 +88,7 @@ const CSS = `
   .t { position: absolute; white-space: nowrap; }
   .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
   .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
   .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
   .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
   .msg { position: absolute; left: 10px; top: 137px; }
@@ -158,9 +165,12 @@ CUR = "oak";
 scene(
   "oak",
   `<img class="bg" src="${P}/bg-oak.png" alt="" />
+<img id="oak-oak" src="${P}/trainer-oak.png" style="left:88px;top:39px;width:80px;height:80px" alt="" />
 ${msg("oak-m1", 0.4, 5.6, ["歡迎來到 Agent 的世界！", '我是<span class="hl">大木博士</span>。你還沒有夥伴吧？'])}
 <div id="oak-fade" class="layer" style="background:#fff"></div>`,
-  `  tl.fromTo("#oak-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power1.out" }, 0);`,
+  `  tl.fromTo("#oak-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power1.out" }, 0);
+  tl.fromTo("#oak-oak", { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "steps(4)", snap: "x" }, 0.1);
+  [1.6, 2.9, 4.2, 5.3].forEach((t) => tl.fromTo("#oak-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, t));`,
 );
 
 // ── 研究所：拿到 Clawd ─────────────────────────────────────
@@ -179,6 +189,8 @@ const sparkles = [
 scene(
   "lab",
   `<img class="bg" src="${P}/bg-lab.png" alt="" />
+<img id="lab-ash" src="${P}/trainer-ash.png" style="left:14px;top:50px;width:80px;height:80px" alt="" />
+<img id="lab-oak" src="${P}/trainer-oak.png" style="left:234px;top:48px;width:80px;height:80px" alt="" />
 <img id="lab-ball" src="${P}/pokeball.svg" style="left:154px;top:82px;width:12px;height:12px" alt="" />
 <div id="lab-flash" class="px" style="left:140px;top:68px;width:40px;height:40px;border-radius:50%;background:#fff;opacity:0"></div>
 <div id="lab-clawd" class="px" style="left:143px;top:67px;width:35px;height:27px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 70px 27px;transform-origin:50% 100%"></div>
@@ -189,6 +201,9 @@ ${msg("lab-m1", 1.2, 4.8, ['<span class="hl">小智</span>得到了 <span class=
   tl.fromTo("#lab-flash", { scale: 0, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.3, ease: "power2.out" }, 1.0);
   tl.fromTo("#lab-clawd", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(1.7)" }, 1.05);
   playSheet($("#lab-clawd"), 2, 2.5, 35, 1.4, 4.6);
+  tl.fromTo("#lab-ash", { y: 0 }, { y: -6, duration: 0.15, ease: "steps(3)", yoyo: true, repeat: 3, snap: "y" }, 1.5);
+  tl.fromTo("#lab-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1 }, 0.3);
+  tl.fromTo("#lab-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, 3.4);
   document.querySelectorAll("#lab-sparkles .t").forEach((s, i) => {
     tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 7 }, 1.25 + i * 0.08);
   });`,
@@ -209,7 +224,7 @@ CUR = "hall";
 scene(
   "hall",
   `<img class="bg" src="${P}/bg-hall.png" alt="" />
-<div id="hall-arrow" class="t" style="left:35px;top:2px;color:#F8D030;text-shadow:1px 1px #383838">▼</div>
+<div id="hall-arrow" class="t" style="left:35px;top:2px;color:#F8D030;text-shadow:1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838, 1px 1px #383838">▼</div>
 <div id="hall-clawd" class="px" style="left:23px;top:100px;width:35px;height:27px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
 ${msg("hall-m1", 0.3, 4.5, ["四大天王：打贏一位，才能走到下一個 Step", '今天的目標：走到 <span class="hl">Step 2</span>'])}
 ${WIPE("hall-wipe", 4.8, 0.7)}`,
@@ -367,12 +382,15 @@ TRAINERS.forEach((tr, ti) => {
 <img class="bg" src="${P}/bg-battle.png" alt="" />
 <img src="${S}/base-foe.svg" style="left:194px;top:53px;width:112px;height:22px" alt="" />
 <img src="${S}/base-player.svg" style="left:6px;top:108px;width:140px;height:26px" alt="" />
+<img id="${id}-foe-tr" src="${P}/${tr.sprite}" style="left:${FOE_X - 40}px;top:${FOE_FEET - 78}px;width:80px;height:80px" alt="" />
+<img id="${id}-ash" src="${P}/trainer-ash.png" style="left:36px;top:52px;width:80px;height:80px;transform:scaleX(-1)" alt="" />
 <div id="${id}-clawd" class="px" style="left:41px;top:66px;width:70px;height:54px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 140px 54px;transform-origin:50% 100%"></div>
 <div id="${id}-php" class="hpbox" style="left:168px;top:77px;width:148px;height:51px">
   <div class="in"></div>
   <div class="t gtx" style="left:8px;top:2px">Clawd</div><div class="t gtx" style="right:9px;top:2px">Lv.${ti + 1}</div>
-  <div class="cap" style="left:40px;top:17px;width:100px"><div class="lab">HP</div><div class="trk"><i style="width:77px"></i></div></div>
-  <div class="t gtx" style="right:9px;top:28px">20/20</div>
+  <div class="cap" style="left:40px;top:17px;width:100px"><div class="lab">HP</div><div class="trk"><i id="${id}-pbar" style="width:77px"></i></div></div>
+  <div id="${id}-hp-full" class="t gtx" style="right:9px;top:28px">20/20</div>
+  <div id="${id}-hp-hurt" class="t gtx" style="right:9px;top:28px;opacity:0">15/20</div>
 </div>
 <div id="${id}-fhp" class="hpbox" style="left:6px;top:5px;width:150px;height:33px">
   <div class="in"></div>
@@ -383,13 +401,20 @@ TRAINERS.forEach((tr, ti) => {
   const names = [];
   let foes = "";
   let menus = "";
-  // 開場：「去吧！Clawd！」精靈球從左下飛進來，打開後 Clawd 出場
-  menus += msg(`${id}-go`, 0.1, INTRO - 0.1, ['去吧！<span class="hl">Clawd</span>！']);
-  foes += pokeball(`${id}-ball`, 0.2, [-12, 150]);
-  script += pokeballJs(`${id}-ball`, 0.2, [-12, 150], [CLAWD_C[0] - 6, CLAWD_C[1] - 6]);
-  script += `  tl.fromTo("#${id}-clawd", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, 0.6);
-  tl.fromTo("#${id}-php", { x: 160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x" }, 0.8);\n`;
-  audioCues.push([CUR, `throw-${id}`, "assets/sfx/throw.wav", base + 0.2, 0.3, 0.6]);
+  // 開場：天王與小智出場、天王撂一句話；接著小智喊「去吧！Clawd！」丟出精靈球
+  const GO = INTRO - 1.3;
+  menus += msg(`${id}-hi`, 0.3, GO - 0.3, [`${tr.name}：「${tr.intro}」`]);
+  menus += msg(`${id}-go`, GO, INTRO - GO, ['<span class="hl">小智</span>：「去吧！<span class="hl">Clawd</span>！」']);
+  foes += pokeball(`${id}-ball`, GO + 0.2, [40, 80]);
+  script += `  tl.fromTo("#${id}-foe-tr", { x: 120 }, { x: 0, duration: 0.3, ease: "power2.out", snap: "x" }, 0);
+  tl.fromTo("#${id}-ash", { x: -120 }, { x: 0, duration: 0.3, ease: "power2.out", snap: "x" }, 0);
+  tl.fromTo("#${id}-foe-tr", { x: 0 }, { x: 120, duration: 0.3, ease: "power2.in", snap: "x", immediateRender: false }, ${r(GO)});
+  tl.fromTo("#${id}-ash", { y: 0 }, { y: -4, duration: 0.1, ease: "steps(2)", yoyo: true, repeat: 1, snap: "y" }, ${r(GO + 0.1)});
+  tl.fromTo("#${id}-ash", { x: 0 }, { x: -130, duration: 0.3, ease: "power2.in", snap: "x", immediateRender: false }, ${r(GO + 0.35)});
+  tl.fromTo("#${id}-clawd", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, ${r(GO + 0.6)});
+  tl.fromTo("#${id}-php", { x: 160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x" }, ${r(GO + 0.8)});\n`;
+  script += pokeballJs(`${id}-ball`, GO + 0.2, [40, 80], [CLAWD_C[0] - 6, CLAWD_C[1] - 6]);
+  audioCues.push([CUR, `throw-${id}`, "assets/sfx/throw.wav", base + GO + 0.2, 0.3, 0.6]);
   let t0 = INTRO;
   tr.team.forEach((p, pi) => {
     const gag = p.gag;
@@ -407,10 +432,8 @@ ${pokeball(`${fid}-ball`, t0, [330, -10])}
   <div class="px" style="left:0;top:0;width:40px;height:40px;border-radius:50%;background:#fff"></div>
 </div>
 `;
-    // 登場
-    body += ""; // (血條框內容在下方組合)
     let k = t0;
-    const sent = msg(`${fid}-a`, k, 2.4, [`${tr.name}派出了<span class="hl">${p.name}</span>！`, `<span class="stuck">卡在：${p.problem}</span>`]);
+    let m = msg(`${fid}-a`, k, T.sent, [`${tr.name}派出了<span class="hl">${p.name}</span>！`, `<span class="stuck">卡在：${p.problem}</span>`]);
     script += `  playSheet($("#${fid}-s"), ${sh.frames}, ${sh.fps}, ${sh.w}, ${r(t0)}, ${len});
 ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
   tl.fromTo("#${fid}-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, ${r(t0 + 0.35)});
@@ -418,22 +441,21 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
   tl.fromTo("#${id}-fhp", { x: -160 }, { x: 0, duration: 0.25, ease: "power2.out", snap: "x", immediateRender: ${pi === 0} }, ${r(t0 + 0.1)});
   tl.fromTo("#${id}-bar", { width: 77, backgroundColor: "#58D080" }, { width: 77, duration: 0.01, immediateRender: ${pi === 0} }, ${r(t0)});
 `;
-    audioCues.push([CUR, `cry-${fid}`, `${P}/${p.file}-cry.mp3`, base + t0 + 0.1, 1.8, 0.7]);
-    let m = sent;
-    k += 2.4;
+    audioCues.push([CUR, `cry-${fid}`, `${P}/${p.file}-cry.mp3`, base + t0 + 0.4, 1.8, 0.7]);
+    k += T.sent;
     const choose = (cursorMove, at, menuId, list) => {
       const idx = list.indexOf(cursorMove);
-      menus += `<div id="${menuId}" class="clip" data-start="${r(at)}" data-duration="0.8" style="position:absolute;inset:0">
+      menus += `<div id="${menuId}" class="clip" data-start="${r(at)}" data-duration="${T.menu}" style="position:absolute;inset:0">
   ${list.map((mv, mi) => `<div class="t gtx" style="left:${MENU_POS[mi][0]}px;top:${MENU_POS[mi][1]}px">${mv}</div>`).join("")}
   <div class="t gtx" style="left:${MENU_POS[idx][0] - 10}px;top:${MENU_POS[idx][1]}px">▶</div>
   <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
   <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
 </div>
 `;
-      audioCues.push([CUR, `sel-${menuId}`, "assets/sfx/select.wav", base + at + 0.6, 0.1, 0.5]);
+      audioCues.push([CUR, `sel-${menuId}`, "assets/sfx/select.wav", base + at + T.menu - 0.2, 0.1, 0.5]);
     };
     const attack = (move, at, good) => {
-      m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? 1.0 : 0.9, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
+      m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? T.attack : T.gagAttack, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
       script += `  tl.fromTo("#${id}-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, ${r(at + 0.15)});
   tl.fromTo("#${id}-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, ${r(at + 0.25)});
 `;
@@ -453,40 +475,41 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
     const menu = menuFor(tr, p.move, gag);
     if (gag) {
       choose(gag, k, `${fid}-g1`, menu);
-      k += 0.8;
+      k += T.menu;
       attack(gag, k, false);
-      k += 0.9;
+      k += T.gagAttack;
       if (p.counter) {
-        // 對手反擊：催眠術的波紋從對手飄向 Clawd，Clawd 睡著
-        m += msg(`${fid}-cm`, k, 1.4, [`<span class="hl">${p.name}</span>使出了${p.counter.move}！`]);
-        foes += hypnosisFx(`${fid}-fx`, k, 1.4);
+        // 對手反擊：催眠術的波紋從對手飄向 Clawd，Clawd 扣血、睡著
+        m += msg(`${fid}-cm`, k, T.hyp, [`<span class="hl">${p.name}</span>使出了${p.counter.move}！`]);
+        foes += hypnosisFx(`${fid}-fx`, k, T.hyp);
         script += hypnosisJs(`${fid}-fx`, `#${id}-clawd`, k);
+        script += `  tl.fromTo("#${id}-pbar", { width: 77 }, { width: 58, duration: 0.4, ease: "none", immediateRender: false }, ${r(k + 0.9)});
+  tl.set("#${id}-hp-full", { opacity: 0 }, ${r(k + 1.1)});
+  tl.set("#${id}-hp-hurt", { opacity: 1 }, ${r(k + 1.1)});\n`;
         audioCues.push([CUR, `fx-${fid}`, "assets/sfx/hypnosis.wav", base + k + 0.1, 1.4, 0.6]);
-        k += 1.4;
-        m += msg(`${fid}-zz`, k, 1.1, [p.counter.after]);
-        foes += sleepFx(`${fid}-zz-fx`, k, 1.1);
-        script += sleepJs(`${fid}-zz-fx`, k, `#${id}-clawd`, 1.1);
-        k += 1.1;
+        k += T.hyp;
+        m += msg(`${fid}-zz`, k, T.sleep, [p.counter.after]);
+        foes += sleepFx(`${fid}-zz-fx`, k, T.sleep);
+        script += sleepJs(`${fid}-zz-fx`, k, `#${id}-clawd`, T.sleep);
+        k += T.sleep;
       } else {
-        m += msg(`${fid}-bad`, k, 0.9, ["效果不太好…"]);
+        m += msg(`${fid}-bad`, k, T.bad, ["效果不太好…"]);
         script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
-        k += 0.9;
+        k += T.bad;
       }
-      choose(p.move, k, `${fid}-g2`, menu);
-      k += 0.8;
-    } else {
-      choose(p.move, k, `${fid}-m`, menu);
-      k += 0.8;
     }
+    choose(p.move, k, `${fid}-m`, menu);
+    k += T.menu;
     attack(p.move, k, true);
-    k += 1.0;
-    m += msg(`${fid}-good`, k, 0.9, ["效果絕佳！"]);
+    k += T.attack;
+    m += msg(`${fid}-good`, k, T.good, ["效果絕佳！"]);
     script += `  tl.fromTo("#${id}-cam", { x: 0 }, { x: 3, duration: 0.05, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, ${r(k)});\n`;
     script += `  tl.set("#${id}-cam", { x: 0 }, ${r(k + 0.31)});\n`;
     audioCues.push([CUR, `crit-${fid}`, "assets/sfx/crit.wav", base + k, 0.35, 0.5]);
     script += `  tl.fromTo("#${id}-bar", { width: ${gag && !p.counter ? 70 : 77}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
-    k += 0.9;
-    m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`]);
+    k += T.good;
+    // 倒下，並用一句白話說明這招為什麼有效
+    m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`, `<span class="tip">→ ${p.tip}</span>`]);
     script += `  tl.fromTo("#${fid}-s", { y: 0 }, { y: ${sh.h}, duration: 0.3, ease: "power2.in", snap: "y" }, ${r(k + 0.05)});
   tl.fromTo("#${id}-fhp", { x: 0 }, { x: -160, duration: 0.2, ease: "power2.in", snap: "x", immediateRender: false }, ${r(t0 + len - 0.3)});
 `;
@@ -494,6 +517,9 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
     menus += m;
     t0 += len;
   });
+  // 收場：天王回來認輸
+  menus += msg(`${id}-bye`, t0 + 0.3, OUTRO - 0.3, [`${tr.name}：「${tr.outro}」`]);
+  script += `  tl.fromTo("#${id}-foe-tr", { x: 120 }, { x: 0, duration: 0.3, ease: "power2.out", snap: "x", immediateRender: false }, ${r(t0)});\n`;
   body += names.join("\n") + "\n</div>\n" + foes + menus + "\n</div>";
   scene(id, body, script);
 });
@@ -627,7 +653,7 @@ scene(
   `<img class="bg" src="${P}/bg-hall.png" alt="" />
 ${OPEN_DOOR(96)}
 ${FLAG("recap2")}
-<div id="recap2-arrow" class="t" style="left:107px;top:2px;color:#F8D030;text-shadow:1px 1px #383838">▼</div>
+<div id="recap2-arrow" class="t" style="left:107px;top:2px;color:#F8D030;text-shadow:1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838, 1px 1px #383838">▼</div>
 ${HALL_CLAWD("recap2-clawd", 3)}
 ${msg("recap2-m1", 0.4, 3.9, ['上一集：打贏花月，走到了 <span class="hl">Step 2</span>', '這次的目標：走到 <span class="hl">Step 3</span>'])}
 <div id="recap2-fade" class="layer" style="background:#000"></div>
