@@ -276,6 +276,8 @@ ${msg("hall-m1", 0.3, 3.5, ["四大天王：打贏一位，才能走到下一個
 ${WIPE("hall-wipe", 3.8, 0.7)}`,
   `  tl.fromTo("#hall-clawd", { y: 12 }, { y: 0, duration: 0.8, ease: "steps(6)" }, 0.2);
   playSheet($("#hall-clawd"), 2, 2.5, 35, 0, 4.5);
+  // 走進 Step 2 的門，接著進入對戰
+  tl.fromTo("#hall-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 3.1);
 ${BLINK("hall", "hall", 3.8)[1]}
   tl.fromTo("#hall-arrow", { y: 0 }, { y: 2, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 13 }, 0.5);
 ${WIPE_JS("hall-wipe", 3.8)}`,
@@ -943,6 +945,8 @@ ${msg("recap2-m1", 0.4, 3.9, ['上一集：打贏花月，走到了 <span class=
 ${WIPE("recap2-wipe", 4.3, 0.7)}`,
   `  tl.fromTo("#recap2-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
   playSheet($("#recap2-clawd"), 2, 2.5, ${FORMS[1].w}, 0, 5);
+  // 小隊走進 Step 3 的門，接著進入對戰
+  tl.fromTo("#recap2-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 3.6);
 ${BLINK("recap2", "hall", 4.3)[1]}
   tl.fromTo("#recap2-arrow", { y: 0 }, { y: 2, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 15 }, 0.6);
 ${WIPE_JS("recap2-wipe", 4.3)}`,
