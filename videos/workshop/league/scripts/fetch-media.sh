@@ -28,6 +28,8 @@ pokemon() {
   ffmpeg -v error -y -framerate 1 -i "$TMP/$id/%03d.png" -vf "tile=${n}x1" -frames:v 1 "$OUT/$name-sheet.png"
   printf '{"frames":%d,"fps":%d,"w":%d,"h":%d}\n' "$n" "$FPS" "$w" "$h" > "$OUT/$name-sheet.json"
   get "$OUT/$name-cry.mp3" "$SD/audio/cries/$name.mp3"
+  # 倒下時的叫聲：同一聲調低音高
+  ffmpeg -v error -y -i "$OUT/$name-cry.mp3" -af "asetrate=44100*0.78,aresample=44100,afade=t=out:st=0.9:d=0.5" "$OUT/$name-faint.mp3"
   echo "$name: $n 格，每格 ${w}×${h}"
 }
 

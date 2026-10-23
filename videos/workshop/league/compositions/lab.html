@@ -23,6 +23,7 @@
 <img class="bg" src="assets/pokemon/bg-lab.png" alt="" />
 <img id="lab-ash" src="assets/pokemon/trainer-ash.png" style="left:14px;top:50px;width:80px;height:80px" alt="" />
 <img id="lab-oak" src="assets/pokemon/trainer-oak.png" style="left:234px;top:48px;width:80px;height:80px" alt="" />
+<div id="lab-blink" class="px" style="left:303px;top:168px;width:9px;height:9px;background:#F8F8F8;opacity:0"></div>
 <img id="lab-ball" src="assets/pokemon/pokeball.svg" style="left:154px;top:82px;width:12px;height:12px" alt="" />
 <div id="lab-flash" class="px" style="left:140px;top:68px;width:40px;height:40px;border-radius:50%;background:#fff;opacity:0"></div>
 <div id="lab-clawd" class="px" style="left:143px;top:67px;width:35px;height:27px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 70px 27px;transform-origin:50% 100%"></div>
@@ -58,6 +59,7 @@
   tl.fromTo("#lab-flash", { scale: 0, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.3, ease: "power2.out" }, 1.0);
   tl.fromTo("#lab-clawd", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(1.7)" }, 1.05);
   playSheet($("#lab-clawd"), 2, 2.5, 35, 1.4, 3.6);
+  tl.fromTo("#lab-blink", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 11 }, 0);
   tl.fromTo("#lab-ash", { y: 0 }, { y: -6, duration: 0.15, ease: "steps(3)", yoyo: true, repeat: 3, snap: "y" }, 1.5);
   tl.fromTo("#lab-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1 }, 0.3);
   tl.fromTo("#lab-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, 3.0);

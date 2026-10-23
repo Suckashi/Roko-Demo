@@ -26,6 +26,7 @@
 <div id="win1-tag" class="t outline" style="left:58px;top:110px;padding:0 3px;line-height:14px;height:14px;background:#2C3458">今天走到這裡</div>
 <div id="win1-door" class="px" style="left:96px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#1E1A2E;transform-origin:50% 100%"></div>
 <div id="win1-clawd" class="px" style="left:23px;top:74px;width:35px;height:27px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
+<div id="win1-blink" class="px" style="left:298px;top:161px;width:9px;height:9px;background:#F8F8F8;opacity:0"></div>
 <div id="win1-m1" class="msg clip" data-start="0.2" data-duration="4"><div class="line gtx">打贏了四大天王・<span class="hl">花月</span>！</div><div class="line gtx">走到 <span class="hl">Step 2</span> 了！Step 3 的門打開了</div></div>
 </div>
 
@@ -56,6 +57,7 @@
   tl.fromTo("#win1-tag", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "steps(2)" }, 1.1);
   tl.fromTo("#win1-door", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "steps(5)" }, 1.6);
   playSheet($("#win1-clawd"), 2, 5, 35, 0, 5);
+  tl.fromTo("#win1-blink", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 11 }, 0);
   tl.fromTo("#win1-clawd", { x: 0 }, { x: 71, duration: 1.2, ease: "none", snap: "x" }, 2.0);
   tl.fromTo("#win1-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 3.4);
   window.__timelines["win1"] = tl;
