@@ -866,20 +866,6 @@ ${msg("evo1-m2", 3.5, 2.0, ['恭喜！<span class="hl">Clawd</span> 進化成了
   audioCues.push([CUR, "evo1-done", "assets/sfx/levelup.wav", AT.evo1.start + evoDone, 0.8, 0.4]);
 }
 
-// 「學會的招式」每招前面放上它在對戰裡的特效圖案（12×12）
-const svg12 = (inner) => `<svg width="12" height="12" viewBox="0 0 12 12">${inner}</svg>`;
-const LEARN_ICON = {
-  "dev-workflow-tdd": `<div style="transform:scale(0.85);transform-origin:0 0">${CHECK}</div>`,
-  "多開 Session": `<img src="${S}/clawd-front.svg" style="position:absolute;left:0;top:2px;width:12px;height:9px" alt="" />`,
-  "Git Worktree": svg12(`<polyline points="1,10 5,10 5,3 11,3" fill="none" stroke="#58B048" stroke-width="2"/><polyline points="5,7 11,7" fill="none" stroke="#58B048" stroke-width="2"/><circle cx="10" cy="3" r="1.6" fill="#F8F8F8" stroke="#305828"/><circle cx="10" cy="7" r="1.6" fill="#F8F8F8" stroke="#305828"/>`),
-  "grill-with-docs": `<div class="t" style="left:1px;top:-2px;color:#E0A010;text-shadow:1px 1px #604000">？</div>`,
-  "grill-me": `<div class="t" style="left:1px;top:-2px;color:#E0A010;text-shadow:1px 1px #604000">？</div>`,
-  "低風險試行": `<div style="position:absolute;left:2px;top:2px;width:8px;height:8px;background:#F8B048;box-shadow:inset -2px -2px 0 #C87020, 0 0 0 1px #784010"></div>`,
-  "/retro": svg12(`<polygon points="6,2 1,6 6,10" fill="#3850A0"/><polygon points="11,2 6,6 11,10" fill="#3850A0"/>`),
-  "打好測試環境": svg12(`<rect x="0" y="7" width="5" height="4" fill="#C86848"/><rect x="6" y="7" width="6" height="4" fill="#C86848"/><rect x="3" y="2" width="6" height="4" fill="#C86848"/>`),
-  三層煞車: svg12(`<rect x="1" y="2" width="2" height="9" fill="#58D058"/><rect x="5" y="2" width="2" height="9" fill="#58A8F8"/><rect x="9" y="2" width="2" height="9" fill="#F8C030"/>`),
-};
-
 // ── 每集結尾：Clawd 升級，列出這集學會的招式 ─────────────────
 TRAINERS.forEach((tr, i) => {
   const id = `learn${i + 1}`;
@@ -894,7 +880,7 @@ TRAINERS.forEach((tr, i) => {
     .map(([mv, desc], j) => {
       const y = twoLine ? ROW0 + j * 31 : ROW0 + j * 19;
       return `<div id="${id}-r${j}" class="layer" style="opacity:0">
-  <div class="px" style="left:118px;top:${y + 1}px;width:12px;height:12px">${LEARN_ICON[mv] ?? ""}</div>
+  <div class="t gtx" style="left:122px;top:${y}px">▸</div>
   <div class="t hl" style="left:132px;top:${y}px">${mv}</div>
   <div class="t gtx" style="left:${twoLine ? 144 : 238}px;top:${twoLine ? y + 14 : y}px">${desc}</div>
 </div>`;
