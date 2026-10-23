@@ -22,12 +22,12 @@ const TRAINERS = [
     moves: ["多開 Session", "Git Worktree", "Lint", "dev-workflow-tdd"],
     learned: [["多開 Session", "效率翻倍"], ["Git Worktree", "各改各的"], ["dev-workflow-tdd", "整套流程走完"]],
     team: [
-      { name: "呆呆獸", file: "slowpoke", tag: "等它跑完", problem: "每次都要等它跑完", tip: '平行處理，<span class="key">效率翻倍</span>', move: "多開 Session", gag: "泡咖啡等它" },
+      { name: "呆呆獸", file: "slowpoke", tag: "等它跑完", problem: "每次都要等它跑完", tip: '平行處理，<span class="key">效率翻倍</span>', move: "多開 Session", gag: "泡咖啡等它", gagFx: "coffee" },
       { name: "三地鼠", file: "dugtrio", tag: "改同一份 code", problem: "同時改同一份 code，會打架", tip: '每個 Agent 一份 <span class="key">worktree</span>，互不干擾', move: "Git Worktree" },
       {
         name: "達克萊伊", file: "darkrai", tag: "一直盯著", boss: true, problem: "盯著它，怕它做錯", scale: 0.8, // 圖比較高，縮小才不會超出畫面
         tip: '整套流程自動走完，人只看<span class="key">驗證證據</span>，徹底解放注意力', move: "dev-workflow-tdd",
-        gag: "一直盯著看",
+        gag: "一直盯著看", gagFx: "stare",
         counter: { move: "暗黑洞", fx: "dark", after: '<span class="hl">Clawd</span> 睡著了，還做起了惡夢…' },
         // 單項檢查各打一點，最後用整套流程收尾
         combo: ["Lint", "Build", "Test"],
@@ -54,7 +54,7 @@ const TRAINERS = [
       {
         name: "卡比獸", file: "snorlax", tag: "PR 審不完", boss: true, scale: 0.85, problem: "好幾份 PR 同時要審，審不完",
         tip: '自動檢查、AI Review 先擋，人只細審<span class="key">高風險</span>的', move: "三層煞車",
-        gag: "全部逐行看",
+        gag: "全部逐行看", gagFx: "papers",
         // 大魔王：用錯招反而讓牠變大
         grow: { text: "PR 越堆越多，卡比獸越長越大！", scale: 1.15 },
         combo: ["自動化檢查", "AI Review"],
@@ -340,6 +340,8 @@ const hypnosisJs = (id, clawd, at) => {
 // ── 每個招式自己的特效：[html, js]，從 at 開始約 1 秒；fx 是對手中心 ──
 const CLAWD_C = [76, 90]; // Clawd 中心
 const fxClip = (id, at, inner) => `<div id="${id}" class="clip" data-start="${r(at)}" data-duration="1.3" style="position:absolute;inset:0">\n${inner}\n</div>`;
+const LINT_ICON = `<svg width="18" height="6" viewBox="0 0 18 6"><polyline points="0,5 3,1 6,5 9,1 12,5 15,1 18,5" fill="none" stroke="#E03030" stroke-width="1.5"/></svg>`;
+const BLOCK_ICON = `<div style="width:10px;height:10px;background:#F8B048;box-shadow:inset -2px -2px 0 #C87020, inset 2px 2px 0 #FFD890, 0 0 0 1px #784010"></div>`;
 const CHECK = `<svg width="14" height="12" viewBox="0 0 14 12"><polyline points="2,6 5,9 12,2" fill="none" stroke="#204818" stroke-width="5" stroke-linecap="square"/><polyline points="2,6 5,9 12,2" fill="none" stroke="#68E060" stroke-width="2.5" stroke-linecap="square"/></svg>`;
 // 從 Clawd 飛向對手（外層走直線、內層上下跳出弧線）
 const fly = (id, el, from, to, at, dur, hop) =>
@@ -349,11 +351,43 @@ const fly = (id, el, from, to, at, dur, hop) =>
   tl.set("#${id}", { opacity: 0 }, ${r(at + dur + 0.05)});`];
 const MOVE_FX = {
   // 綠色勾勾一個個跳出來：測試通過
+  // 整套流程收尾：Lint 波浪、Build 方塊、Test 勾勾先後出現，飛到中間合成一個大勾勾，綠光擴散、光芒四射、畫面閃白
   "dev-workflow-tdd": (id, at, [fx, fy]) => {
-    const pos = [[-22, -12], [8, -18], [-6, 6]];
-    return [fxClip(id, at, pos.map(([dx, dy], i) => `  <div id="${id}-c${i}" class="px" style="left:${fx + dx}px;top:${fy + dy}px;width:14px;height:12px;transform-origin:50% 50%;opacity:0">${CHECK}</div>`).join("\n")),
-      pos.map((_, i) => `  tl.fromTo("#${id}-c${i}", { scale: 0, opacity: 1 }, { scale: 1.4, opacity: 1, duration: 0.15, ease: "steps(3)", immediateRender: false }, ${r(at + 0.1 + i * 0.18)});`).join("\n")];
+    const parts = [[-28, -14, LINT_ICON, 18, 6], [24, -16, BLOCK_ICON, 10, 10], [0, 16, CHECK, 14, 12]];
+    const rays = 8;
+    const html = `  <div id="${id}-flash" class="layer" style="background:#fff;opacity:0"></div>
+  <div id="${id}-ring" class="px" style="left:${fx - 20}px;top:${fy - 20}px;width:40px;height:40px;border-radius:50%;border:3px solid #68E060;opacity:0"></div>
+${Array.from({ length: rays }, (_, n) => `  <div id="${id}-ray${n}" class="px" style="left:${fx - 1}px;top:${fy - 30}px;width:3px;height:16px;background:#C8F8A0;transform-origin:50% 30px;transform:rotate(${n * 45}deg);opacity:0"></div>`).join("\n")}
+${parts.map(([dx, dy, icon, w, h], n) => `  <div id="${id}-p${n}" class="px" style="left:${fx + dx - w / 2}px;top:${fy + dy - h / 2}px;width:${w}px;height:${h}px;opacity:0">${icon}</div>`).join("\n")}
+  <div id="${id}-big" class="px" style="left:${fx - 14}px;top:${fy - 12}px;width:28px;height:24px;transform-origin:50% 50%;opacity:0"><svg width="28" height="24" viewBox="0 0 14 12">${CHECK.replace(/<\/?svg[^>]*>/g, "")}</svg></div>
+${[[-30, -26], [30, -24], [-34, 14], [34, 16], [0, -34]].map(([dx, dy], n) => `  <div id="${id}-st${n}" class="t outline" style="left:${fx + dx - 6}px;top:${fy + dy - 7}px;color:#F8E070;opacity:0">✦</div>`).join("\n")}`;
+    let js = parts.map(([dx, dy], n) => `  tl.fromTo("#${id}-p${n}", { scale: 0, opacity: 1 }, { scale: 1, opacity: 1, duration: 0.1, ease: "steps(2)", immediateRender: false }, ${r(at + n * 0.1)});
+  tl.fromTo("#${id}-p${n}", { x: 0, y: 0 }, { x: ${-dx}, y: ${-dy}, opacity: 0, duration: 0.18, ease: "power2.in", snap: "x,y", immediateRender: false }, ${r(at + 0.4)});`).join("\n");
+    js += `
+  tl.fromTo("#${id}-flash", { opacity: 0 }, { opacity: 0.85, duration: 0.05, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, ${r(at + 0.58)});
+  tl.fromTo("#${id}-big", { scale: 0, opacity: 1 }, { scale: 1.6, opacity: 1, duration: 0.2, ease: "back.out(2)", immediateRender: false }, ${r(at + 0.6)});
+  tl.fromTo("#${id}-ring", { scale: 0.4, opacity: 1 }, { scale: 2.2, opacity: 0, duration: 0.5, ease: "power1.out", immediateRender: false }, ${r(at + 0.6)});
+${Array.from({ length: rays }, (_, n) => `  tl.fromTo("#${id}-ray${n}", { opacity: 0 }, { opacity: 1, duration: 0.06, ease: "steps(1)", yoyo: true, repeat: 3, immediateRender: false }, ${r(at + 0.62)});`).join("\n")}
+${[0, 1, 2, 3, 4].map((n) => `  tl.fromTo("#${id}-st${n}", { opacity: 0 }, { opacity: 1, duration: 0.08, ease: "steps(1)", yoyo: true, repeat: 3, immediateRender: false }, ${r(at + 0.7 + n * 0.05)});`).join("\n")}`;
+    return [fxClip(id, at, html), js];
   },
+  // 單項檢查：各自只有一個小特效
+  Lint: (id, at, [fx, fy]) => [
+    fxClip(id, at, `  <div id="${id}-i" class="px" style="left:${fx - 18}px;top:${fy + 14}px;width:36px;height:6px;opacity:0"><svg width="36" height="6" viewBox="0 0 36 6"><polyline points="0,5 3,1 6,5 9,1 12,5 15,1 18,5 21,1 24,5 27,1 30,5 33,1 36,5" fill="none" stroke="#E03030" stroke-width="1.5"/></svg></div>`),
+    `  tl.fromTo("#${id}-i", { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.2, ease: "steps(4)", immediateRender: false }, ${r(at + 0.05)});`],
+  Build: (id, at, [fx, fy]) => [
+    fxClip(id, at, `  <div id="${id}-i" class="px" style="left:${fx - 5}px;top:${FOE_FEET - 10}px;width:10px;height:10px;opacity:0">${BLOCK_ICON}</div>`),
+    `  tl.fromTo("#${id}-i", { y: -40, opacity: 1 }, { y: 0, opacity: 1, duration: 0.2, ease: "steps(4)", snap: "y", immediateRender: false }, ${r(at + 0.05)});`],
+  Test: (id, at, [fx, fy]) => [
+    fxClip(id, at, `  <div id="${id}-i" class="px" style="left:${fx - 7}px;top:${fy - 6}px;width:14px;height:12px;transform-origin:50% 50%;opacity:0">${CHECK}</div>`),
+    `  tl.fromTo("#${id}-i", { scale: 0, opacity: 1 }, { scale: 1.2, opacity: 1, duration: 0.15, ease: "steps(3)", immediateRender: false }, ${r(at + 0.05)});`],
+  // 卡比獸的單招：自動化檢查亮綠燈、AI Review 放大鏡掃過
+  自動化檢查: (id, at, [fx, fy]) => [
+    fxClip(id, at, `  <div id="${id}-i" class="px" style="left:${fx - 6}px;top:${fy - 30}px;width:12px;height:12px;border-radius:50%;background:#58E058;box-shadow:0 0 0 2px #205020;opacity:0"></div>`),
+    `  tl.fromTo("#${id}-i", { opacity: 0 }, { opacity: 1, duration: 0.08, ease: "steps(1)", yoyo: true, repeat: 3, immediateRender: false }, ${r(at + 0.05)});`],
+  "AI Review": (id, at, [fx, fy]) => [
+    fxClip(id, at, `  <div id="${id}-i" class="px" style="left:${fx - 34}px;top:${fy - 14}px;width:28px;height:28px;opacity:0"><svg width="28" height="28" viewBox="0 0 20 20"><circle cx="8" cy="8" r="6" fill="#C8E8F8" fill-opacity="0.5" stroke="#304050" stroke-width="2"/><line x1="12" y1="12" x2="18" y2="18" stroke="#304050" stroke-width="3"/></svg></div>`),
+    `  tl.fromTo("#${id}-i", { x: 0, opacity: 1 }, { x: 40, opacity: 1, duration: 0.5, ease: "steps(8)", snap: "x", immediateRender: false }, ${r(at + 0.05)});`],
   // 分出三隻 Clawd 一起衝過去：同時開好幾個 Session
   "多開 Session": (id, at, [fx, fy]) => {
     const parts = [-14, 0, 14].map((dy, i) => fly(`${id}-k${i}`, `<img src="${S}/clawd-front.svg" style="left:0;top:0;width:18px;height:14px" alt="" />`, [CLAWD_C[0] - 9, CLAWD_C[1] - 7 + dy], [fx - 9 + (i - 1) * 6, fy - 7 + dy / 2], at + i * 0.12, 0.45, 6));
@@ -408,6 +442,41 @@ ${[0, 1, 2].map((i) => `  <div id="${id}-v${i}" class="px" style="left:0;top:${3
 ${[0, 1, 2].map((i) => `  tl.fromTo("#${id}-v${i}", { y: 0, opacity: 0.8 }, { y: 30, opacity: 0.8, duration: 0.5, ease: "steps(10)", snap: "y", immediateRender: false }, ${r(at + 0.05 + i * 0.05)});
   tl.set("#${id}-v${i}", { opacity: 0 }, ${r(at + 0.6)});`).join("\n")}
   tl.fromTo("#${id}-rw", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, ${r(at + 0.1)});`],
+};
+
+// ── 用錯招的動畫（2.4 秒內演完）──
+const gagClip = (id, at, inner) => `<div id="${id}" class="clip" data-start="${r(at)}" data-duration="2.4" style="position:absolute;inset:0">\n${inner}\n</div>`;
+const GAG_FX = {
+  // Clawd 旁邊冒出一杯熱咖啡，呆呆獸頭上的沙漏慢慢轉、冒出「……」，完全沒反應
+  coffee: (id, at, [fx, fy]) => [
+    gagClip(id, at, `  <div id="${id}-cup" class="px" style="left:116px;top:96px;width:14px;height:14px;opacity:0">
+    <div class="px" style="left:0;top:2px;width:10px;height:12px;background:#F8F8F8;box-shadow:0 0 0 1px #404040"></div>
+    <div class="px" style="left:1px;top:3px;width:8px;height:2px;background:#6A3A18"></div>
+    <div class="px" style="left:10px;top:5px;width:3px;height:5px;border:1px solid #404040;border-left:0"></div>
+  </div>
+${[0, 1, 2].map((n) => `  <div id="${id}-steam${n}" class="t outline" style="left:${115 + n * 4}px;top:84px;opacity:0">~</div>`).join("\n")}
+  <div id="${id}-glass" class="t outline" style="left:${fx + 16}px;top:${fy - 30}px;opacity:0">⌛</div>
+  <div id="${id}-dots" class="px" style="left:${fx - 26}px;top:${fy - 34}px;width:30px;height:14px;background:#F8F8F8;border-radius:6px;box-shadow:0 0 0 1px #404040;opacity:0"><div class="t gtx" style="left:4px;top:0">……</div></div>`),
+    `  tl.fromTo("#${id}-cup", { y: 6, opacity: 0 }, { y: 0, opacity: 1, duration: 0.2, ease: "steps(3)", snap: "y", immediateRender: false }, ${r(at)});
+${[0, 1, 2].map((n) => `  tl.fromTo("#${id}-steam${n}", { y: 0, opacity: 0 }, { y: -8, opacity: 1, duration: 0.6, ease: "steps(4)", snap: "y", repeat: 2, immediateRender: false }, ${r(at + 0.2 + n * 0.2)});`).join("\n")}
+  tl.fromTo("#${id}-glass", { rotation: 0, opacity: 1 }, { rotation: 180, opacity: 1, duration: 0.5, ease: "steps(2)", repeat: 3, immediateRender: false }, ${r(at + 0.3)});
+  tl.fromTo("#${id}-dots", { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "steps(1)", immediateRender: false }, ${r(at + 0.9)});`],
+  // Clawd 眼睛放大，兩道虛線一直盯著對手
+  stare: (id, at, [fx, fy]) => {
+    const eyes = [[64, 85], [100, 85]];
+    return [gagClip(id, at, `${eyes.map(([x, y], n) => `  <div id="${id}-e${n}" class="px" style="left:${x - 6}px;top:${y - 6}px;width:12px;height:12px;background:#F8F8F8;box-shadow:0 0 0 1px #000;opacity:0"><div class="px" style="left:6px;top:3px;width:5px;height:6px;background:#000"></div></div>`).join("\n")}
+  <svg id="${id}-lines" class="px" style="left:0;top:0;opacity:0" width="320" height="180" viewBox="0 0 320 180">${eyes.map(([x, y]) => `<line x1="${x + 6}" y1="${y}" x2="${fx}" y2="${fy}" stroke="#F8F8F8" stroke-width="1.5" stroke-dasharray="3 3"/>`).join("")}</svg>`),
+      `${eyes.map((_, n) => `  tl.fromTo("#${id}-e${n}", { scale: 0.5, opacity: 1 }, { scale: 1, opacity: 1, duration: 0.15, ease: "steps(3)", immediateRender: false }, ${r(at)});`).join("\n")}
+  tl.fromTo("#${id}-lines", { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "steps(1)", yoyo: true, repeat: 7, immediateRender: false }, ${r(at + 0.2)});
+  tl.set("#${id}-lines", { opacity: 0 }, ${r(at + 1.1)});
+${eyes.map((_, n) => `  tl.set("#${id}-e${n}", { opacity: 0 }, ${r(at + 1.1)});`).join("\n")}`];
+  },
+  // 一張張 PR 單子飛向卡比獸、越疊越高
+  papers: (id, at, [fx]) => {
+    const sheet = `<div style="width:10px;height:12px;background:#F8F8F8;box-shadow:0 0 0 1px #606060"><div style="position:absolute;left:2px;top:3px;width:6px;height:1px;background:#A0A0A0;box-shadow:0 3px 0 #A0A0A0, 0 6px 0 #A0A0A0"></div></div>`;
+    const parts = Array.from({ length: 8 }, (_, n) => fly(`${id}-s${n}`, sheet, [CLAWD_C[0] - 5, CLAWD_C[1] - 6], [fx - 34 + (n % 4) * 18, FOE_FEET - 12 - Math.floor(n / 4) * 10], at + n * 0.1, 0.35, 16));
+    return [gagClip(id, at, parts.map((p) => p[0]).join("\n")), parts.map((p) => p[1].replace(/\n  tl\.set\("#[^"]+", \{ opacity: 0 \}, [0-9.]+\);/, "")).join("\n")];
+  },
 };
 
 // 睡著：Clawd 閉上眼睛，頭上冒出 Z z z
@@ -542,6 +611,11 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
         script += [0, 0.08, 0.16, 0.24].map((d, i) => `  tl.set("#${fid}-s", { opacity: ${i % 2} }, ${r(at + 0.95 + d)});`).join("\n") + "\n";
         audioCues.push([CUR, `hit-${fid}`, "assets/sfx/hit.wav", base + at + 0.95, 0.25, 0.6]);
       } else if (chip) {
+        if (MOVE_FX[move]) {
+          const [h, j] = MOVE_FX[move](`${fid}-cf${Math.round(at * 10)}`, at + 0.25, [FOE_X, Math.round(FOE_FEET - sh.h / 2)]);
+          foes += h + "\n";
+          script += j + "\n";
+        }
         script += [0, 0.08].map((d, i) => `  tl.set("#${fid}-s", { opacity: ${i % 2} }, ${r(at + 0.4 + d)});`).join("\n") + "\n";
         audioCues.push([CUR, `chip-${fid}-${Math.round(at * 10)}`, "assets/sfx/hit.wav", base + at + 0.4, 0.25, 0.4]);
       } else {
@@ -554,6 +628,12 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
       choose(gag, k, `${fid}-g1`, p.combo ? [...p.combo, gag] : menu);
       k += T.menu;
       attack(gag, k, false);
+      if (p.gagFx) {
+        // 用錯招也有自己的動畫（泡咖啡、一直盯著看、全部逐行看）
+        const [h, j] = GAG_FX[p.gagFx](`${fid}-gx`, k + 0.2, [FOE_X, Math.round(FOE_FEET - sh.h / 2)], `#${id}-clawd`);
+        foes += h + "\n";
+        script += j + "\n";
+      }
       k += T.gagAttack;
       if (p.counter) {
         // 對手反擊：催眠術的波紋從對手飄向 Clawd，Clawd 扣血、睡著
