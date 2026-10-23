@@ -9,7 +9,7 @@
   .t { position: absolute; white-space: nowrap; }
   .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
   .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
-  .key { color: #B8461A; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
+  .key { color: #A03A10; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
   .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
   .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
   .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
@@ -21,7 +21,7 @@
 <div class="stage">
 <img class="bg" src="assets/pokemon/bg-oak.png" alt="" />
 <img id="oak-oak" src="assets/pokemon/trainer-oak.png" style="left:88px;top:39px;width:80px;height:80px" alt="" />
-<div id="oak-m1" class="msg clip" data-start="0.4" data-duration="5.6"><div class="line gtx">歡迎來到 Agent 的世界！</div><div class="line gtx">我是<span class="hl">大木博士</span>。你還沒有夥伴吧？</div></div>
+<div id="oak-m1" class="msg clip" data-start="0.3" data-duration="4.2"><div class="line gtx">歡迎來到 Agent 的世界！</div><div class="line gtx">我是<span class="hl">大木博士</span>。你還沒有夥伴吧？</div></div>
 <div id="oak-fade" class="layer" style="background:#fff"></div>
 </div>
 
@@ -47,10 +47,10 @@
     document.querySelector(sel).querySelectorAll(".line").forEach((l) => { t = type(l, t) + 0.08; });
   }
 
-  typeMsg("#oak-m1", 0.4);
+  typeMsg("#oak-m1", 0.3);
   tl.fromTo("#oak-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power1.out" }, 0);
   tl.fromTo("#oak-oak", { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "steps(4)", snap: "x" }, 0.1);
-  [1.6, 2.9, 4.2, 5.3].forEach((t) => tl.fromTo("#oak-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, t));
+  [1.5, 2.7, 3.8].forEach((t) => tl.fromTo("#oak-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, t));
   window.__timelines["oak"] = tl;
 })();
 </script>

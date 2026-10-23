@@ -9,7 +9,7 @@
   .t { position: absolute; white-space: nowrap; }
   .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
   .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
-  .key { color: #B8461A; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
+  .key { color: #A03A10; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
   .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
   .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
   .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
@@ -26,7 +26,7 @@
 <div id="lab-flash" class="px" style="left:140px;top:68px;width:40px;height:40px;border-radius:50%;background:#fff;opacity:0"></div>
 <div id="lab-clawd" class="px" style="left:143px;top:67px;width:35px;height:27px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 70px 27px;transform-origin:50% 100%"></div>
 <div id="lab-sparkles" class="layer"><div id="lab-s0" class="t outline" style="left:136px;top:62px">✦</div><div id="lab-s1" class="t outline" style="left:182px;top:60px">✦</div><div id="lab-s2" class="t outline" style="left:132px;top:84px">✦</div><div id="lab-s3" class="t outline" style="left:186px;top:82px">✦</div></div>
-<div id="lab-m1" class="msg clip" data-start="1.2" data-duration="4.8"><div class="line gtx"><span class="hl">小智</span>得到了 <span class="hl">Clawd</span>！</div><div class="line gtx">Step 1 開始：一個人＋一隻 Agent</div></div>
+<div id="lab-m1" class="msg clip" data-start="1.1" data-duration="3.9"><div class="line gtx"><span class="hl">小智</span>得到了 <span class="hl">Clawd</span>！</div><div class="line gtx">Step 1 開始：一個人＋一隻 Agent</div></div>
 </div>
 
 </div>
@@ -51,15 +51,15 @@
     document.querySelector(sel).querySelectorAll(".line").forEach((l) => { t = type(l, t) + 0.08; });
   }
 
-  typeMsg("#lab-m1", 1.2);
+  typeMsg("#lab-m1", 1.1);
   tl.fromTo("#lab-ball", { rotation: 0 }, { rotation: 20, duration: 0.15, ease: "steps(2)", yoyo: true, repeat: 3 }, 0.3);
   tl.fromTo("#lab-ball", { opacity: 1 }, { opacity: 0, duration: 0.01 }, 1.0);
   tl.fromTo("#lab-flash", { scale: 0, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.3, ease: "power2.out" }, 1.0);
   tl.fromTo("#lab-clawd", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(1.7)" }, 1.05);
-  playSheet($("#lab-clawd"), 2, 2.5, 35, 1.4, 4.6);
+  playSheet($("#lab-clawd"), 2, 2.5, 35, 1.4, 3.6);
   tl.fromTo("#lab-ash", { y: 0 }, { y: -6, duration: 0.15, ease: "steps(3)", yoyo: true, repeat: 3, snap: "y" }, 1.5);
   tl.fromTo("#lab-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1 }, 0.3);
-  tl.fromTo("#lab-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, 3.4);
+  tl.fromTo("#lab-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, 3.0);
   document.querySelectorAll("#lab-sparkles .t").forEach((s, i) => {
     tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 7 }, 1.25 + i * 0.08);
   });

@@ -9,7 +9,7 @@
   .t { position: absolute; white-space: nowrap; }
   .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
   .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
-  .key { color: #B8461A; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
+  .key { color: #A03A10; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
   .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
   .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
   .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
@@ -24,8 +24,8 @@
 <img id="win2-flag" src="assets/sprites/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
 <div id="win2-tag" class="t outline" style="left:58px;top:110px;padding:0 3px;line-height:14px;height:14px;background:#2C3458">今天走到這裡</div>
 
-<div id="win2-clawd" class="px" style="left:94px;top:74px;width:35px;height:27px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
-<div id="win2-m1" class="msg clip" data-start="0.2" data-duration="4.8"><div class="line gtx">打贏了四大天王・<span class="hl">芙蓉</span>！</div><div class="line gtx">走到 <span class="hl">Step 3</span> 了！前面就是 Step 4</div></div>
+<div id="win2-clawd" class="px" style="left:80px;top:68px;width:63px;height:33px;background:url('assets/sprites/commander-battle-sheet.svg') 0 0 / 126px 33px"></div>
+<div id="win2-m1" class="msg clip" data-start="0.2" data-duration="4"><div class="line gtx">打贏了四大天王・<span class="hl">芙蓉</span>！</div><div class="line gtx">走到 <span class="hl">Step 3</span> 了！前面就是 Step 4</div></div>
 </div>
 
 </div>
@@ -53,8 +53,8 @@
   typeMsg("#win2-m1", 0.2);
   
   
-  playSheet($("#win2-clawd"), 2, 5, 35, 0, 6);
-  tl.fromTo("#win2-clawd", { x: 0 }, { x: 72, duration: 1.4, ease: "none", snap: "x" }, 2.6);
+  playSheet($("#win2-clawd"), 2, 5, 63, 0, 5);
+  tl.fromTo("#win2-clawd", { x: 0 }, { x: 72, duration: 1.2, ease: "none", snap: "x" }, 2.0);
   
   window.__timelines["win2"] = tl;
 })();

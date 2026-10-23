@@ -1,0 +1,96 @@
+<template>
+<style>
+  @font-face { font-family: "Fusion Pixel 12px Proportional TC"; src: url("assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2"); }
+  #root { position: absolute; inset: 0; background: #000; overflow: hidden; }
+  .stage { position: absolute; left: 0; top: 0; width: 320px; height: 180px; transform: scale(6); transform-origin: 0 0; overflow: hidden;
+    font-family: "Fusion Pixel 12px Proportional TC", sans-serif; font-size: 12px; line-height: 14px; color: #404040; }
+  .stage img, .stage .px { position: absolute; image-rendering: pixelated; }
+  .bg { left: 0; top: 0; width: 320px; height: 180px; }
+  .t { position: absolute; white-space: nowrap; }
+  .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
+  .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .key { color: #A03A10; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
+  .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
+  .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
+  .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
+  .msg { position: absolute; left: 10px; top: 137px; }
+  .line { display: block; width: max-content; white-space: nowrap; margin-bottom: 4px; }
+  .layer { position: absolute; inset: 0; }
+</style>
+<div id="root" data-composition-id="evo1" data-width="1920" data-height="1080">
+<div class="stage">
+<div class="px" style="left:0;top:0;width:320px;height:180px;background:#141424"></div>
+<div id="evo1-glow" class="px" style="left:90px;top:16px;width:140px;height:110px;border-radius:50%;background:#3A3A70;opacity:0"></div>
+<img id="evo1-a" src="assets/sprites/clawd-front.svg" style="left:125px;top:58px;width:70px;height:54px;opacity:1" alt="" />
+<img id="evo1-as" src="assets/sprites/clawd-front.svg" style="left:125px;top:58px;width:70px;height:54px;filter:brightness(0) invert(1);opacity:0" alt="" />
+<img id="evo1-bs" src="assets/sprites/commander-front.svg" style="left:97px;top:46px;width:126px;height:66px;filter:brightness(0) invert(1);opacity:0" alt="" />
+<img id="evo1-b" src="assets/sprites/commander-front.svg" style="left:97px;top:46px;width:126px;height:66px;opacity:0" alt="" />
+<div class="px" style="left:0;top:130px;width:320px;height:50px;background:#F8F8F8;border:3px solid #485868;box-shadow:inset 0 0 0 2px #98B0C8"></div>
+<div id="evo1-m1" class="msg clip" data-start="0.2" data-duration="3.2"><div class="line gtx">咦？<span class="hl">Clawd</span> 的樣子……</div></div>
+<div id="evo1-m2" class="msg clip" data-start="3.5" data-duration="2"><div class="line gtx">恭喜！<span class="hl">Clawd</span> 進化成了</div><div class="line gtx"><span class="hl">指揮官 Clawd</span>！</div></div>
+<div id="evo1-flash" class="layer" style="background:#fff;opacity:0"></div>
+<div id="evo1-fade" class="layer" style="background:#000"></div>
+</div>
+
+</div>
+<script>
+(function () {
+
+  const tl = gsap.timeline({ paused: true });
+  const $ = (s) => document.querySelector(s);
+  function playSheet(el, frames, fps, w, start, dur) {
+    const p = { t: 0 };
+    tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
+      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+  }
+  function type(line, start) {
+    const n = [...line.textContent].length;
+    const d = n * 0.035;
+    tl.fromTo(line, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: d, ease: "steps(" + n + ")" }, start);
+    return start + d;
+  }
+  function typeMsg(sel, start) {
+    let t = start;
+    document.querySelector(sel).querySelectorAll(".line").forEach((l) => { t = type(l, t) + 0.08; });
+  }
+
+  typeMsg("#evo1-m1", 0.2);
+  typeMsg("#evo1-m2", 3.5);
+  tl.fromTo("#evo1-fade", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "steps(3)" }, 0);
+  tl.set("#evo1-a", { opacity: 0 }, 1.0);
+  tl.set("#evo1-as", { opacity: 1 }, 1.0);
+  tl.set("#evo1-as", { opacity: 0 }, 1.1);
+  tl.set("#evo1-bs", { opacity: 1 }, 1.1);
+  tl.set("#evo1-as", { opacity: 1 }, 1.46);
+  tl.set("#evo1-bs", { opacity: 0 }, 1.46);
+  tl.set("#evo1-as", { opacity: 0 }, 1.76);
+  tl.set("#evo1-bs", { opacity: 1 }, 1.76);
+  tl.set("#evo1-as", { opacity: 1 }, 2.02);
+  tl.set("#evo1-bs", { opacity: 0 }, 2.02);
+  tl.set("#evo1-as", { opacity: 0 }, 2.24);
+  tl.set("#evo1-bs", { opacity: 1 }, 2.24);
+  tl.set("#evo1-as", { opacity: 1 }, 2.42);
+  tl.set("#evo1-bs", { opacity: 0 }, 2.42);
+  tl.set("#evo1-as", { opacity: 0 }, 2.57);
+  tl.set("#evo1-bs", { opacity: 1 }, 2.57);
+  tl.set("#evo1-as", { opacity: 1 }, 2.69);
+  tl.set("#evo1-bs", { opacity: 0 }, 2.69);
+  tl.set("#evo1-as", { opacity: 0 }, 2.79);
+  tl.set("#evo1-bs", { opacity: 1 }, 2.79);
+  tl.set("#evo1-as", { opacity: 1 }, 2.87);
+  tl.set("#evo1-bs", { opacity: 0 }, 2.87);
+  tl.set("#evo1-as", { opacity: 0 }, 2.95);
+  tl.set("#evo1-bs", { opacity: 1 }, 2.95);
+  tl.set("#evo1-as", { opacity: 1 }, 3.01);
+  tl.set("#evo1-bs", { opacity: 0 }, 3.01);
+  tl.set("#evo1-as", { opacity: 0 }, 3.07);
+  tl.set("#evo1-bs", { opacity: 1 }, 3.07);
+  tl.fromTo("#evo1-flash", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, 3.22);
+  tl.set("#evo1-bs", { opacity: 0 }, 3.22);
+  tl.set("#evo1-b", { opacity: 1 }, 3.22);
+  tl.fromTo("#evo1-glow", { opacity: 0 }, { opacity: 0.8, duration: 0.6, ease: "power1.in" }, 0.8);
+
+  window.__timelines["evo1"] = tl;
+})();
+</script>
+</template>

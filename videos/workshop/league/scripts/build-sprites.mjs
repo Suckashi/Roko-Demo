@@ -103,6 +103,33 @@ const walkB = walkA.map((r, i) => (i === 7 ? "...X.....X." : r));
 const WALK_PAL = { X: "#D77757", E: "#000000", o: "#5A2416" };
 save(OUT, "clawd-walk-sheet.svg", sheet([withOutline(walkA), withOutline(walkB)]), WALK_PAL);
 
+// ── 指揮官 Clawd（第 1 集結尾進化後）：大一圈的 Clawd 戴船長帽，左右各跟一隻小 Clawd ──
+// 對應 Boris 的 Step 2「指揮官」：一個人同時指揮多個分身
+const HAT = [
+  "....ooooooooooooo....",
+  "...oNNNNNNNNNNNNNo...",
+  "..oNNNNNNNGGGNNNNNo..",
+  "..oNNNNNNGGGGGNNNNo..",
+  "..oWWWWWWWWWWWWWWWo..",
+  ".oKKKKKKKKKKKKKKKKKo.",
+  "..ooooooooooooooooo..",
+];
+function commander(bob, minionBob) {
+  const main = clawdBattle(bob);
+  const mini = withOutline(minionBob ? walkB : walkA);
+  const W = 63, H = 33;
+  const g = Array.from({ length: H }, () => Array(W).fill("."));
+  const paste = (rows, x0, y0) => rows.forEach((r, y) => [...r].forEach((c, x) => { if (c !== ".") g[y0 + y][x0 + x] = c; }));
+  paste(main, 14, H - main.length);
+  paste(HAT, 14 + 7, H - main.length - 4 + bob);
+  paste(mini, 0, H - mini.length);
+  paste(mini, W - mini[0].length, H - mini.length);
+  return g.map((r) => r.join(""));
+}
+const COMMANDER_PAL = { ...CLAWD_PAL, ...WALK_PAL, N: "#283C78", G: "#F8C830", W: "#F8F8F8", K: "#202020" };
+save(OUT, "commander-battle-sheet.svg", sheet([commander(0, false), commander(1, true)]), COMMANDER_PAL);
+save(OUT, "commander-front.svg", commander(0, false), COMMANDER_PAL);
+
 // ── 地圖 ────────────────────────────────────────────────
 save(OUT, "tree.svg", [
   ".....KKKKKK.....",

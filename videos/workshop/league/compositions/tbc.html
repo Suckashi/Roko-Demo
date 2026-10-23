@@ -9,7 +9,7 @@
   .t { position: absolute; white-space: nowrap; }
   .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
   .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
-  .key { color: #B8461A; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
+  .key { color: #A03A10; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
   .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
   .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
   .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
@@ -27,7 +27,7 @@
 <div class="px" style="left:168px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#FFF4C0"></div>
 <div id="tbc-door-l" class="px" style="left:168px;top:38px;width:16px;height:61px;border-radius:16px 0 0 0;background:#8A4A22;box-shadow:inset -1px 0 0 #5A2A12;transform-origin:0 50%"></div>
 <div id="tbc-door-r" class="px" style="left:184px;top:38px;width:16px;height:61px;border-radius:0 16px 0 0;background:#8A4A22;box-shadow:inset 1px 0 0 #5A2A12;transform-origin:100% 50%"></div>
-<div id="tbc-clawd" class="px" style="left:166px;top:74px;width:35px;height:27px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
+<div id="tbc-clawd" class="px" style="left:152px;top:68px;width:63px;height:33px;background:url('assets/sprites/commander-battle-sheet.svg') 0 0 / 126px 33px"></div>
 <div id="tbc-m0" class="msg clip" data-start="0.2" data-duration="1.4"><div class="line gtx"><span class="hl">Step 4</span> 的門……打開了？</div></div>
 <div id="tbc-glow" class="layer" style="background:#FFF4C0"></div>
 <div id="tbc-sky" class="clip" data-start="1.8" data-duration="8.2" style="position:absolute;inset:0">
@@ -71,7 +71,7 @@
 
   typeMsg("#tbc-m0", 0.2);
   typeMsg("#tbc-m1", 3.3);
-  playSheet($("#tbc-clawd"), 2, 2.5, 35, 0, 1.8);
+  playSheet($("#tbc-clawd"), 2, 2.5, 63, 0, 1.8);
   tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
