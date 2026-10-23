@@ -25,7 +25,10 @@
 <img id="win2-flag" src="assets/sprites/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
 <div id="win2-tag" class="t outline" style="left:58px;top:110px;padding:0 3px;line-height:14px;height:14px;background:#2C3458">今天走到這裡</div>
 
-<div id="win2-clawd" class="px" style="left:77px;top:75px;width:68px;height:26px;background:url('assets/sprites/squad-battle-sheet.svg') 0 0 / 136px 26px"></div>
+<div id="win2-clawd" class="px" style="left:77px;top:75px;width:68px;height:26px">
+  <div id="win2-clawd-i" class="px" style="left:0;top:0;width:68px;height:26px;background:url('assets/sprites/squad-battle-sheet.svg') 0 0 / 136px 26px"></div>
+  <div id="win2-clawd-w" class="px" style="left:0;top:0;width:68px;height:26px;background:url('assets/sprites/squad-walk-sheet.svg') 0 0 / 136px 26px;opacity:0"></div>
+</div>
 <div id="win2-blink" class="px" style="left:298px;top:161px;width:9px;height:9px;background:#F8F8F8;opacity:0"></div>
 <div id="win2-m1" class="msg clip" data-start="0.2" data-duration="4"><div class="line gtx">打贏了四大天王・<span class="hl">芙蓉</span>！</div><div class="line gtx">走到 <span class="hl">Step 3</span> 了！前面就是 Step 4</div></div>
 </div>
@@ -55,7 +58,12 @@
   typeMsg("#win2-m1", 0.2);
   
   
-  playSheet($("#win2-clawd"), 2, 5, 68, 0, 5);
+  playSheet($("#win2-clawd-i"), 2, 2.5, 68, 0, 5);
+  playSheet($("#win2-clawd-w"), 2, 6, 68, 0, 5);
+  tl.set("#win2-clawd-i", { opacity: 0 }, 2);
+  tl.set("#win2-clawd-w", { opacity: 1 }, 2);
+  tl.set("#win2-clawd-i", { opacity: 1 }, 3.2);
+  tl.set("#win2-clawd-w", { opacity: 0 }, 3.2);
   tl.fromTo("#win2-blink", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 11 }, 0);
   tl.fromTo("#win2-clawd", { x: 0 }, { x: 72, duration: 1.2, ease: "none", snap: "x" }, 2.0);
   

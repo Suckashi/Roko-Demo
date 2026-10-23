@@ -77,8 +77,8 @@ const roundLength = (p) =>
 // SQUAD_MEMBERS：小隊 5 隻成員在小隊圖（68×26）裡的位置與擺動相位，要跟 build-sprites.mjs 的 SQUAD 一致
 const SQUAD_MEMBERS = [[11, 0, 0], [33, 0, 1], [0, 7, 1], [22, 7, 0], [44, 7, 1]];
 const FORMS = [
-  { name: "Clawd", battle: "clawd-battle-sheet.svg", front: "clawd-front.svg", w: 35, h: 27 },
-  { name: "Clawd 小隊", battle: "squad-battle-sheet.svg", front: "squad-front.svg", w: 68, h: 26, members: SQUAD_MEMBERS, member: { sheet: "clawd-small-sheet.svg", w: 24, h: 19 } },
+  { name: "Clawd", battle: "clawd-battle-sheet.svg", walk: "clawd-walk-big-sheet.svg", front: "clawd-front.svg", w: 35, h: 27 },
+  { name: "Clawd 小隊", battle: "squad-battle-sheet.svg", walk: "squad-walk-sheet.svg", front: "squad-front.svg", w: 68, h: 26, members: SQUAD_MEMBERS, member: { sheet: "clawd-small-sheet.svg", w: 24, h: 19 } },
 ];
 const INTRO = 3.6; // 對戰開場：天王撂話，小智喊「去吧！Clawd！」丟出精靈球
 const OUTRO = 2.8; // 對戰收場：天王認輸
@@ -148,6 +148,8 @@ const msgs = [];
 let CUR = ""; // 目前產生的場景（音效依它換算成集內時間）
 const audioCues = []; // [場景, id, src, 集內時間, 長度, 音量]
 const plain = (html) => html.replace(/<[^>]+>/g, "");
+// 像素字寬估算：全形 12px、半形 6px
+const textWidth = (t) => [...plain(t)].reduce((w, c) => w + (c.charCodeAt(0) > 0xff ? 12 : 6), 0);
 function msg(id, start, dur, lines) {
   msgs.push([id, start]);
   // 對應 JS 的 type()：每字 0.035 秒，行與行之間停 0.08 秒
@@ -196,6 +198,15 @@ const BLINK = (id, bg, dur) => [
   `  tl.fromTo("#${id}-blink", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: ${Math.max(1, Math.floor(dur / 0.4) - 1)} }, 0);`,
 ];
 
+// 每集開頭右上角的小標籤
+const EP_TAG = (id, text) => {
+  const w = textWidth(text) + 8;
+  return [
+    `<div id="${id}-ep" class="layer" style="opacity:0"><div class="px" style="left:${316 - w}px;top:4px;width:${w}px;height:14px;background:#283048;box-shadow:0 0 0 1px #F8F8F8"></div><div class="t outline" style="left:${320 - w}px;top:4px;line-height:14px">${text}</div></div>`,
+    `  tl.fromTo("#${id}-ep", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "steps(2)" }, 0.3);\n  tl.to("#${id}-ep", { opacity: 0, duration: 0.2, ease: "steps(2)" }, 3.5);`,
+  ];
+};
+
 // ── 序章：大木博士 ─────────────────────────────────────────
 CUR = "oak";
 scene(
@@ -203,11 +214,13 @@ scene(
   `<img class="bg" src="${P}/bg-oak.png" alt="" />
 <img id="oak-oak" src="${P}/trainer-oak.png" style="left:88px;top:39px;width:80px;height:80px" alt="" />
 ${BLINK("oak", "oak", 4.5)[0]}
+${EP_TAG("oak", "第 1 集・Step 1 → 2")[0]}
 ${msg("oak-m1", 0.3, 4.2, ["歡迎來到 Agent 的世界！", '我是<span class="hl">大木博士</span>。你還沒有夥伴吧？'])}
 <div id="oak-fade" class="layer" style="background:#fff"></div>`,
   `  tl.fromTo("#oak-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power1.out" }, 0);
   tl.fromTo("#oak-oak", { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "steps(4)", snap: "x" }, 0.1);
 ${BLINK("oak", "oak", 4.5)[1]}
+${EP_TAG("oak", "第 1 集・Step 1 → 2")[1]}
   [1.5, 2.7, 3.8].forEach((t) => tl.fromTo("#oak-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, t));`,
 );
 
@@ -261,8 +274,15 @@ const WIPE_JS = (id, at) =>
 
 // 聯盟大廳：Clawd 站在各 Step 門口
 const CLAWD_AT = { 2: 23, 3: 94, 4: 166 }; // Clawd 站在各 Step 門前的位置
+// 外層負責移動；裡面兩層：站著（上下擺動）與走路（左右腳輪流），走路時切到走路那層
 const HALL_CLAWD = (id, step, f = FORMS[0]) =>
-  `<div id="${id}" class="px" style="left:${CLAWD_AT[step] + 17 - Math.floor(f.w / 2)}px;top:${101 - f.h}px;width:${f.w}px;height:${f.h}px;background:url('${S}/${f.battle}') 0 0 / ${f.w * 2}px ${f.h}px"></div>`;
+  `<div id="${id}" class="px" style="left:${CLAWD_AT[step] + 17 - Math.floor(f.w / 2)}px;top:${101 - f.h}px;width:${f.w}px;height:${f.h}px">
+  <div id="${id}-i" class="px" style="left:0;top:0;width:${f.w}px;height:${f.h}px;background:url('${S}/${f.battle}') 0 0 / ${f.w * 2}px ${f.h}px"></div>
+  <div id="${id}-w" class="px" style="left:0;top:0;width:${f.w}px;height:${f.h}px;background:url('${S}/${f.walk}') 0 0 / ${f.w * 2}px ${f.h}px;opacity:0"></div>
+</div>`;
+const HALL_JS = (id, f, dur, walks) =>
+  `  playSheet($("#${id}-i"), 2, 2.5, ${f.w}, 0, ${dur});\n  playSheet($("#${id}-w"), 2, 6, ${f.w}, 0, ${dur});\n` +
+  walks.map(([a, b]) => `  tl.set("#${id}-i", { opacity: 0 }, ${a});\n  tl.set("#${id}-w", { opacity: 1 }, ${a});\n  tl.set("#${id}-i", { opacity: 1 }, ${b});\n  tl.set("#${id}-w", { opacity: 0 }, ${b});`).join("\n");
 
 // ── 聯盟大廳 ───────────────────────────────────────────────
 CUR = "hall";
@@ -275,7 +295,7 @@ ${BLINK("hall", "hall", 3.8)[0]}
 ${msg("hall-m1", 0.3, 3.5, ["四大天王：打贏一位，才能走到下一個 Step", '今天的目標：走到 <span class="hl">Step 2</span>'])}
 ${WIPE("hall-wipe", 3.8, 0.7)}`,
   `  tl.fromTo("#hall-clawd", { y: 12 }, { y: 0, duration: 0.8, ease: "steps(6)" }, 0.2);
-  playSheet($("#hall-clawd"), 2, 2.5, 35, 0, 4.5);
+${HALL_JS("hall-clawd", FORMS[0], 4.5, [[0.2, 1.0], [3.1, 3.7]])}
   // 走進 Step 2 的門，接著進入對戰
   tl.fromTo("#hall-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 3.1);
 ${BLINK("hall", "hall", 3.8)[1]}
@@ -508,8 +528,6 @@ const HP_RED = 15.4;
 const hpColor = (sel, w, at) =>
   `  tl.set("${sel}", { backgroundColor: "${w < HP_RED ? "#E85838" : w < HP_YELLOW ? "#F8C030" : "#58D080"}" }, ${r(at)});\n`;
 
-// 像素字寬估算：全形 12px、半形 6px
-const textWidth = (t) => [...plain(t)].reduce((w, c) => w + (c.charCodeAt(0) > 0xff ? 12 : 6), 0);
 const BOSS_AT = {}; // 每集大魔王出場的集內時間（換配樂用）
 
 TRAINERS.forEach((tr, ti) => {
@@ -796,7 +814,7 @@ ${msg(`${id}-m1`, 0.2, 4.0, [`打贏了四大天王・<span class="hl">${tr.name
     `  ${i === 0 ? `tl.fromTo("#${id}-flag", { y: -40 }, { y: 0, duration: 0.3, ease: "bounce.out", snap: "y" }, 0.8);
   tl.fromTo("#${id}-tag", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "steps(2)" }, 1.1);` : ""}
   ${last ? "" : `tl.fromTo("#${id}-door", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "steps(5)" }, 1.6);`}
-  playSheet($("#${id}-clawd"), 2, 5, ${FORMS[i].w}, 0, ${AT[id].dur});
+${HALL_JS(`${id}-clawd`, FORMS[i], AT[id].dur, last ? [[2.0, 3.2]] : [[2.0, 3.2], [3.4, 4.0]])}
 ${BLINK(id, "hall", 5)[1]}
   tl.fromTo("#${id}-clawd", { x: 0 }, { x: ${walk}, duration: 1.2, ease: "none", snap: "x" }, 2.0);
   ${last ? "" : `tl.fromTo("#${id}-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 3.4);`}`,
@@ -817,6 +835,9 @@ const JOJO = (id, start, dur) => `<div id="${id}" class="clip" data-start="${sta
   <div id="${id}-tint" style="position:absolute;inset:0;background:#B08850;mix-blend-mode:color;opacity:0.7"></div>
   <img id="${id}-arrow" src="${P}/jojo-arrow.png" style="position:absolute;left:60px;top:572px;width:838px;height:198px" alt="" />
 </div>`;
+// 片尾最後 0.5 秒淡出成黑畫面（蓋在 JoJo 箭頭之上）
+const END_FADE = (id) => `\n<div id="${id}-end" style="position:absolute;inset:0;background:#000;opacity:0"></div>`;
+const END_FADE_JS = (id, dur) => `  tl.fromTo("#${id}-end", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.in" }, ${r(dur - 0.5)});`;
 const JOJO_JS = (id, start) => `  tl.fromTo("#${id}-tint", { opacity: 0 }, { opacity: 0.7, duration: 0.15, ease: "power1.out" }, ${start});
   tl.fromTo("#${id}-arrow", { x: 1900 }, { x: 0, duration: 0.2, ease: "power2.out" }, ${start});`;
 const FLAG = (id) => `<img src="${S}/flag.svg" style="left:58px;top:78px;width:24px;height:28px" alt="" />
@@ -923,10 +944,11 @@ scene(
 ${BOX}
 ${msg("tease1-m1", 1.0, 7.0, ['下一位天王：<span class="hl">芙蓉</span>', `守著 Step 3，帶著 ${TRAINERS[1].team.length} 隻寶可夢`])}
 <div id="tease1-fade" class="layer" style="background:#000"></div>`,
-  JOJO("tease1-jojo", 3.6, 4.4),
+  JOJO("tease1-jojo", 3.6, 4.4) + END_FADE("tease1"),
   `  tl.fromTo("#tease1-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
   tl.fromTo("#tease1-sil", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "steps(6)" }, 0.2);
-${JOJO_JS("tease1-jojo", 3.6)}`,
+${JOJO_JS("tease1-jojo", 3.6)}
+${END_FADE_JS("tease1", AT.tease1.dur)}`,
 );
 audioCues.push([CUR, "tease-boom", "assets/sfx/boom.wav", AT.tease1.start + 0.2, 2.5, 0.8]);
 
@@ -940,14 +962,16 @@ ${FLAG("recap2")}
 <div id="recap2-arrow" class="t" style="left:107px;top:2px;color:#F8D030;text-shadow:1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838, 1px 1px #383838">▼</div>
 ${HALL_CLAWD("recap2-clawd", 3, FORMS[1])}
 ${BLINK("recap2", "hall", 4.3)[0]}
+${EP_TAG("recap2", "第 2 集・Step 2 → 3")[0]}
 ${msg("recap2-m1", 0.4, 3.9, ['上一集：打贏花月，走到了 <span class="hl">Step 2</span>', '這次的目標：走到 <span class="hl">Step 3</span>'])}
 <div id="recap2-fade" class="layer" style="background:#000"></div>
 ${WIPE("recap2-wipe", 4.3, 0.7)}`,
   `  tl.fromTo("#recap2-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
-  playSheet($("#recap2-clawd"), 2, 2.5, ${FORMS[1].w}, 0, 5);
+  ${HALL_JS("recap2-clawd", FORMS[1], 5, [[3.6, 4.2]])}
   // 小隊走進 Step 3 的門，接著進入對戰
   tl.fromTo("#recap2-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 3.6);
 ${BLINK("recap2", "hall", 4.3)[1]}
+${EP_TAG("recap2", "第 2 集・Step 2 → 3")[1]}
   tl.fromTo("#recap2-arrow", { y: 0 }, { y: 2, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 15 }, 0.6);
 ${WIPE_JS("recap2-wipe", 4.3)}`,
 );
@@ -972,8 +996,8 @@ ${msg("tbc-m0", 0.2, 1.4, ['<span class="hl">Step 4</span> 的門……打開了
   <div id="tbc-box" class="clip" data-start="3.2" data-duration="6.8" style="position:absolute;inset:0">${BOX}</div>
 </div>
 ${msg("tbc-m1", 3.3, 6.7, ['<span class="hl">Step 4</span>・再往後', "人用意圖決定方向"])}`,
-  JOJO("tbc-jojo", 5.8, 4.2),
-  `  playSheet($("#tbc-clawd"), 2, 2.5, ${FORMS[1].w}, 0, 1.8);
+  JOJO("tbc-jojo", 5.8, 4.2) + END_FADE("tbc"),
+  `  ${HALL_JS("tbc-clawd", FORMS[1], 1.8, [])}
   tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
@@ -982,11 +1006,13 @@ ${msg("tbc-m1", 3.3, 6.7, ['<span class="hl">Step 4</span>・再往後', "人用
   tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power2.out" }, 1.8);
   tl.fromTo("#tbc-flash", { opacity: 0.8 }, { opacity: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, 2.3);
   tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 4.4);
-${JOJO_JS("tbc-jojo", 5.8)}`,
+${JOJO_JS("tbc-jojo", 5.8)}
+${END_FADE_JS("tbc", AT.tbc.dur)}`,
 );
 audioCues.push([CUR, "tbc-door", "assets/sfx/bump.wav", AT.tbc.start + 0.4, 0.15, 0.6]);
 audioCues.push([CUR, "tbc-rumble", "assets/sfx/rumble.wav", AT.tbc.start + 0.1, 2.2, 0.5]); // 門打開前墊一點低沉的聲音
 audioCues.push([CUR, "tbc-thunder1", "assets/sfx/thunder.wav", AT.tbc.start + 1.8, 2.2, 0.9]);
+audioCues.push([CUR, "tbc-rain", "assets/sfx/rain.wav", AT.tbc.start + 1.8, AT.tbc.dur - 1.8, 0.8]); // 雷雨夜空：雨聲墊到片尾
 audioCues.push([CUR, "tbc-boom", "assets/sfx/boom.wav", AT.tbc.start + 1.9, 2.5, 0.9]);
 audioCues.push([CUR, "tbc-cry", `${P}/rayquaza-cry.mp3`, AT.tbc.start + 2.9, 1.6, 0.8]);
 audioCues.push([CUR, "tbc-thunder2", "assets/sfx/thunder.wav", AT.tbc.start + 4.4, 2.2, 0.45]);
@@ -1018,7 +1044,7 @@ const MUSIC = {
 const MIX = {
   "blip.wav": 0.12, "select.wav": 0.16, "bump.wav": 0.22, "faint.wav": 0.19, "throw.wav": 0.45,
   "hit.wav": 0.8, "crit.wav": 0.35, "hypnosis.wav": 0.5, "levelup.wav": 0.4,
-  "thunder.wav": 0.3, "boom.wav": 0.35, "rayquaza-cry.mp3": 0.4, "rumble.wav": 0.5, "evolve.wav": 0.5,
+  "thunder.wav": 0.3, "boom.wav": 0.35, "rayquaza-cry.mp3": 0.4, "rumble.wav": 0.5, "rain.wav": 0.8, "evolve.wav": 0.5,
 };
 const mixVolume = (src, v) => MIX[src.split("/").pop()] ?? (src.endsWith("-cry.mp3") ? 0.32 : src.endsWith("-faint.mp3") ? 0.28 : v);
 

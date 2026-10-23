@@ -22,7 +22,10 @@
 <div class="stage">
 <img class="bg" src="assets/pokemon/bg-hall.png" alt="" />
 <div id="hall-arrow" class="t" style="left:35px;top:2px;color:#F8D030;text-shadow:1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838, 1px 1px #383838">▼</div>
-<div id="hall-clawd" class="px" style="left:23px;top:74px;width:35px;height:27px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
+<div id="hall-clawd" class="px" style="left:23px;top:74px;width:35px;height:27px">
+  <div id="hall-clawd-i" class="px" style="left:0;top:0;width:35px;height:27px;background:url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
+  <div id="hall-clawd-w" class="px" style="left:0;top:0;width:35px;height:27px;background:url('assets/sprites/clawd-walk-big-sheet.svg') 0 0 / 70px 27px;opacity:0"></div>
+</div>
 <div id="hall-blink" class="px" style="left:298px;top:161px;width:9px;height:9px;background:#F8F8F8;opacity:0"></div>
 <div id="hall-m1" class="msg clip" data-start="0.3" data-duration="3.5"><div class="line gtx">四大天王：打贏一位，才能走到下一個 Step</div><div class="line gtx">今天的目標：走到 <span class="hl">Step 2</span></div></div>
 <div id="hall-wipe" class="clip" data-start="3.8" data-duration="0.7" style="position:absolute;inset:0">
@@ -63,7 +66,16 @@
 
   typeMsg("#hall-m1", 0.3);
   tl.fromTo("#hall-clawd", { y: 12 }, { y: 0, duration: 0.8, ease: "steps(6)" }, 0.2);
-  playSheet($("#hall-clawd"), 2, 2.5, 35, 0, 4.5);
+  playSheet($("#hall-clawd-i"), 2, 2.5, 35, 0, 4.5);
+  playSheet($("#hall-clawd-w"), 2, 6, 35, 0, 4.5);
+  tl.set("#hall-clawd-i", { opacity: 0 }, 0.2);
+  tl.set("#hall-clawd-w", { opacity: 1 }, 0.2);
+  tl.set("#hall-clawd-i", { opacity: 1 }, 1);
+  tl.set("#hall-clawd-w", { opacity: 0 }, 1);
+  tl.set("#hall-clawd-i", { opacity: 0 }, 3.1);
+  tl.set("#hall-clawd-w", { opacity: 1 }, 3.1);
+  tl.set("#hall-clawd-i", { opacity: 1 }, 3.7);
+  tl.set("#hall-clawd-w", { opacity: 0 }, 3.7);
   // 走進 Step 2 的門，接著進入對戰
   tl.fromTo("#hall-clawd", { y: 0, scale: 1, opacity: 1 }, { y: -10, scale: 0.7, opacity: 0, duration: 0.6, ease: "steps(4)", immediateRender: false }, 3.1);
   tl.fromTo("#hall-blink", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 8 }, 0);

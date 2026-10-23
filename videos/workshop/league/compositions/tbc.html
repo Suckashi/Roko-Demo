@@ -28,7 +28,10 @@
 <div class="px" style="left:168px;top:38px;width:32px;height:61px;border-radius:16px 16px 0 0;background:#FFF4C0"></div>
 <div id="tbc-door-l" class="px" style="left:168px;top:38px;width:16px;height:61px;border-radius:16px 0 0 0;background:#8A4A22;box-shadow:inset -1px 0 0 #5A2A12;transform-origin:0 50%"></div>
 <div id="tbc-door-r" class="px" style="left:184px;top:38px;width:16px;height:61px;border-radius:0 16px 0 0;background:#8A4A22;box-shadow:inset 1px 0 0 #5A2A12;transform-origin:100% 50%"></div>
-<div id="tbc-clawd" class="px" style="left:149px;top:75px;width:68px;height:26px;background:url('assets/sprites/squad-battle-sheet.svg') 0 0 / 136px 26px"></div>
+<div id="tbc-clawd" class="px" style="left:149px;top:75px;width:68px;height:26px">
+  <div id="tbc-clawd-i" class="px" style="left:0;top:0;width:68px;height:26px;background:url('assets/sprites/squad-battle-sheet.svg') 0 0 / 136px 26px"></div>
+  <div id="tbc-clawd-w" class="px" style="left:0;top:0;width:68px;height:26px;background:url('assets/sprites/squad-walk-sheet.svg') 0 0 / 136px 26px;opacity:0"></div>
+</div>
 <div id="tbc-m0" class="msg clip" data-start="0.2" data-duration="1.4"><div class="line gtx"><span class="hl">Step 4</span> 的門……打開了？</div></div>
 <div id="tbc-glow" class="layer" style="background:#FFF4C0"></div>
 <div id="tbc-sky" class="clip" data-start="1.8" data-duration="8.2" style="position:absolute;inset:0">
@@ -48,6 +51,7 @@
   <div id="tbc-jojo-tint" style="position:absolute;inset:0;background:#B08850;mix-blend-mode:color;opacity:0.7"></div>
   <img id="tbc-jojo-arrow" src="assets/pokemon/jojo-arrow.png" style="position:absolute;left:60px;top:572px;width:838px;height:198px" alt="" />
 </div>
+<div id="tbc-end" style="position:absolute;inset:0;background:#000;opacity:0"></div>
 </div>
 <script>
 (function () {
@@ -72,7 +76,9 @@
 
   typeMsg("#tbc-m0", 0.2);
   typeMsg("#tbc-m1", 3.3);
-  playSheet($("#tbc-clawd"), 2, 2.5, 68, 0, 1.8);
+    playSheet($("#tbc-clawd-i"), 2, 2.5, 68, 0, 1.8);
+  playSheet($("#tbc-clawd-w"), 2, 6, 68, 0, 1.8);
+
   tl.fromTo("#tbc-door-l", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-door-r", { scaleX: 1 }, { scaleX: 0, duration: 0.8, ease: "steps(8)" }, 0.4);
   tl.fromTo("#tbc-glow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in" }, 1.3);
@@ -83,6 +89,7 @@
   tl.fromTo("#tbc-flash", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 4.4);
   tl.fromTo("#tbc-jojo-tint", { opacity: 0 }, { opacity: 0.7, duration: 0.15, ease: "power1.out" }, 5.8);
   tl.fromTo("#tbc-jojo-arrow", { x: 1900 }, { x: 0, duration: 0.2, ease: "power2.out" }, 5.8);
+  tl.fromTo("#tbc-end", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.in" }, 9.5);
   window.__timelines["tbc"] = tl;
 })();
 </script>

@@ -39,8 +39,9 @@ const CLAWD = [".XXXXXXXXX.", ".XXXXXXXXX.", "XXEXXXXXEXX", "XXXXXXXXXXX", ".XXX
 const lookRight = (rows) => rows.map((r, i) => (i === 2 ? "XXXEXXXXXEX" : r));
 
 // 對戰用：放大 k 倍（預設 3），削圓外角，加外框、明暗與眼睛反光；bob=1 時身體下沉 1 格（腳不動）；closed=true 時閉眼（一條橫線）
-function clawdBattle(bob, closed = false, k = 3) {
-  const base = lookRight(CLAWD);
+function clawdBattle(bob, closed = false, k = 3, legs = null) {
+  // legs：走路時換掉最下面一列，讓左右腳輪流抬起
+  const base = lookRight(CLAWD).map((r, i) => (legs && i === 7 ? legs : r));
   const W = 11 * k + 2, H = 8 * k + 3;
   const grid = Array.from({ length: H }, () => Array(W).fill("."));
   const legTop = 6 * k;
@@ -85,6 +86,9 @@ const CLAWD_PAL = {
 // 多格動作橫向排成逐格圖（每格等寬）
 const sheet = (frames) => frames[0].map((_, y) => frames.map((f) => f[y]).join(""));
 save(OUT, "clawd-battle-sheet.svg", sheet([clawdBattle(0), clawdBattle(1)]), CLAWD_PAL);
+// 走路：左右腳輪流抬起（大廳、過關時用）
+const WALK_LEGS = [".X.....X...", "...X.....X."];
+save(OUT, "clawd-walk-big-sheet.svg", sheet(WALK_LEGS.map((l) => clawdBattle(0, false, 3, l))), CLAWD_PAL);
 save(OUT, "clawd-front.svg", clawdBattle(0), CLAWD_PAL);
 save(OUT, "clawd-sleep.svg", clawdBattle(0, true), CLAWD_PAL);
 
@@ -114,14 +118,15 @@ const SQUAD = (() => {
     members: [[Math.round(step * 0.5), 0, 0], [Math.round(step * 1.5), 0, 1], [0, back, 1], [step, back, 0], [step * 2, back, 1]], // [x, y, 擺動相位]
   };
 })();
-function squad(phase) {
+function squad(phase, walking = false) {
   const g = Array.from({ length: SQUAD.H }, () => Array(SQUAD.W).fill("."));
   for (const [x0, y0, ph] of SQUAD.members)
-    clawdBattle((ph + phase) % 2, false, SMALL).forEach((r, y) => [...r].forEach((c, x) => { if (c !== ".") g[y0 + y][x0 + x] = c; }));
+    clawdBattle(walking ? 0 : (ph + phase) % 2, false, SMALL, walking ? WALK_LEGS[(ph + phase) % 2] : null).forEach((r, y) => [...r].forEach((c, x) => { if (c !== ".") g[y0 + y][x0 + x] = c; }));
   return g.map((r) => r.join(""));
 }
 save(OUT, "squad-battle-sheet.svg", sheet([squad(0), squad(1)]), CLAWD_PAL);
 save(OUT, "squad-front.svg", squad(0), CLAWD_PAL);
+save(OUT, "squad-walk-sheet.svg", sheet([squad(0, true), squad(1, true)]), CLAWD_PAL);
 save(OUT, "clawd-small-sheet.svg", sheet([clawdBattle(0, false, SMALL), clawdBattle(1, false, SMALL)]), CLAWD_PAL);
 
 // ── 地圖 ────────────────────────────────────────────────

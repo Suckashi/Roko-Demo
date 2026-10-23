@@ -23,6 +23,7 @@
 <img class="bg" src="assets/pokemon/bg-oak.png" alt="" />
 <img id="oak-oak" src="assets/pokemon/trainer-oak.png" style="left:88px;top:39px;width:80px;height:80px" alt="" />
 <div id="oak-blink" class="px" style="left:298px;top:161px;width:9px;height:9px;background:#F8F8F8;opacity:0"></div>
+<div id="oak-ep" class="layer" style="opacity:0"><div class="px" style="left:188px;top:4px;width:128px;height:14px;background:#283048;box-shadow:0 0 0 1px #F8F8F8"></div><div class="t outline" style="left:192px;top:4px;line-height:14px">第 1 集・Step 1 → 2</div></div>
 <div id="oak-m1" class="msg clip" data-start="0.3" data-duration="4.2"><div class="line gtx">歡迎來到 Agent 的世界！</div><div class="line gtx">我是<span class="hl">大木博士</span>。你還沒有夥伴吧？</div></div>
 <div id="oak-fade" class="layer" style="background:#fff"></div>
 </div>
@@ -53,6 +54,8 @@
   tl.fromTo("#oak-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power1.out" }, 0);
   tl.fromTo("#oak-oak", { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "steps(4)", snap: "x" }, 0.1);
   tl.fromTo("#oak-blink", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 10 }, 0);
+  tl.fromTo("#oak-ep", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "steps(2)" }, 0.3);
+  tl.to("#oak-ep", { opacity: 0, duration: 0.2, ease: "steps(2)" }, 3.5);
   [1.5, 2.7, 3.8].forEach((t) => tl.fromTo("#oak-oak", { y: 0 }, { y: 2, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 1, immediateRender: false }, t));
   window.__timelines["oak"] = tl;
 })();
