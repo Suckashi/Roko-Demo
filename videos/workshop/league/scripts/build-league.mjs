@@ -1005,7 +1005,7 @@ const MUSIC = {
     ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs2.start, BOSS_AT.bat2 - AT.vs2.start, 0.5, 0.3],
     ["bgm-boss", `${P}/bgm-boss.mp3`, BOSS_AT.bat2, AT.win2.start - BOSS_AT.bat2, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win2.start, AT.win2.dur + AT.learn2.dur, 0.55, 1.0],
-    ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tbc.start + 5.8 - 3.6, AT.tbc.dur - 2.2, 0.55, 0.8],
+    // 第 2 集結尾不放 JoJo 配樂，只留雷聲與烈空坐的叫聲
   ],
 };
 
