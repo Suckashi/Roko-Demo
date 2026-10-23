@@ -474,8 +474,8 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
       menus += `<div id="${menuId}" class="clip" data-start="${r(at)}" data-duration="${T.menu}" style="position:absolute;inset:0">
   ${list.map((mv, mi) => `<div class="t gtx" style="left:${MENU_POS[mi][0]}px;top:${MENU_POS[mi][1]}px">${mv}</div>`).join("")}
   <div class="t gtx" style="left:${MENU_POS[idx][0] - 10}px;top:${MENU_POS[idx][1]}px">▶</div>
-  <div style="position:absolute;left:214px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
-  <div class="t gtx" style="left:222px;top:136px">PP 10/10</div><div class="t gtx" style="left:222px;top:154px">屬性／Skill</div>
+  <div style="position:absolute;left:234px;top:134px;width:2px;height:38px;background:#98B0C8"></div>
+  <div class="t gtx" style="left:242px;top:136px">PP 10/10</div><div class="t gtx" style="left:242px;top:154px">屬性／Skill</div>
 </div>
 `;
       audioCues.push([CUR, `sel-${menuId}`, "assets/sfx/select.wav", base + at + T.menu - 0.2, 0.1, 0.5]);
