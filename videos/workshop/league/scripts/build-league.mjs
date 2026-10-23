@@ -56,7 +56,7 @@ const TRAINERS = [
         tip: '自動檢查、AI Review 先擋，人只細審<span class="key">高風險</span>的', move: "三層煞車",
         gag: "全部逐行看",
         // 大魔王：用錯招反而讓牠變大
-        grow: { text: "PR 越堆越多，卡比獸越長越大！", scale: 1.2 },
+        grow: { text: "PR 越堆越多，卡比獸越長越大！", scale: 1.15 },
         combo: ["自動化檢查", "AI Review"],
       },
     ],
@@ -88,7 +88,7 @@ const EVO = 5.5; // 第 1 集結尾：Clawd 進化成 Clawd 小隊
 // 兩集的場景順序與長度（秒）；每集的時間從 0 開始
 const PARTS = {
   ep1: [["oak", 4.5], ["lab", 5], ["hall", 4.5], ["vs1", 3.5], ["bat1", battleLength(TRAINERS[0])], ["win1", 5], ["evo1", EVO], ["learn1", 4.5], ["tease1", 8]],
-  ep2: [["recap2", 5], ["vs2", 3.5], ["bat2", battleLength(TRAINERS[1])], ["win2", 5], ["learn2", 7], ["tbc", 10]],
+  ep2: [["recap2", 5], ["vs2", 3.5], ["bat2", battleLength(TRAINERS[1])], ["win2", 5], ["learn2", 6], ["tbc", 10]],
 };
 const AT = {};
 const PART_OF = {};
@@ -114,6 +114,7 @@ const CSS = `
   .t { position: absolute; white-space: nowrap; }
   .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
   .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .boss { color: #C82020; text-shadow: 1px 0 #F0C0C0, 0 1px #F0C0C0, 1px 1px #F0C0C0; }
   .key { color: #A03A10; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
   .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
   .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
@@ -247,13 +248,18 @@ const WIPE_JS = (id, at) =>
   `  tl.fromTo("#${id}-flash", { opacity: 0 }, { opacity: 0.9, duration: 0.07, ease: "steps(1)", yoyo: true, repeat: 3 }, ${r(at)});\n` +
   Array.from({ length: BARS }, (_, i) => `  tl.fromTo("#${id}-b${i}", { x: ${i % 2 ? 320 : -320} }, { x: 0, duration: 0.3, ease: "steps(6)", snap: "x" }, ${r(at + 0.3 + i * 0.02)});`).join("\n");
 
+// 聯盟大廳：Clawd 站在各 Step 門口
+const CLAWD_AT = { 2: 23, 3: 94, 4: 166 }; // Clawd 站在各 Step 門前的位置
+const HALL_CLAWD = (id, step, f = FORMS[0]) =>
+  `<div id="${id}" class="px" style="left:${CLAWD_AT[step] + 17 - Math.floor(f.w / 2)}px;top:${101 - f.h}px;width:${f.w}px;height:${f.h}px;background:url('${S}/${f.battle}') 0 0 / ${f.w * 2}px ${f.h}px"></div>`;
+
 // ── 聯盟大廳 ───────────────────────────────────────────────
 CUR = "hall";
 scene(
   "hall",
   `<img class="bg" src="${P}/bg-hall.png" alt="" />
 <div id="hall-arrow" class="t" style="left:35px;top:2px;color:#F8D030;text-shadow:1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838, 1px 1px #383838">▼</div>
-<div id="hall-clawd" class="px" style="left:23px;top:100px;width:35px;height:27px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 70px 27px"></div>
+${HALL_CLAWD("hall-clawd", 2)}
 ${msg("hall-m1", 0.3, 3.5, ["四大天王：打贏一位，才能走到下一個 Step", '今天的目標：走到 <span class="hl">Step 2</span>'])}
 ${WIPE("hall-wipe", 3.8, 0.7)}`,
   `  tl.fromTo("#hall-clawd", { y: 12 }, { y: 0, duration: 0.8, ease: "steps(6)" }, 0.2);
@@ -276,6 +282,8 @@ TRAINERS.forEach((tr, i) => {
   <div class="t gtx" style="left:256px;top:108px">守 Step ${tr.step}</div>
 </div>
 <div class="t outline" style="left:110px;top:165px">帶著 ${tr.team.length} 隻寶可夢</div>
+${i === 1 ? `<div class="px" style="left:78px;top:58px;width:22px;height:18px;background:#F8F8F0"></div>
+<div class="t gtx" style="left:78px;top:62px">小隊</div>` : ""}
 <div id="${id}-flash" class="layer" style="background:#fff"></div>`,
     `  tl.fromTo("#${id}-flash", { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power1.out" }, 0);
   tl.fromTo("#${id}-trainer", { x: 80 }, { x: 0, duration: 0.3, ease: "power3.out", snap: "x" }, 0.05);
@@ -497,7 +505,7 @@ ${tr.team.map((_, bi) => `  <img src="${P}/pokeball.svg" style="left:${304 - (tr
       script += `  tl.fromTo("#${fid}-red", { opacity: 0 }, { opacity: 0.45, duration: 0.08, ease: "steps(1)", yoyo: true, repeat: 3, immediateRender: false }, ${r(t0)});\n`;
     }
     let k = t0;
-    let m = msg(`${fid}-a`, k, T.sent, [`${tr.name}派出了<span class="hl">${p.name}</span>！${p.quip ?? ""}`, `<span class="stuck">卡在：${p.problem}</span>`]);
+    let m = msg(`${fid}-a`, k, T.sent, [`${tr.name}派出了<span class="${p.boss ? "boss" : "hl"}">${p.name}</span>！${p.quip ?? ""}`, `<span class="stuck">卡在：${p.problem}</span>`]);
     script += `  playSheet($("#${fid}-s"), ${sh.frames}, ${sh.fps}, ${sh.w}, ${r(t0)}, ${len});
 ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
   tl.fromTo("#${fid}-s", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(1.6)" }, ${r(t0 + 0.35)});
@@ -645,9 +653,6 @@ const OPEN_DOOR = (x) =>
 
 // ── 過關：門打開，Clawd 走過去 ─────────────────────────────
 const DOOR = { 3: 96, 4: 168 }; // Step 3、Step 4 門板左緣
-const CLAWD_AT = { 2: 23, 3: 94, 4: 166 }; // Clawd 站在各 Step 門前的位置
-const HALL_CLAWD = (id, step, f = FORMS[0]) =>
-  `<div id="${id}" class="px" style="left:${CLAWD_AT[step] + 17 - Math.floor(f.w / 2)}px;top:${101 - f.h}px;width:${f.w}px;height:${f.h}px;background:url('${S}/${f.battle}') 0 0 / ${f.w * 2}px ${f.h}px"></div>`;
 TRAINERS.forEach((tr, i) => {
   const id = `win${i + 1}`;
   CUR = id;
@@ -713,6 +718,11 @@ CUR = "evo1";
   tl.set("#evo1-bs", { opacity: 0 }, ${r(t + 0.15)});
   tl.set("#evo1-b", { opacity: 1 }, ${r(t + 0.15)});
   tl.fromTo("#evo1-glow", { opacity: 0 }, { opacity: 0.8, duration: 0.6, ease: "power1.in" }, 0.8);\n`;
+  // 進化完成：一圈星星閃光
+  const STARS = [[96, 30], [224, 30], [80, 72], [240, 72], [112, 104], [208, 104], [160, 18]];
+  js += STARS.map((_, n) => `  tl.fromTo("#evo1-s${n}", { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "steps(1)", yoyo: true, repeat: 5, immediateRender: false }, ${r(t + 0.2 + n * 0.05)});`).join("\n") + "\n";
+  const evoStars = STARS.map(([x, y], n) => `<div id="evo1-s${n}" class="t outline" style="left:${x}px;top:${y}px;color:#F8E070;opacity:0">✦</div>`).join("\n");
+  const evoDone = t + 0.15;
   scene(
     "evo1",
     `<div class="px" style="left:0;top:0;width:320px;height:180px;background:#141424"></div>
@@ -721,6 +731,7 @@ ${img("evo1-a", a, false)}
 ${img("evo1-as", a, true)}
 ${img("evo1-bs", b, true)}
 ${img("evo1-b", b, false)}
+${evoStars}
 ${BOX}
 ${msg("evo1-m1", 0.2, 3.2, ['咦？<span class="hl">Clawd</span> 的樣子……'])}
 ${msg("evo1-m2", 3.5, 2.0, ['恭喜！<span class="hl">Clawd</span> 進化成了', '<span class="hl">Clawd 小隊</span>！'])}
@@ -729,6 +740,7 @@ ${msg("evo1-m2", 3.5, 2.0, ['恭喜！<span class="hl">Clawd</span> 進化成了
     `  tl.fromTo("#evo1-fade", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "steps(3)" }, 0);\n${js}`,
   );
   audioCues.push([CUR, "evo1-sfx", "assets/sfx/evolve.wav", AT.evo1.start + 1.0, 2.4, 0.5]);
+  audioCues.push([CUR, "evo1-done", "assets/sfx/levelup.wav", AT.evo1.start + evoDone, 0.8, 0.4]);
 }
 
 // ── 每集結尾：Clawd 升級，列出這集學會的招式 ─────────────────
@@ -844,6 +856,7 @@ ${msg("tbc-m1", 3.3, 6.7, ['<span class="hl">Step 4</span>・再往後', "人用
 ${JOJO_JS("tbc-jojo", 5.8)}`,
 );
 audioCues.push([CUR, "tbc-door", "assets/sfx/bump.wav", AT.tbc.start + 0.4, 0.15, 0.6]);
+audioCues.push([CUR, "tbc-rumble", "assets/sfx/rumble.wav", AT.tbc.start + 0.1, 2.2, 0.5]); // 門打開前墊一點低沉的聲音
 audioCues.push([CUR, "tbc-thunder1", "assets/sfx/thunder.wav", AT.tbc.start + 1.8, 2.2, 0.9]);
 audioCues.push([CUR, "tbc-boom", "assets/sfx/boom.wav", AT.tbc.start + 1.9, 2.5, 0.9]);
 audioCues.push([CUR, "tbc-cry", `${P}/rayquaza-cry.mp3`, AT.tbc.start + 2.9, 1.6, 0.8]);
@@ -858,6 +871,8 @@ const MUSIC = {
     ["bgm-boss", `${P}/bgm-boss.mp3`, BOSS_AT.bat1, AT.win1.start - BOSS_AT.bat1, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win1.start, AT.win1.dur, 0.55, 0.8],
     ["bgm-evolved", `${P}/bgm-key-item.mp3`, AT.evo1.start + 3.5, 3.4, 0.8, 0],
+    // 進化的音樂結束後，接回勝利配樂到預告前，避免整段安靜
+    ["bgm-victory2", `${P}/bgm-victory.mp3`, AT.evo1.start + 6.8, AT.tease1.start - AT.evo1.start - 6.8, 0.45, 1.0],
     ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tease1.start + 3.6 - 3.6, AT.tease1.dur, 0.55, 0.8],
   ],
   ep2: [
@@ -874,7 +889,7 @@ const MUSIC = {
 const MIX = {
   "blip.wav": 0.12, "select.wav": 0.16, "bump.wav": 0.22, "faint.wav": 0.19, "throw.wav": 0.45,
   "hit.wav": 0.8, "crit.wav": 0.35, "hypnosis.wav": 0.5, "levelup.wav": 0.4,
-  "thunder.wav": 0.5, "boom.wav": 0.55, "rayquaza-cry.mp3": 0.5,
+  "thunder.wav": 0.3, "boom.wav": 0.35, "rayquaza-cry.mp3": 0.4, "rumble.wav": 0.5, "evolve.wav": 0.5,
 };
 const mixVolume = (src, v) => MIX[src.split("/").pop()] ?? (src.endsWith("-cry.mp3") ? 0.32 : v);
 
