@@ -72,3 +72,12 @@ for (const [name, job] of Object.entries(jobs)) {
   console.log(`bg-${name}.png`);
 }
 await browser.close();
+
+// 芙蓉（幽靈系）的對戰場地：同一張草地，上半部調暗、偏紫；下方訊息框不動
+const battle = join(root, "assets/pokemon/bg-battle.png");
+execFileSync("ffmpeg", [
+  "-v", "error", "-y", "-i", battle, "-filter_complex",
+  "[0]split[a][b];[a]crop=320:129:0:0,hue=h=150:s=0.55,eq=brightness=-0.22[t];[b][t]overlay=0:0",
+  join(root, "assets/pokemon/bg-battle-ghost.png"),
+]);
+console.log("bg-battle-ghost.png");

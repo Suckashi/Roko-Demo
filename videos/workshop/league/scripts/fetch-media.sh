@@ -57,4 +57,5 @@ get "$OUT/bgm-oak.mp3" "$OST/05%20-%20Professor%20Oak.mp3"
 get "$OUT/bgm-key-item.mp3" "$OST/07%20-%20Obtained%20a%20Key%20Item%21.mp3"
 get "$OUT/bgm-battle.mp3" "$OST/25%20-%20Battle%21%20%28Gym%20Leader%29.mp3"
 get "$OUT/bgm-victory.mp3" "$OST/26%20-%20Victory%21%20%28Gym%20Leader%29.mp3"
+get "$OUT/bgm-boss.mp3" "$OST/69%20-%20Final%20Battle%21%20%28Rival%29.mp3"   # 大魔王戰
 echo "配樂與訓練家圖：完成"

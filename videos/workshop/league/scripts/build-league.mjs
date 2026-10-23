@@ -22,11 +22,11 @@ const TRAINERS = [
     moves: ["多開 Session", "Git Worktree", "Lint", "dev-workflow-tdd"],
     learned: [["多開 Session", "效率翻倍"], ["Git Worktree", "各改各的"], ["dev-workflow-tdd", "整套流程走完"]],
     team: [
-      { name: "呆呆獸", file: "slowpoke", problem: "每次都要等它跑完", tip: "平行處理，效率翻倍", move: "多開 Session", gag: "泡咖啡等它" },
-      { name: "三地鼠", file: "dugtrio", problem: "同時改同一份 code，會打架", tip: "每個 Agent 一份 worktree，互不干擾", move: "Git Worktree" },
+      { name: "呆呆獸", file: "slowpoke", tag: "等它跑完", problem: "每次都要等它跑完", tip: '平行處理，<span class="key">效率翻倍</span>', move: "多開 Session", gag: "泡咖啡等它" },
+      { name: "三地鼠", file: "dugtrio", tag: "改同一份 code", problem: "同時改同一份 code，會打架", tip: '每個 Agent 一份 <span class="key">worktree</span>，互不干擾', move: "Git Worktree" },
       {
-        name: "達克萊伊", file: "darkrai", problem: "盯著它，怕它做錯", scale: 0.8, // 圖比較高，縮小才不會超出畫面
-        tip: "整套流程自動走完，人只看驗證證據，徹底解放注意力", move: "dev-workflow-tdd",
+        name: "達克萊伊", file: "darkrai", tag: "一直盯著", boss: true, problem: "盯著它，怕它做錯", scale: 0.8, // 圖比較高，縮小才不會超出畫面
+        tip: '整套流程自動走完，人只看<span class="key">驗證證據</span>，徹底解放注意力', move: "dev-workflow-tdd",
         gag: "一直盯著看",
         counter: { move: "暗黑洞", fx: "dark", after: '<span class="hl">Clawd</span> 睡著了，還做起了惡夢…' },
         // 單項檢查各打一點，最後用整套流程收尾
@@ -39,21 +39,24 @@ const TRAINERS = [
     name: "芙蓉",
     sprite: "trainer-phoebe-gen3.png",
     step: 3,
+    // 幽靈系天王：昏暗偏紫的場地
+    bg: "bg-battle-ghost.png",
+    baseFilter: "hue-rotate(150deg) saturate(0.55) brightness(0.78)",
     intro: "Step 3 的門檻是信任。你準備好了嗎？",
     outro: "……好，我願意讓 Agent 自己合併了。",
     moves: ["低風險試行", "grill-with-docs", "/retro", "打好測試環境", "三層煞車"],
     learned: [["低風險試行", "先小範圍放手"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"], ["打好測試環境", "測得到才放手"], ["三層煞車", "依風險審"]],
     team: [
-      { name: "魔牆人偶", file: "mrmime", problem: "公司願不願意讓 Agent 自動合併 PR", tip: "先從影響比較小的系統試行", move: "低風險試行" },
-      { name: "可達鴨", file: "psyduck", problem: "AI 不懂你在說什麼", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
-      { name: "喵喵", file: "meowth", quip: "「我們又回來了！」", problem: "重複出現同樣的問題", tip: "回顧漏掉什麼，補 Skill、MCP 和 lint", move: "/retro" },
-      { name: "百變怪", file: "ditto", problem: "測試環境測不到，不敢放手", tip: "把測試環境補完整，測得到的才放手", move: "打好測試環境" },
+      { name: "魔牆人偶", file: "mrmime", tag: "公司不放行", problem: "公司願不願意讓 Agent 自動合併 PR", tip: '先從<span class="key">影響比較小</span>的系統試行', move: "低風險試行" },
+      { name: "可達鴨", file: "psyduck", tag: "AI 聽不懂", problem: "AI 不懂你在說什麼", tip: '問清楚，寫進 <span class="key">GLOSSARY.md 與 ADR</span>', move: "grill-with-docs" },
+      { name: "喵喵", file: "meowth", tag: "問題一再出現", quip: "「我們又回來了！」", problem: "重複出現同樣的問題", tip: '回顧漏掉什麼，補 <span class="key">Skill、MCP 和 lint</span>', move: "/retro" },
+      { name: "百變怪", file: "ditto", tag: "測不到", problem: "測試環境測不到，不敢放手", tip: '把測試環境補完整，<span class="key">測得到的才放手</span>', move: "打好測試環境" },
       {
-        name: "卡比獸", file: "snorlax", problem: "好幾份 PR 同時要審，審不完",
-        tip: "自動檢查、AI Review 先擋，人只細審高風險的", move: "三層煞車",
+        name: "卡比獸", file: "snorlax", tag: "PR 審不完", boss: true, scale: 0.85, problem: "好幾份 PR 同時要審，審不完",
+        tip: '自動檢查、AI Review 先擋，人只細審<span class="key">高風險</span>的', move: "三層煞車",
         gag: "全部逐行看",
         // 大魔王：用錯招反而讓牠變大
-        grow: { text: "PR 越堆越多，卡比獸越長越大！", scale: 1.25 },
+        grow: { text: "PR 越堆越多，卡比獸越長越大！", scale: 1.2 },
         combo: ["自動化檢查", "AI Review"],
       },
     ],
@@ -104,6 +107,7 @@ const CSS = `
   .t { position: absolute; white-space: nowrap; }
   .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
   .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .key { color: #B8461A; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
   .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
   .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
   .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
@@ -399,15 +403,19 @@ ${["Z", "z", "z"].map((c, i) => `  <div id="${id}-z${i}" class="t outline" style
 const sleepJs = (id, at, clawd, dur) =>
   `  tl.set("${clawd}", { opacity: 0 }, ${r(at)});\n  tl.set("${clawd}", { opacity: 1 }, ${r(at + dur)});\n` +
   [0, 1, 2].map((i) => `  tl.fromTo("#${id}-z${i}", { y: 4, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "steps(3)", immediateRender: false }, ${r(at + 0.1 + i * 0.25)});`).join("\n") + "\n";
+// 像素字寬估算：全形 12px、半形 6px
+const textWidth = (t) => [...plain(t)].reduce((w, c) => w + (c.charCodeAt(0) > 0xff ? 12 : 6), 0);
+const BOSS_AT = {}; // 每集大魔王出場的集內時間（換配樂用）
+
 TRAINERS.forEach((tr, ti) => {
   const id = `bat${ti + 1}`;
   const base = AT[id].start;
   CUR = id;
   // 整個對戰畫面包在 cam 裡，效果絕佳時一起震動
   let body = `<div id="${id}-cam" class="layer">
-<img class="bg" src="${P}/bg-battle.png" alt="" />
-<img src="${S}/base-foe.svg" style="left:194px;top:53px;width:112px;height:22px" alt="" />
-<img src="${S}/base-player.svg" style="left:6px;top:108px;width:140px;height:26px" alt="" />
+<img class="bg" src="${P}/${tr.bg ?? "bg-battle.png"}" alt="" />
+<img src="${S}/base-foe.svg" style="left:194px;top:53px;width:112px;height:22px${tr.baseFilter ? `;filter:${tr.baseFilter}` : ""}" alt="" />
+<img src="${S}/base-player.svg" style="left:6px;top:108px;width:140px;height:26px${tr.baseFilter ? `;filter:${tr.baseFilter}` : ""}" alt="" />
 <img id="${id}-foe-tr" src="${P}/${tr.sprite}" style="left:${FOE_X - 40}px;top:${FOE_FEET - 78}px;width:80px;height:80px" alt="" />
 <img id="${id}-ash" src="${P}/trainer-ash.png" style="left:36px;top:52px;width:80px;height:80px;transform:scaleX(-1)" alt="" />
 <div id="${id}-clawd" class="px" style="left:41px;top:66px;width:70px;height:54px;background:url('${S}/clawd-battle-sheet.svg') 0 0 / 140px 54px;transform-origin:50% 100%"></div>
@@ -417,6 +425,8 @@ TRAINERS.forEach((tr, ti) => {
   <div class="cap" style="left:40px;top:17px;width:100px"><div class="lab">HP</div><div class="trk"><i id="${id}-pbar" style="width:77px"></i></div></div>
   <div id="${id}-hp-full" class="t gtx" style="right:9px;top:28px">20/20</div>
   <div id="${id}-hp-hurt" class="t gtx" style="right:9px;top:28px;opacity:0">15/20</div>
+  <div class="px" style="left:40px;top:43px;width:100px;height:4px;background:#505858"></div>
+  <div id="${id}-exp" class="px" style="left:41px;top:44px;width:0;height:2px;background:#48A8F8"></div>
 </div>
 <div id="${id}-fhp" class="hpbox" style="left:6px;top:5px;width:150px;height:33px">
   <div class="in"></div>
@@ -458,6 +468,20 @@ ${pokeball(`${fid}-ball`, t0, [330, -10])}
   <div class="px" style="left:0;top:0;width:40px;height:40px;border-radius:50%;background:#fff"></div>
 </div>
 `;
+    // 天王剩幾隻：派出時在訊息框右邊排一列精靈球，打倒的變灰
+    foes += `<div id="${fid}-party" class="clip" data-start="${r(t0)}" data-duration="${T.sent}" style="position:absolute;inset:0">
+${tr.team.map((_, bi) => `  <img src="${P}/pokeball.svg" style="left:${304 - (tr.team.length - bi) * 12}px;top:160px;width:10px;height:10px${bi < pi ? ";filter:grayscale(1);opacity:0.45" : ""}" alt="" />`).join("\n")}
+</div>
+`;
+    if (p.boss) {
+      // 大魔王出場：畫面閃紅光，配樂換成最終戰
+      BOSS_AT[id] = base + t0;
+      foes += `<div id="${fid}-boss" class="clip" data-start="${r(t0)}" data-duration="0.6" style="position:absolute;inset:0">
+  <div id="${fid}-red" class="layer" style="background:#E02828;opacity:0"></div>
+</div>
+`;
+      script += `  tl.fromTo("#${fid}-red", { opacity: 0 }, { opacity: 0.45, duration: 0.08, ease: "steps(1)", yoyo: true, repeat: 3, immediateRender: false }, ${r(t0)});\n`;
+    }
     let k = t0;
     let m = msg(`${fid}-a`, k, T.sent, [`${tr.name}派出了<span class="hl">${p.name}</span>！${p.quip ?? ""}`, `<span class="stuck">卡在：${p.problem}</span>`]);
     script += `  playSheet($("#${fid}-s"), ${sh.frames}, ${sh.fps}, ${sh.w}, ${r(t0)}, ${len});
@@ -513,6 +537,7 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
         m += msg(`${fid}-cm`, k, T.hyp, [`<span class="hl">${p.name}</span>使出了${p.counter.move}！`]);
         foes += hypnosisFx(`${fid}-fx`, k, T.hyp, p.counter.fx);
         script += hypnosisJs(`${fid}-fx`, `#${id}-clawd`, k);
+        script += [0, 0.08, 0.16, 0.24].map((d, i) => `  tl.set("#${id}-clawd", { opacity: ${i % 2} }, ${r(k + 0.9 + d)});`).join("\n") + "\n";
         script += `  tl.fromTo("#${id}-pbar", { width: 77 }, { width: 58, duration: 0.4, ease: "none", immediateRender: false }, ${r(k + 0.9)});
   tl.set("#${id}-hp-full", { opacity: 0 }, ${r(k + 1.1)});
   tl.set("#${id}-hp-hurt", { opacity: 1 }, ${r(k + 1.1)});\n`;
@@ -560,6 +585,15 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
     audioCues.push([CUR, `crit-${fid}`, "assets/sfx/crit.wav", base + k, 0.35, 0.5]);
     script += `  tl.fromTo("#${id}-bar", { width: ${curW}, backgroundColor: "#58D080" }, { width: 0, backgroundColor: "#E85838", duration: 0.5, ease: "power1.in", immediateRender: false }, ${r(k + 0.05)});\n`;
     k += T.good;
+    // 「卡在」小標籤：派出訊息結束後一直掛在血條框下方，到倒下為止
+    const tagText = `卡在：${p.tag}`;
+    foes += `<div id="${fid}-tag" class="clip" data-start="${r(t0 + T.sent)}" data-duration="${r(k - t0 - T.sent)}" style="position:absolute;inset:0">
+  <div class="px" style="left:6px;top:40px;width:${textWidth(tagText) + 8}px;height:14px;background:#5A3A20;box-shadow:0 0 0 1px #2A1A10"></div>
+  <div class="t" style="left:10px;top:40px;line-height:14px;color:#F8E0B0">${tagText}</div>
+</div>
+`;
+    // 經驗值條：每打倒一隻漲一段
+    script += `  tl.fromTo("#${id}-exp", { width: ${r((pi / tr.team.length) * 98)} }, { width: ${r(((pi + 1) / tr.team.length) * 98)}, duration: 0.6, ease: "none", immediateRender: ${pi === 0} }, ${r(k + 0.5)});\n`;
     // 倒下，並用一句白話說明這招為什麼有效
     m += msg(`${fid}-down`, k, t0 + len - k, [`<span class="hl">${p.name}</span>倒下了！`, `<span class="tip">${p.tip}</span>`]);
     script += `  tl.fromTo("#${fid}-s", { y: 0 }, { y: ${sh.h}, duration: 0.3, ease: "power2.in", snap: "y" }, ${r(k + 0.05)});
@@ -764,13 +798,15 @@ const MUSIC = {
   ep1: [
     ["bgm-oak", `${P}/bgm-oak.mp3`, 0, AT.vs1.start, 0.55, 1.0],
     ["bgm-keyitem", `${P}/bgm-key-item.mp3`, AT.lab.start + 1.2, 3.4, 0.8, 0],
-    ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs1.start, AT.win1.start - AT.vs1.start, 0.5, 0.4],
+    ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs1.start, BOSS_AT.bat1 - AT.vs1.start, 0.5, 0.3],
+    ["bgm-boss", `${P}/bgm-boss.mp3`, BOSS_AT.bat1, AT.win1.start - BOSS_AT.bat1, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win1.start, AT.win1.dur + LEARN, 0.55, 1.0],
     ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tease1.start + 3.6 - 3.6, AT.tease1.dur, 0.55, 0.8],
   ],
   ep2: [
     ["bgm-oak", `${P}/bgm-oak.mp3`, 0, AT.vs2.start, 0.45, 0.8],
-    ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs2.start, AT.win2.start - AT.vs2.start, 0.5, 0.4],
+    ["bgm-battle", `${P}/bgm-battle.mp3`, AT.vs2.start, BOSS_AT.bat2 - AT.vs2.start, 0.5, 0.3],
+    ["bgm-boss", `${P}/bgm-boss.mp3`, BOSS_AT.bat2, AT.win2.start - BOSS_AT.bat2, 0.5, 0.4],
     ["bgm-victory", `${P}/bgm-victory.mp3`, AT.win2.start, AT.win2.dur + LEARN, 0.55, 1.0],
     ["bgm-jojo", `${P}/jojo-roundabout.mp3`, AT.tbc.start + 5.8 - 3.6, AT.tbc.dur - 2.2, 0.55, 0.8],
   ],
