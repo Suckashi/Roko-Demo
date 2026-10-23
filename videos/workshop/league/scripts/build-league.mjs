@@ -44,7 +44,7 @@ const TRAINERS = [
     moves: ["低風險試行", "grill-with-docs", "/retro", "打好測試環境", "三層煞車"],
     learned: [["低風險試行", "先小範圍放手"], ["grill-with-docs", "規則寫下來"], ["/retro", "回顧後改環境"], ["打好測試環境", "測得到才放手"], ["三層煞車", "依風險審"]],
     team: [
-      { name: "魔牆人偶", file: "mrmime", problem: "公司願不願意讓 Agent 自動合併 PR", tip: "先從測試、文件這類小地方開始放手", move: "低風險試行" },
+      { name: "魔牆人偶", file: "mrmime", problem: "公司願不願意讓 Agent 自動合併 PR", tip: "先從影響比較小的系統試行", move: "低風險試行" },
       { name: "可達鴨", file: "psyduck", problem: "AI 不懂你在說什麼", tip: "問清楚，寫進 GLOSSARY.md 與 ADR", move: "grill-with-docs" },
       { name: "喵喵", file: "meowth", quip: "「我們又回來了！」", problem: "重複出現同樣的問題", tip: "回顧漏掉什麼，補 Skill、MCP 和 lint", move: "/retro" },
       { name: "百變怪", file: "ditto", problem: "測試環境測不到，不敢放手", tip: "把測試環境補完整，測得到的才放手", move: "打好測試環境" },
