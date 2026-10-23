@@ -21,7 +21,7 @@
 <div class="stage">
 <img class="bg" src="assets/pokemon/bg-vs.png" alt="" />
 <img id="vs2-trainer" src="assets/pokemon/trainer-phoebe-gen3.png" style="left:220px;top:-8px;width:80px;height:80px" alt="" />
-<img src="assets/sprites/commander-front.svg" style="left:58px;top:127px;width:63px;height:33px" alt="" />
+<img src="assets/sprites/squad-front.svg" style="left:55px;top:134px;width:68px;height:26px" alt="" />
 <div id="vs2-plate" class="layer">
   <div class="t outline" style="left:206px;top:84px">四大天王</div>
   <div class="t gtx" style="left:206px;top:100px;font-size:24px;line-height:26px">芙蓉</div>
@@ -37,10 +37,10 @@
 
   const tl = gsap.timeline({ paused: true });
   const $ = (s) => document.querySelector(s);
-  function playSheet(el, frames, fps, w, start, dur) {
+  function playSheet(el, frames, fps, w, start, dur, off = 0) {
     const p = { t: 0 };
     tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
-      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+      onUpdate: () => { el.style.backgroundPosition = (-((Math.floor(p.t * fps + 1e-6) + off) % frames) * w) + "px 0px"; } }, start);
   }
   function type(line, start) {
     const n = [...line.textContent].length;

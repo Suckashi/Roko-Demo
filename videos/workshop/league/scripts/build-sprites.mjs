@@ -38,10 +38,10 @@ function save(dir, name, rows, pal) {
 const CLAWD = [".XXXXXXXXX.", ".XXXXXXXXX.", "XXEXXXXXEXX", "XXXXXXXXXXX", ".XXXXXXXXX.", ".XXXXXXXXX.", ".X.X...X.X.", ".X.X...X.X."];
 const lookRight = (rows) => rows.map((r, i) => (i === 2 ? "XXXEXXXXXEX" : r));
 
-// 對戰用：放大 3 倍，削圓外角，加外框、明暗與眼睛反光；bob=1 時身體下沉 1 格（腳不動）；closed=true 時閉眼（一條橫線）
-function clawdBattle(bob, closed = false) {
+// 對戰用：放大 k 倍（預設 3），削圓外角，加外框、明暗與眼睛反光；bob=1 時身體下沉 1 格（腳不動）；closed=true 時閉眼（一條橫線）
+function clawdBattle(bob, closed = false, k = 3) {
   const base = lookRight(CLAWD);
-  const k = 3, W = 11 * k + 2, H = 8 * k + 3;
+  const W = 11 * k + 2, H = 8 * k + 3;
   const grid = Array.from({ length: H }, () => Array(W).fill("."));
   const legTop = 6 * k;
   base.forEach((r, y) => [...r].forEach((c, x) => {
@@ -103,32 +103,26 @@ const walkB = walkA.map((r, i) => (i === 7 ? "...X.....X." : r));
 const WALK_PAL = { X: "#D77757", E: "#000000", o: "#5A2416" };
 save(OUT, "clawd-walk-sheet.svg", sheet([withOutline(walkA), withOutline(walkB)]), WALK_PAL);
 
-// ── 指揮官 Clawd（第 1 集結尾進化後）：大一圈的 Clawd 戴船長帽，左右各跟一隻小 Clawd ──
-// 對應 Boris 的 Step 2「指揮官」：一個人同時指揮多個分身
-const HAT = [
-  "....ooooooooooooo....",
-  "...oNNNNNNNNNNNNNo...",
-  "..oNNNNNNNGGGNNNNNo..",
-  "..oNNNNNNGGGGGNNNNo..",
-  "..oWWWWWWWWWWWWWWWo..",
-  ".oKKKKKKKKKKKKKKKKKo.",
-  "..ooooooooooooooooo..",
-];
-function commander(bob, minionBob) {
-  const main = clawdBattle(bob);
-  const mini = withOutline(minionBob ? walkB : walkA);
-  const W = 63, H = 33;
-  const g = Array.from({ length: H }, () => Array(W).fill("."));
-  const paste = (rows, x0, y0) => rows.forEach((r, y) => [...r].forEach((c, x) => { if (c !== ".") g[y0 + y][x0 + x] = c; }));
-  paste(main, 14, H - main.length);
-  paste(HAT, 14 + 7, H - main.length - 4 + bob);
-  paste(mini, 0, H - mini.length);
-  paste(mini, W - mini[0].length, H - mini.length);
+// ── Clawd 小隊（第 1 集結尾進化後）：5 隻一樣大的 Clawd，前排 3 隻、後排 2 隻 ──
+// 對應 Boris 的 Step 2：一個人同時操控 5–10 個 Agent
+const SMALL = 2; // 小隊成員放大 2 倍（單隻 Clawd 是 3 倍）
+// 成員在小隊圖裡的位置（後排先畫，前排蓋在上面）；build-league.mjs 的 SQUAD_MEMBERS 要跟這裡一致
+const SQUAD = (() => {
+  const w = 11 * SMALL + 2, h = 8 * SMALL + 3, step = w - 2, back = Math.round(h * 0.35);
+  return {
+    w, h, W: step * 3 + 2, H: h + back,
+    members: [[Math.round(step * 0.5), 0, 0], [Math.round(step * 1.5), 0, 1], [0, back, 1], [step, back, 0], [step * 2, back, 1]], // [x, y, 擺動相位]
+  };
+})();
+function squad(phase) {
+  const g = Array.from({ length: SQUAD.H }, () => Array(SQUAD.W).fill("."));
+  for (const [x0, y0, ph] of SQUAD.members)
+    clawdBattle((ph + phase) % 2, false, SMALL).forEach((r, y) => [...r].forEach((c, x) => { if (c !== ".") g[y0 + y][x0 + x] = c; }));
   return g.map((r) => r.join(""));
 }
-const COMMANDER_PAL = { ...CLAWD_PAL, ...WALK_PAL, N: "#283C78", G: "#F8C830", W: "#F8F8F8", K: "#202020" };
-save(OUT, "commander-battle-sheet.svg", sheet([commander(0, false), commander(1, true)]), COMMANDER_PAL);
-save(OUT, "commander-front.svg", commander(0, false), COMMANDER_PAL);
+save(OUT, "squad-battle-sheet.svg", sheet([squad(0), squad(1)]), CLAWD_PAL);
+save(OUT, "squad-front.svg", squad(0), CLAWD_PAL);
+save(OUT, "clawd-small-sheet.svg", sheet([clawdBattle(0, false, SMALL), clawdBattle(1, false, SMALL)]), CLAWD_PAL);
 
 // ── 地圖 ────────────────────────────────────────────────
 save(OUT, "tree.svg", [

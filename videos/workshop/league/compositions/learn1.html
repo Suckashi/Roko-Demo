@@ -21,10 +21,10 @@
 <div class="stage">
 <div class="px" style="left:0;top:0;width:320px;height:180px;background:#A8D0F0"></div>
 <div class="px" style="left:0;top:0;width:320px;height:20px;background:#3068B8"></div>
-<div class="t outline" style="left:8px;top:3px">指揮官 Clawd 學會的招式</div>
+<div class="t outline" style="left:8px;top:3px">Clawd 小隊 學會的招式</div>
 <div class="px" style="left:8px;top:26px;width:100px;height:98px;background:#F8F8F8;box-shadow:0 0 0 2px #485868"></div>
 <div class="px" style="left:116px;top:26px;width:198px;height:98px;background:#F8F8F8;box-shadow:0 0 0 2px #485868"></div>
-<img id="learn1-clawd" src="assets/sprites/commander-front.svg" style="left:11px;top:40px;width:94px;height:50px;transform-origin:50% 100%" alt="" />
+<img id="learn1-clawd" src="assets/sprites/squad-front.svg" style="left:11.759999999999998px;top:56.64px;width:92.48px;height:35.36px;transform-origin:50% 100%" alt="" />
 <div id="learn1-flash" class="px" style="left:18px;top:30px;width:80px;height:64px;border-radius:50%;background:#FFF8C0;opacity:0"></div>
 <div id="learn1-lv0" class="t gtx" style="left:42px;top:100px;opacity:0">Lv.1</div>
 <div id="learn1-lv1" class="t hl" style="left:42px;top:100px">Lv.2</div>
@@ -54,10 +54,10 @@
 
   const tl = gsap.timeline({ paused: true });
   const $ = (s) => document.querySelector(s);
-  function playSheet(el, frames, fps, w, start, dur) {
+  function playSheet(el, frames, fps, w, start, dur, off = 0) {
     const p = { t: 0 };
     tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
-      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+      onUpdate: () => { el.style.backgroundPosition = (-((Math.floor(p.t * fps + 1e-6) + off) % frames) * w) + "px 0px"; } }, start);
   }
   function type(line, start) {
     const n = [...line.textContent].length;

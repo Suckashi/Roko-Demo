@@ -35,10 +35,10 @@
 
   const tl = gsap.timeline({ paused: true });
   const $ = (s) => document.querySelector(s);
-  function playSheet(el, frames, fps, w, start, dur) {
+  function playSheet(el, frames, fps, w, start, dur, off = 0) {
     const p = { t: 0 };
     tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
-      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+      onUpdate: () => { el.style.backgroundPosition = (-((Math.floor(p.t * fps + 1e-6) + off) % frames) * w) + "px 0px"; } }, start);
   }
   function type(line, start) {
     const n = [...line.textContent].length;

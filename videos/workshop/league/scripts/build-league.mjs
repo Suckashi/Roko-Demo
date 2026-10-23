@@ -73,15 +73,17 @@ const COMBO = (n) => T.menu + n * (T.gagAttack + T.bad); // 連續單招：選�
 const GROW = T.grow - T.bad; // 對手變大（取代「效果不太好」）
 const roundLength = (p) =>
   ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0) + (p.grow ? GROW : 0) + (p.combo ? COMBO(p.combo.length) : 0);
-// Clawd 的樣子：第 1 集是 Clawd，第 1 集結尾進化成指揮官 Clawd（第 2 集都用這個）
+// Clawd 的樣子：第 1 集是 Clawd，第 1 集結尾進化成 Clawd 小隊（第 2 集都用這個）
+// SQUAD_MEMBERS：小隊 5 隻成員在小隊圖（68×26）裡的位置與擺動相位，要跟 build-sprites.mjs 的 SQUAD 一致
+const SQUAD_MEMBERS = [[11, 0, 0], [33, 0, 1], [0, 7, 1], [22, 7, 0], [44, 7, 1]];
 const FORMS = [
   { name: "Clawd", battle: "clawd-battle-sheet.svg", front: "clawd-front.svg", w: 35, h: 27 },
-  { name: "指揮官 Clawd", battle: "commander-battle-sheet.svg", front: "commander-front.svg", w: 63, h: 33 },
+  { name: "Clawd 小隊", battle: "squad-battle-sheet.svg", front: "squad-front.svg", w: 68, h: 26, members: SQUAD_MEMBERS, member: { sheet: "clawd-small-sheet.svg", w: 24, h: 19 } },
 ];
 const INTRO = 3.6; // 對戰開場：天王撂話，小智喊「去吧！Clawd！」丟出精靈球
 const OUTRO = 2.8; // 對戰收場：天王認輸
 const battleLength = (t) => INTRO + t.team.reduce((sum, p) => sum + roundLength(p), 0) + OUTRO;
-const EVO = 5.5; // 第 1 集結尾：Clawd 進化成指揮官 Clawd
+const EVO = 5.5; // 第 1 集結尾：Clawd 進化成 Clawd 小隊
 
 // 兩集的場景順序與長度（秒）；每集的時間從 0 開始
 const PARTS = {
@@ -123,10 +125,10 @@ const CSS = `
 const JS = `
   const tl = gsap.timeline({ paused: true });
   const $ = (s) => document.querySelector(s);
-  function playSheet(el, frames, fps, w, start, dur) {
+  function playSheet(el, frames, fps, w, start, dur, off = 0) {
     const p = { t: 0 };
     tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
-      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+      onUpdate: () => { el.style.backgroundPosition = (-((Math.floor(p.t * fps + 1e-6) + off) % frames) * w) + "px 0px"; } }, start);
   }
   function type(line, start) {
     const n = [...line.textContent].length;
@@ -424,7 +426,11 @@ TRAINERS.forEach((tr, ti) => {
 <img src="${S}/base-player.svg" style="left:6px;top:108px;width:140px;height:26px${tr.baseFilter ? `;filter:${tr.baseFilter}` : ""}" alt="" />
 <img id="${id}-foe-tr" src="${P}/${tr.sprite}" style="left:${FOE_X - 40}px;top:${FOE_FEET - 78}px;width:80px;height:80px" alt="" />
 <img id="${id}-ash" src="${P}/trainer-ash.png" style="left:36px;top:52px;width:80px;height:80px;transform:scaleX(-1)" alt="" />
-<div id="${id}-clawd" class="px" style="left:${76 - form.w}px;top:${120 - form.h * 2}px;width:${form.w * 2}px;height:${form.h * 2}px;background:url('${S}/${form.battle}') 0 0 / ${form.w * 4}px ${form.h * 2}px;transform-origin:50% 100%"></div>
+${form.members
+  ? `<div id="${id}-clawd" class="px" style="left:${76 - form.w}px;top:${120 - form.h * 2}px;width:${form.w * 2}px;height:${form.h * 2}px;transform-origin:50% 100%">
+${form.members.map(([x, y], n) => `  <div id="${id}-cm${n}" class="px" style="left:${x * 2}px;top:${y * 2}px;width:${form.member.w * 2}px;height:${form.member.h * 2}px;background:url('${S}/${form.member.sheet}') 0 0 / ${form.member.w * 4}px ${form.member.h * 2}px"></div>`).join("\n")}
+</div>`
+  : `<div id="${id}-clawd" class="px" style="left:${76 - form.w}px;top:${120 - form.h * 2}px;width:${form.w * 2}px;height:${form.h * 2}px;background:url('${S}/${form.battle}') 0 0 / ${form.w * 4}px ${form.h * 2}px;transform-origin:50% 100%"></div>`}
 <div id="${id}-php" class="hpbox" style="left:168px;top:77px;width:148px;height:51px">
   <div class="in"></div>
   <div class="t gtx" style="left:8px;top:2px">${form.name}</div><div class="t gtx" style="right:9px;top:2px">Lv.${ti + 1}</div>
@@ -439,14 +445,16 @@ TRAINERS.forEach((tr, ti) => {
   <div class="t gtx" style="right:9px;top:2px">Lv.${tr.step}</div>
   <div class="cap" style="left:42px;top:17px;width:100px"><div class="lab">HP</div><div class="trk"><i id="${id}-bar" style="width:77px"></i></div></div>
 `;
-  let script = `  playSheet($("#${id}-clawd"), 2, 2.5, ${form.w * 2}, 0, ${AT[id].dur});\n`;
+  let script = form.members
+    ? form.members.map(([, , ph], n) => `  playSheet($("#${id}-cm${n}"), 2, 2.5, ${form.member.w * 2}, 0, ${AT[id].dur}, ${ph});\n`).join("")
+    : `  playSheet($("#${id}-clawd"), 2, 2.5, ${form.w * 2}, 0, ${AT[id].dur});\n`;
   const names = [];
   let foes = "";
   let menus = "";
   // 開場：天王與小智出場、天王撂一句話；接著小智喊「去吧！Clawd！」丟出精靈球
   const GO = INTRO - 1.3;
   menus += msg(`${id}-hi`, 0.3, GO - 0.3, [`${tr.name}：「${tr.intro}」`]);
-  menus += msg(`${id}-go`, GO, INTRO - GO, ['<span class="hl">小智</span>：「去吧！<span class="hl">Clawd</span>！」']);
+  menus += msg(`${id}-go`, GO, INTRO - GO, [`<span class="hl">小智</span>：「去吧！<span class="hl">${form.name}</span>！」`]);
   foes += pokeball(`${id}-ball`, GO + 0.2, [40, 80]);
   script += `  tl.fromTo("#${id}-foe-tr", { x: 120 }, { x: 0, duration: 0.3, ease: "power2.out", snap: "x" }, 0);
   tl.fromTo("#${id}-ash", { x: -120 }, { x: 0, duration: 0.3, ease: "power2.out", snap: "x" }, 0);
@@ -511,10 +519,11 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
       audioCues.push([CUR, `sel-${menuId}`, "assets/sfx/select.wav", base + at + T.menu - 0.2, 0.1, 0.5]);
     };
     const attack = (move, at, good, chip = false) => {
-      m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? T.attack : T.gagAttack, [`<span class="hl">Clawd</span> 使出了 ${move}！`]);
-      script += `  tl.fromTo("#${id}-clawd", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, ${r(at + 0.15)});
-  tl.fromTo("#${id}-clawd", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, ${r(at + 0.25)});
-`;
+      m += msg(`${fid}-u${Math.round(at * 10)}`, at, good ? T.attack : T.gagAttack, [`<span class="hl">${form.name}</span> 使出了 ${move}！`]);
+      // 往前衝；小隊是 5 隻依序衝
+      const lungers = form.members ? form.members.map((_, n) => [`#${id}-cm${n}`, n * 0.05]) : [[`#${id}-clawd`, 0]];
+      script += lungers.map(([sel, d]) => `  tl.fromTo("${sel}", { x: 0 }, { x: 10, duration: 0.1, ease: "power2.out", snap: "x", immediateRender: false }, ${r(at + 0.15 + d)});
+  tl.fromTo("${sel}", { x: 10 }, { x: 0, duration: 0.15, ease: "power2.in", snap: "x", immediateRender: false }, ${r(at + 0.25 + d)});`).join("\n") + "\n";
       if (good) {
         const fx = MOVE_FX[move];
         if (!fx) throw new Error(`招式「${move}」沒有特效`);
@@ -684,7 +693,7 @@ const FLAG = (id) => `<img src="${S}/flag.svg" style="left:58px;top:78px;width:2
 <div class="px" style="left:58px;top:110px;width:78px;height:14px;background:#2C3458"></div>
 <div id="${id}-tag" class="t outline" style="left:61px;top:110px;line-height:14px">今天走到這裡</div>`;
 
-// ── 第 1 集結尾：Clawd 進化成指揮官 Clawd（像遊戲的進化畫面：白色剪影越閃越快）──
+// ── 第 1 集結尾：Clawd 進化成 Clawd 小隊（像遊戲的進化畫面：白色剪影越閃越快）──
 CUR = "evo1";
 {
   const [a, b] = FORMS;
@@ -714,7 +723,7 @@ ${img("evo1-bs", b, true)}
 ${img("evo1-b", b, false)}
 ${BOX}
 ${msg("evo1-m1", 0.2, 3.2, ['咦？<span class="hl">Clawd</span> 的樣子……'])}
-${msg("evo1-m2", 3.5, 2.0, ['恭喜！<span class="hl">Clawd</span> 進化成了', '<span class="hl">指揮官 Clawd</span>！'])}
+${msg("evo1-m2", 3.5, 2.0, ['恭喜！<span class="hl">Clawd</span> 進化成了', '<span class="hl">Clawd 小隊</span>！'])}
 <div id="evo1-flash" class="layer" style="background:#fff;opacity:0"></div>
 <div id="evo1-fade" class="layer" style="background:#000"></div>`,
     `  tl.fromTo("#evo1-fade", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "steps(3)" }, 0);\n${js}`,
@@ -727,7 +736,7 @@ TRAINERS.forEach((tr, i) => {
   const id = `learn${i + 1}`;
   CUR = id;
   const ROW0 = 30;
-  const f = FORMS[1]; // 第 1 集已在前一段進化，兩集的結尾都是指揮官 Clawd
+  const f = FORMS[1]; // 第 1 集已在前一段進化，兩集的結尾都是 Clawd 小隊
   const evolved = i === 0; // 第 1 集：進化畫面已經升過級，這裡直接列招式
   const rowAt = (j) => (evolved ? 0.4 + j * 0.4 : 1.6 + j * 0.55);
   // 招式少時名稱與說明分兩行（長名稱如 dev-workflow-tdd 才放得下）；多時一行一招
@@ -749,7 +758,7 @@ TRAINERS.forEach((tr, i) => {
 <div class="t outline" style="left:8px;top:3px">${f.name} 學會的招式</div>
 <div class="px" style="left:8px;top:26px;width:100px;height:98px;background:#F8F8F8;box-shadow:0 0 0 2px #485868"></div>
 <div class="px" style="left:116px;top:26px;width:198px;height:98px;background:#F8F8F8;box-shadow:0 0 0 2px #485868"></div>
-<img id="${id}-clawd" src="${S}/${f.front}" style="left:11px;top:40px;width:94px;height:50px;transform-origin:50% 100%" alt="" />
+<img id="${id}-clawd" src="${S}/${f.front}" style="left:${58 - f.w * 0.68}px;top:${92 - f.h * 1.36}px;width:${r(f.w * 1.36)}px;height:${r(f.h * 1.36)}px;transform-origin:50% 100%" alt="" />
 <div id="${id}-flash" class="px" style="left:18px;top:30px;width:80px;height:64px;border-radius:50%;background:#FFF8C0;opacity:0"></div>
 <div id="${id}-lv0" class="t gtx" style="left:42px;top:100px${evolved ? ";opacity:0" : ""}">Lv.${i + 1}</div>
 <div id="${id}-lv1" class="t hl" style="left:42px;top:100px${evolved ? "" : ";opacity:0"}">Lv.${i + 2}</div>

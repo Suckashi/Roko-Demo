@@ -28,7 +28,7 @@ Step 1 卡在人的注意力：Agent 還不會自己驗證，所以人每一步�
 | 三地鼠 | 同時改同一份 code，會打架 | Git Worktree | 每個 Agent 一份 worktree，互不干擾 |
 | 達克萊伊 | 盯著它，怕它做錯 | 一直盯著看 → 反被暗黑洞弄睡、做惡夢 → Lint、Build、Test 各打一點（打中了，但還不夠…）→ dev-workflow-tdd | 整套流程自動走完，人只看驗證證據，徹底解放注意力 |
 
-打贏後 Step 2 插旗，Clawd 走進 Step 3 的門，接著進化成指揮官 Clawd（Lv.2），學會多開 Session、Git Worktree、dev-workflow-tdd。
+打贏後 Step 2 插旗，Clawd 走進 Step 3 的門，接著進化成 Clawd 小隊（Lv.2），學會多開 Session、Git Worktree、dev-workflow-tdd。
 
 ### 第二位天王・守 Step 3（5 隻）：簡報 p.20「我們離 Step 3 還差什麼」，最後是 Step 2 的大魔王「驗收」
 
@@ -50,8 +50,8 @@ Step 1 卡在人的注意力：Agent 還不會自己驗證，所以人每一步�
 
 分兩集，配寶可夢遊戲的配樂。
 
-- **第 1 集（約 94 秒）**：序章（大木博士）→ 研究所拿到 Clawd，站上 Step 1 → 聯盟大廳 → 條紋轉場進入對戰 → 第一位天王 3 場 → Step 2 插旗，Clawd 走進 Step 3 的門 → **Clawd 進化成指揮官 Clawd**（戴船長帽、左右跟著兩隻小 Clawd，對應 Boris 的 Step 2「指揮官」）→ 列出學會的招式 → 預告芙蓉（JoJo 式 To be continued）
-- **第 2 集（約 97 秒）**：上集回顧 → 條紋轉場 → 第二位天王 5 場（Clawd 都是指揮官 Clawd）→ Clawd 走到 Step 4 門前 → 升到 Lv.3，列出學會的招式 → Step 4 的門打開，烈空坐剪影（To be continued）
+- **第 1 集（約 94 秒）**：序章（大木博士）→ 研究所拿到 Clawd，站上 Step 1 → 聯盟大廳 → 條紋轉場進入對戰 → 第一位天王 3 場 → Step 2 插旗，Clawd 走進 Step 3 的門 → **Clawd 進化成 Clawd 小隊**（5 隻一樣大的 Clawd，對應 Boris 的 Step 2：一個人同時操控 5–10 個 Agent）→ 列出學會的招式 → 預告芙蓉（JoJo 式 To be continued）
+- **第 2 集（約 97 秒）**：上集回顧 → 條紋轉場 → 第二位天王 5 場（都是 Clawd 小隊出戰，出招時 5 隻依序往前衝）→ Clawd 走到 Step 4 門前 → 升到 Lv.3，列出學會的招式 → Step 4 的門打開，烈空坐剪影（To be continued）
 
 對戰細節：開場天王撂一句話、小智喊「去吧！Clawd！」丟精靈球；打完天王回來認輸，對手也從精靈球出場；每個招式有自己的特效（dev-workflow-tdd 綠勾勾、多開 Session 分身、grill-with-docs 問號、Git Worktree 分支、低風險試行小方塊、打好測試環境疊磚、/retro 倒帶）；效果絕佳時畫面震動；對話框打字有嗶聲。每隻寶可夢倒下時，用綠字補一句白話說明這招為什麼有效。
 畫面輔助：「卡在」小標籤整場掛在對手血條下方；綠字的關鍵詞用橘紅色；派出寶可夢時訊息框右邊顯示天王剩幾隻（打倒的精靈球變灰）；Clawd 血條下有經驗值條，每打倒一隻漲一段；大魔王出場時畫面閃紅光、配樂換成《火紅／葉綠》的勁敵最終戰；芙蓉的場地是昏暗偏紫的幽靈系配色。

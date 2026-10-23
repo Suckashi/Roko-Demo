@@ -25,7 +25,7 @@
 <div class="px" style="left:58px;top:110px;width:78px;height:14px;background:#2C3458"></div>
 <div id="recap2-tag" class="t outline" style="left:61px;top:110px;line-height:14px">今天走到這裡</div>
 <div id="recap2-arrow" class="t" style="left:107px;top:2px;color:#F8D030;text-shadow:1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838, 1px 1px #383838">▼</div>
-<div id="recap2-clawd" class="px" style="left:80px;top:68px;width:63px;height:33px;background:url('assets/sprites/commander-battle-sheet.svg') 0 0 / 126px 33px"></div>
+<div id="recap2-clawd" class="px" style="left:77px;top:75px;width:68px;height:26px;background:url('assets/sprites/squad-battle-sheet.svg') 0 0 / 136px 26px"></div>
 <div id="recap2-m1" class="msg clip" data-start="0.4" data-duration="3.9"><div class="line gtx">上一集：打贏花月，走到了 <span class="hl">Step 2</span></div><div class="line gtx">這次的目標：走到 <span class="hl">Step 3</span></div></div>
 <div id="recap2-fade" class="layer" style="background:#000"></div>
 <div id="recap2-wipe" class="clip" data-start="4.3" data-duration="0.7" style="position:absolute;inset:0">
@@ -48,10 +48,10 @@
 
   const tl = gsap.timeline({ paused: true });
   const $ = (s) => document.querySelector(s);
-  function playSheet(el, frames, fps, w, start, dur) {
+  function playSheet(el, frames, fps, w, start, dur, off = 0) {
     const p = { t: 0 };
     tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
-      onUpdate: () => { el.style.backgroundPosition = (-(Math.floor(p.t * fps + 1e-6) % frames) * w) + "px 0px"; } }, start);
+      onUpdate: () => { el.style.backgroundPosition = (-((Math.floor(p.t * fps + 1e-6) + off) % frames) * w) + "px 0px"; } }, start);
   }
   function type(line, start) {
     const n = [...line.textContent].length;
@@ -66,7 +66,7 @@
 
   typeMsg("#recap2-m1", 0.4);
   tl.fromTo("#recap2-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "steps(4)" }, 0);
-  playSheet($("#recap2-clawd"), 2, 2.5, 63, 0, 5);
+  playSheet($("#recap2-clawd"), 2, 2.5, 68, 0, 5);
   tl.fromTo("#recap2-arrow", { y: 0 }, { y: 2, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 15 }, 0.6);
   tl.fromTo("#recap2-wipe-flash", { opacity: 0 }, { opacity: 0.9, duration: 0.07, ease: "steps(1)", yoyo: true, repeat: 3 }, 4.3);
   tl.fromTo("#recap2-wipe-b0", { x: -320 }, { x: 0, duration: 0.3, ease: "steps(6)", snap: "x" }, 4.6);
