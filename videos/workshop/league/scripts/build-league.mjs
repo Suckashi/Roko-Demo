@@ -22,12 +22,12 @@ const TRAINERS = [
     moves: ["多開 Session", "Git Worktree", "Lint", "dev-workflow-tdd"],
     learned: [["多開 Session", "效率翻倍"], ["Git Worktree", "各改各的"], ["dev-workflow-tdd", "整套流程走完"]],
     team: [
-      { name: "呆呆獸", file: "slowpoke", tag: "等它跑完", problem: "每次都要等它跑完", tip: '平行處理，<span class="key">效率翻倍</span>', move: "多開 Session", gag: "泡咖啡等它", gagFx: "coffee" },
+      { name: "呆呆獸", file: "slowpoke", tag: "等它跑完", problem: "每次都要等它跑完", tip: '平行處理，<span class="key">效率翻倍</span>', move: "多開 Session", gag: "泡咖啡等它", gagFx: "coffee", gagResult: '<span class="hl">Clawd</span> 的優雅度提升了！', noDamage: true },
       { name: "三地鼠", file: "dugtrio", tag: "改同一份 code", problem: "同時改同一份 code，會打架", tip: '每個 Agent 一份 <span class="key">worktree</span>，互不干擾', move: "Git Worktree" },
       {
         name: "達克萊伊", file: "darkrai", tag: "一直盯著", boss: true, problem: "盯著它，怕它做錯", scale: 0.8, // 圖比較高，縮小才不會超出畫面
         tip: '整套流程自動走完，人只看<span class="key">驗證證據</span>，徹底解放注意力', move: "dev-workflow-tdd",
-        gag: "一直盯著看", gagFx: "stare",
+        gag: "一直盯著看", gagFx: "stare", gagResult: "好像沒什麼效果…",
         counter: { move: "暗黑洞", fx: "dark", after: '<span class="hl">Clawd</span> 睡著了，還做起了惡夢…' },
         // 單項檢查各打一點，最後用整套流程收尾
         combo: ["Lint", "Build", "Test"],
@@ -72,7 +72,7 @@ const COUNTER = T.hyp + T.sleep - T.bad; // 對手反擊（例如催眠術）取
 const COMBO = (n) => T.menu + n * (T.gagAttack + T.bad); // 連續單招：選一次招式，每招各打一點
 const GROW = T.grow - T.bad; // 對手變大（取代「效果不太好」）
 const roundLength = (p) =>
-  ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER : 0) + (p.grow ? GROW : 0) + (p.combo ? COMBO(p.combo.length) : 0);
+  ROUND + (p.gag ? GAG : 0) + (p.counter ? COUNTER + (p.gagResult ? T.bad : 0) : 0) + (p.grow ? GROW : 0) + (p.combo ? COMBO(p.combo.length) : 0);
 // Clawd 的樣子：第 1 集是 Clawd，第 1 集結尾進化成 Clawd 小隊（第 2 集都用這個）
 // SQUAD_MEMBERS：小隊 5 隻成員在小隊圖（68×26）裡的位置與擺動相位，要跟 build-sprites.mjs 的 SQUAD 一致
 const SQUAD_MEMBERS = [[11, 0, 0], [33, 0, 1], [0, 7, 1], [22, 7, 0], [44, 7, 1]];
@@ -636,6 +636,10 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
       }
       k += T.gagAttack;
       if (p.counter) {
+        if (p.gagResult) {
+          m += msg(`${fid}-res`, k, T.bad, [p.gagResult]);
+          k += T.bad;
+        }
         // 對手反擊：催眠術的波紋從對手飄向 Clawd，Clawd 扣血、睡著
         m += msg(`${fid}-cm`, k, T.hyp, [`<span class="hl">${p.name}</span>使出了${p.counter.move}！`]);
         foes += hypnosisFx(`${fid}-fx`, k, T.hyp, p.counter.fx);
@@ -659,9 +663,14 @@ ${pokeballJs(`${fid}-ball`, t0, [330, -10], [FOE_X - 6, FOE_FEET - 20])}
         audioCues.push([CUR, `grow-${fid}`, `${P}/${p.file}-cry.mp3`, base + k + 0.3, 1.8, 0.7]);
         k += T.grow;
       } else {
-        m += msg(`${fid}-bad`, k, T.bad, ["效果不太好…"]);
-        script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
-        curW = 70;
+        m += msg(`${fid}-bad`, k, T.bad, [p.gagResult ?? "效果不太好…"]);
+        if (p.noDamage) {
+          // 對手不扣血；像遊戲裡能力提升的提示音
+          audioCues.push([CUR, `up-${fid}`, "assets/sfx/levelup.wav", base + k + 0.1, 0.8, 0.3]);
+        } else {
+          script += `  tl.fromTo("#${id}-bar", { width: 77 }, { width: 70, duration: 0.3, ease: "none", immediateRender: false }, ${r(k + 0.1)});\n`;
+          curW = 70;
+        }
         k += T.bad;
       }
     }
