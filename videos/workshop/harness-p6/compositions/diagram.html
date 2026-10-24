@@ -37,6 +37,7 @@
 <marker id="p6-hxFeed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94BEB6"/></marker>
 <filter id="p6-glow" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
 <filter id="p6-soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+<filter id="p6-trail" filterUnits="userSpaceOnUse" x="-20" y="-20" width="1200" height="570"><feGaussianBlur stdDeviation="2.2"/></filter>
 <clipPath id="p6-cp-goal"><rect x="69.22" y="258.85" width="30.98" height="22.39"/></clipPath>
 <clipPath id="p6-cp-judge"><rect x="114.16" y="258.85" width="60.97" height="22.39"/></clipPath>
 <clipPath id="p6-cp-review"><rect x="189.09" y="258.85" width="51.69" height="22.39"/></clipPath>
@@ -74,18 +75,18 @@
 <path id="ln-L6" d="M580 400V320" fill="none" stroke="#94BEB6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#p6-hxFeed)"/>
 </g>
 <g id="trails">
-<path id="tr-L1-amber" d="M310 255L425 255" fill="none" stroke="#F0DDBA" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-L2-blue" d="M580 188L580 112" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="76 86" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-L3-blue" d="M735 232L850 232" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-LR-blue" d="M850 280L735 280" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-L4-blue" d="M1005 320L1005 400" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-L5-green" d="M735 460L850 460" fill="none" stroke="#D3EEE8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-L6-green" d="M580 400L580 320" fill="none" stroke="#D3EEE8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-SK-grey" d="M310 60L367 60L367 208L425 208" fill="none" stroke="#D9E2EE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="263 273" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-RP-grey" d="M310 460L367 460L367 302L425 302" fill="none" stroke="#D9E2EE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="273 283" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-GD-amber" d="M1005 110L1005 190" fill="none" stroke="#F0DDBA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-L2d-blue" d="M580 112L580 188" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="76 86" filter="url(#p6-soft)" opacity="0"/>
-<path id="tr-L6-red" d="M580 400L580 320" fill="none" stroke="#F4A9AA" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-soft)" opacity="0"/>
+<path id="tr-L1-amber" d="M310 255L425 255" fill="none" stroke="#F0DDBA" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-L2-blue" d="M580 188L580 112" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="76 86" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-L3-blue" d="M735 232L850 232" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-LR-blue" d="M850 280L735 280" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-L4-blue" d="M1005 320L1005 400" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-L5-green" d="M735 460L850 460" fill="none" stroke="#D3EEE8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="115 125" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-L6-green" d="M580 400L580 320" fill="none" stroke="#D3EEE8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-SK-grey" d="M310 60L367 60L367 208L425 208" fill="none" stroke="#D9E2EE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="263 273" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-RP-grey" d="M310 460L367 460L367 302L425 302" fill="none" stroke="#D9E2EE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="273 283" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-GD-amber" d="M1005 110L1005 190" fill="none" stroke="#F0DDBA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-L2d-blue" d="M580 112L580 188" fill="none" stroke="#CBEAF3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="76 86" filter="url(#p6-trail)" opacity="0"/>
+<path id="tr-L6-red" d="M580 400L580 320" fill="none" stroke="#F4A9AA" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80 90" filter="url(#p6-trail)" opacity="0"/>
 </g>
 <g id="bx-skills">
 <rect id="gl-skills" x="0" y="10" width="310" height="100" rx="10" fill="none" stroke="#9BADCD" stroke-width="6" filter="url(#p6-glow)" opacity="0"/>
@@ -758,6 +759,7 @@ tl.fromTo("#pl-auto", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2
 tl.fromTo("#wt-auto", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 35.6);
 tl.fromTo("#pl-agent", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 35.6);
 tl.fromTo("#wt-agent", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 35.6);
+tl.fromTo("#gl-sensors", {"opacity":1}, {"opacity":0,"duration":0.3,"ease":"power1.in","immediateRender":false}, 35.6);
 tl.set("#tk-blue", {"opacity":1,"x":580,"y":188}, 36);
 tl.fromTo("#tk-blue", {"x":580,"y":188}, {"x":580,"y":112,"duration":0.4,"ease":"none","immediateRender":false}, 36);
 tl.set("#tk-blue", {"opacity":0}, 36.43);
@@ -802,7 +804,7 @@ tl.set("#tr-GD-amber", {"opacity":1,"strokeDashoffset":80}, 38.05);
 tl.fromTo("#tr-GD-amber", {"strokeDashoffset":80}, {"strokeDashoffset":0,"duration":0.3,"ease":"none","immediateRender":false}, 38.05);
 tl.fromTo("#tr-GD-amber", {"opacity":1}, {"opacity":0,"duration":0.5,"ease":"power1.out","immediateRender":false}, 38.5);
 tl.set("#tr-GD-amber", {"strokeDashoffset":80}, 39.05);
-tl.set("#fl-tools", {"stroke":"#7DBCD1"}, 38.4);
+tl.set("#fl-tools", {"stroke":"#FFFFFF"}, 38.4);
 tl.set("#fl-tools", {"opacity":1}, 38.4);
 tl.set("#fl-tools", {"opacity":0}, 38.48);
 tl.set("#tk-blue", {"opacity":1,"x":1005,"y":320}, 38.6);
@@ -845,6 +847,7 @@ tl.fromTo("#pl-test", {"opacity":1}, {"opacity":0,"duration":0.15,"ease":"power2
 tl.fromTo("#wt-test", {"opacity":1}, {"opacity":0,"duration":0.15,"ease":"power2.out","immediateRender":false}, 40.95);
 tl.fromTo("#pl-testg", {"opacity":0}, {"opacity":1,"duration":0.2,"ease":"power2.out","immediateRender":false}, 40.95);
 tl.fromTo("#wt-testg", {"opacity":0}, {"opacity":1,"duration":0.2,"ease":"power2.out","immediateRender":false}, 40.95);
+tl.fromTo("#gl-sensors", {"opacity":0}, {"opacity":1,"duration":0.2,"ease":"power2.out","immediateRender":false}, 40.95);
 tl.set("#fl-sensors", {"stroke":"#FFFFFF"}, 40.95);
 tl.set("#fl-sensors", {"opacity":1}, 40.95);
 tl.set("#fl-sensors", {"opacity":0}, 41.03);
@@ -860,10 +863,18 @@ tl.fromTo("#tr-L6-green", {"strokeDashoffset":80}, {"strokeDashoffset":0,"durati
 tl.fromTo("#tr-L6-green", {"opacity":1}, {"opacity":0,"duration":0.5,"ease":"power1.out","immediateRender":false}, 41.9);
 tl.set("#tr-L6-green", {"strokeDashoffset":80}, 42.45);
 tl.fromTo("#tx-29", {"fill":"#94BEB6"}, {"fill":"#FFFFFF","duration":0.2,"ease":"power2.out","immediateRender":false}, 41.3);
+tl.fromTo("#pl-again", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 41.75);
+tl.fromTo("#wt-again", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 41.75);
+tl.fromTo("#pl-ctx", {"opacity":0}, {"opacity":1,"duration":0.15,"ease":"power2.out","immediateRender":false}, 41.75);
+tl.fromTo("#wt-ctx", {"opacity":0}, {"opacity":1,"duration":0.15,"ease":"power2.out","immediateRender":false}, 41.75);
+tl.set("#rg-runtime", {"opacity":0.9,"scale":1}, 41.75);
+tl.fromTo("#rg-runtime", {"opacity":0.9,"scale":1}, {"opacity":0,"scale":1.06,"duration":0.45,"ease":"power2.out","immediateRender":false}, 41.75);
 tl.fromTo("#pl-decide", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
 tl.fromTo("#wt-decide", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
-tl.fromTo("#pl-again", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
-tl.fromTo("#wt-again", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
+tl.fromTo("#pl-again", {"opacity":0}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
+tl.fromTo("#wt-again", {"opacity":0}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
+tl.fromTo("#pl-ctx", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
+tl.fromTo("#wt-ctx", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
 tl.fromTo("#pl-lint", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
 tl.fromTo("#wt-lint", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);
 tl.fromTo("#pl-build", {"opacity":1}, {"opacity":0,"duration":0.25,"ease":"power2.out","immediateRender":false}, 42.2);

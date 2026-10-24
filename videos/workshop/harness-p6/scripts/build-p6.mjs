@@ -313,7 +313,7 @@ const trailEl = (line, col) => {
     const len = plen(pts);
     const d = "M" + pts.map((p) => p.join(" ")).join("L");
     const w = line === "SK" || line === "RP" || line === "GD" ? 2.5 : 4.5;
-    trails.push(`<path id="${id}" d="${d}" fill="none" stroke="${TRAIL[col]}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${r(len)} ${r(len + 10)}" filter="url(#${P}soft)" opacity="0"/>`);
+    trails.push(`<path id="${id}" d="${d}" fill="none" stroke="${TRAIL[col]}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${r(len)} ${r(len + 10)}" filter="url(#${P}trail)" opacity="0"/>`);
     init(`#${id}`, { opacity: 0, strokeDashoffset: r(len) });
   }
   return `#${id}`;
@@ -458,8 +458,8 @@ Object.keys(AWAY).forEach((b, k) => {
   const tb = t + 0.25 + k * 0.12;
   tw(`#bx-${b}`, back, tb, 0.6, "expo.out");
   ring(b, tb + 0.35, 0.6, 1.1);
+  if (k % 2 === 0) sfx("whoosh-short", tb, 0.6, 0.26);
 });
-sfx("whoosh-short", t + 0.2, 0.6, 0.4);
 const ON = 10.3;
 tw("#lines", { opacity: 1 }, ON - 0.25, 0.3);
 tw("#labels", { opacity: 1 }, ON, 0.3);
@@ -602,6 +602,7 @@ sfx("error", t + 2.4 - 0.62, 1.1, 0.9, 0);
 label(28, false, t + 4.8);
 label(29, false, t + 4.8);
 for (const k of ["lint", "build", "auto", "agent"]) word(k, false, t + 4.8);
+glow("sensors", false, t + 4.8);
 
 // S8 沒過：修正後再從工具呼叫跑一輪
 t = 36.0;
@@ -614,7 +615,7 @@ tw("#tx-25", { scale: 1 }, t + 1.78, 0.3, "power2.inOut");
 t = 38.0;
 go("L3", t, 0.4, "blue");
 go("GD", t + 0.05, 0.3, "amber");
-flash("tools", t + 0.4, C.blue, 1);
+flash("tools", t + 0.4, "#FFFFFF", 1);
 go("L4", t + 0.6, 0.4, "blue");
 label(27, true, t + 0.6);
 flash("env", t + 1.0, "#FFFFFF", 1);
@@ -631,15 +632,21 @@ word("lint", true, t + 2.45, 0.15);
 word("build", true, t + 2.7, 0.15);
 word("test", false, t + 2.95, 0.15);
 word("testg", true, t + 2.95, 0.2);
+glow("sensors", true, t + 2.95, 0.2);
 flash("sensors", t + 2.95, "#FFFFFF", 2);
 ring("sensors", t + 3.0, 0.6, 1.1);
 go("L6", t + 3.3, 0.45, "green");
 label(29, true, t + 3.3);
+word("again", false, t + 3.75);
+word("ctx", true, t + 3.75, 0.15);
+ring("runtime", t + 3.75, 0.45, 1.06);
 sfx("click-soft", t - 0.05, 0.4, 0.35);
+sfx("pop", t + 2.45 - 0.12, 0.5, 0.25);
+sfx("pop", t + 2.7 - 0.12, 0.5, 0.25);
 sfx("pop", t + 2.95 - 0.12, 0.6, 0.45);
-sfx("chime", t + 3.0 - 0.42, 1.4, 0.18);
+sfx("chime", t + 3.0 - 0.42, 2.5, 0.18);
 t = 42.2;
-for (const k of ["decide", "again", "lint", "build", "testg", "auto", "agent"]) word(k, false, t);
+for (const k of ["decide", "again", "ctx", "lint", "build", "testg", "auto", "agent"]) word(k, false, t);
 glow("sensors", false, t);
 for (const i of [25, 26, 27, 28, 29]) label(i, false, t);
 
@@ -747,6 +754,7 @@ const svgOut = `<svg id="d-svg" viewBox="0 0 1160 530" xmlns="http://www.w3.org/
 ${defs}
 <filter id="${P}glow" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
 <filter id="${P}soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+<filter id="${P}trail" filterUnits="userSpaceOnUse" x="-20" y="-20" width="1200" height="570"><feGaussianBlur stdDeviation="2.2"/></filter>
 ${clipDefs.join("\n")}
 </defs>
 <rect x="0" y="0" width="1160" height="530" fill="#0b1626"/>
