@@ -1137,8 +1137,7 @@ html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .recap-ta
 <article><span class="micro-label">Q2</span><h3>每次交給 Agent 的任務，通常有多大？</h3><ol class="poll-options">
 <li><span>一段程式：寫個函式、修個 bug</span></li>
 <li><span>一個功能：做法我先想好，它照著寫</span></li>
-<li><span>一張 Work Item：需求丟給它，自己規劃、寫、測、開 PR</span></li>
-<li><span>整個專案：多張單一起丟，我只看最後的 PR</span></li>
+<li><span>一張以上的 Work Item：需求丟給它，自己規劃、寫、測，我只看最後的 PR</span></li>
 </ol></article>
 <article><span class="micro-label">Q3</span><h3>要你同時開多個 Agent 做不同的事，最先擔心什麼？</h3><ol class="poll-options">
 <li><span>需求講不清楚，它會做歪</span></li>
@@ -1157,7 +1156,7 @@ html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .recap-ta
 <section class="slide" id="intent" data-title="同樣的功能，公司內得自己建" data-chapter="開始之前" data-folio="05"><div class="inner"><div class="slide-mast"><span>00 / START</span><span>AGENTIC SDLC <b>05</b></span></div><p class="eyebrow">開始之前</p><h2>同樣的功能，公司內得自己建</h2><p class="slide-lead">公司外，Codex、Claude Code 桌面版裝好就有這些功能；公司內是封閉環境，得靠一些方法和工具，自己一項一項接起來。</p>
 <div class="table-scroll"><table class="evidence-table"><thead><tr><th>需要的功能</th><th>為什麼重要</th><th>公司外 · 桌面版內建</th><th>公司內 · 今天自己接</th></tr></thead><tbody>
 <tr><td>同時開多個 Agent</td><td>只開一個，它在跑時人只能等。<br>一個 Session 塞越多事，Context 越容易腐爛；一件事開一個 Session</td><td>側邊欄直接開多個 Session</td><td>用 Kimi Code、Herdr 開多個 Session</td></tr>
-<tr><td>各做各的，互不干擾</td><td>兩個 Agent 改同一份目錄，會互相蓋檔、測試打架</td><td>內建 Git Worktree，每個 Session 一份獨立目錄</td><td>dev-workflow-tdd 開 Branch 時可選開 Worktree，或直接請 Agent 開</td></tr><tr><td>不用一直按「允許」</td><td>每個指令都要人按允許，人還是離不開螢幕；開再多 Session，也只是輪流等你點</td><td>自動模式：一般操作自動通過，有風險的才問</td><td>Kimi Code <code>/yolo</code>：一般操作自動通過，危險指令、敏感檔案仍會問；再用設定檔的 allow 規則，先核准常用的安全指令</td></tr>
+<tr><td>各做各的，互不干擾</td><td>兩個 Agent 改同一份目錄，會互相蓋檔、測試打架</td><td>內建 Git Worktree，每個 Session 一份獨立目錄</td><td>dev-workflow-tdd 開 Branch 時可選開 Worktree，或直接請 Agent 開</td></tr><tr><td>不用一直按「允許」</td><td>每個指令都要人按允許，人還是離不開螢幕；開再多 Session，也只是輪流等你點</td><td>自動模式：一般操作自動通過，有風險的才問</td><td>Kimi Code 也能開自動模式（<code>/yolo</code>），但要配上規則：設定檔的 allow／deny 規則加上 hooks，安全的指令自動放行，有風險的自動擋下來</td></tr>
 <tr><td>接上團隊做法與工具</td><td>Agent 不知道團隊的做法和系統，每次都要從頭交代；寫成 Skill、接上 MCP，交代一次就能重複用</td><td>現成 Connector 很多，點選就接</td><td>Connector 用不了，要自己設 Skills 與 MCP</td></tr>
 </tbody></table></div>
 <p class="key-line">今天是交流，不是上課：我分享自己用得順手的做法，大家挑適合自己的拿去用；有更好的做法，隨時打斷我。</p>
