@@ -1475,7 +1475,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 </tbody></table></div></div></section>
 <section class="slide" id="thanks" data-title="謝謝大家" data-chapter="收尾" data-folio="21"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>21</b></span></div><h2 class="thanks-title">謝謝大家</h2></div></section>
 
-<section class="slide" id="review-brakes" data-title="Step 2 卡在 Review：加上三層煞車" data-chapter="附錄" data-folio="22"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>22</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>Step 2 卡在 Review：加上三層煞車</h2><p class="slide-lead">Agent 越多，PR 越多；要讓人工 Review 變快，得靠前兩層先把關。</p>
+<section class="slide" id="review-brakes" data-title="站上 Step 2 之後，Review 會變成瓶頸" data-chapter="附錄" data-folio="22"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>22</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>站上 Step 2 之後，Review 會變成瓶頸</h2><p class="slide-lead">Agent 平行做，PR 一次來好幾個，人工 Review 跟不上。解法是加上三層煞車：前兩層先把關，人只看重要的。</p>
 <div class="rb-stack">
 <div class="rb-layer done"><span class="n">01</span><div><b>自動化檢查</b><span>Test、Build、Lint、E2E：只花 CPU，可以盡量多加</span></div><em>dev-workflow-tdd 已做</em></div>
 <div class="rb-layer done"><span class="n">02</span><div><b>自動化 Review</b><span>dev-workflow-tdd 的 Code Review 環節＋公司的 AI Reviewer；下一步是對照團隊規範</span></div><em>已有 · 再補規範</em></div>
@@ -1483,15 +1483,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 </div>
 <p class="key-line">前兩層越紮實，第三層要看的就越少。</p>
 <p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖。</p></div></section>
-<section class="slide" id="test-lies" data-title="CI 全綠，不代表可以合併" data-chapter="附錄" data-folio="23"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>23</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>CI 全綠，不代表可以合併</h2><p class="slide-lead">AI 寫的測試常見三種騙法；自動化檢查過了，還是要看測試到底驗了什麼。</p>
-<div class="rb-grid c3">
-<div class="rb-card"><h3>套套邏輯</h3><p>程式寫 <code>LIMIT = 280</code>，測試就寫 <code>expect(LIMIT).toBe(280)</code>。只是把實作再抄一次，沒有驗到行為。</p></div>
-<div class="rb-card"><h3>對結構過敏</h3><p>不渲染畫面，直接讀原始碼檔案比對字串先後。程式一重排就失敗，功能壞了卻不一定抓得到。</p></div>
-<div class="rb-card"><h3>不可能失敗</h3><p>把 AudioContext 這類 API 整個 mock 掉，正式環境才會出現的錯誤，測試永遠測不到。</p></div>
-</div>
-<p class="key-line">解法從架構下手：用 Deep Module 把複雜實作藏在簡單介面後面，並要求 Agent 只從介面測。</p>
-<p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖。</p></div></section>
-<section class="slide" id="own-reviewer" data-title="Review 加上團隊規範" data-chapter="附錄" data-folio="24"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>24</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>已經有 AI Review，下一步是放進團隊規範</h2><p class="slide-lead">公司有 AI Reviewer，dev-workflow-tdd 也有 Code Review 環節。Matt Pocock 的提醒是：通用的 Reviewer 不是太廣而一直誤報，就是太窄而不適用；要真的有用，得累積自己團隊的規範。</p>
+<section class="slide" id="own-reviewer" data-title="Review 加上團隊規範" data-chapter="附錄" data-folio="23"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>23</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>已經有 AI Review，下一步是放進團隊規範</h2><p class="slide-lead">公司有 AI Reviewer，dev-workflow-tdd 也有 Code Review 環節。Matt Pocock 的提醒是：通用的 Reviewer 不是太廣而一直誤報，就是太窄而不適用；要真的有用，得累積自己團隊的規範。</p>
 <div class="rb-grid c2">
 <div class="rb-card busy"><span class="tag">IMPLEMENT AGENT · 已經滿載</span><ul><li>探索：找出要改哪裡</li><li>實作：修改檔案</li><li>除錯：跑驗證、修到通過</li></ul><p class="verdict">再塞 coding standards，三件事都做得更差。</p></div>
 <div class="rb-card idle"><span class="tag">CODE REVIEW 環節 · 還很空</span><ul><li>拿到 diff，只需補看周邊脈絡</li><li>不用實作，也不用除錯</li><li>有自己的 context，逐條對照規範</li></ul><p class="verdict">規範交給它，效果好得多。</p></div>
@@ -1503,7 +1495,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 </div>
 <p class="key-line">同樣的 Review comment 不寫第二次：人工 Review 發現的問題，就寫進 coding-standards.md、lint 或 Skill，也就是我們說的「改環境」。用 /retro 定期回顧 session 和 PR，找出該改哪裡。</p>
 <p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖。</p></div></section>
-<section class="slide" id="one-way-door" data-title="單向門與雙向門" data-chapter="附錄" data-folio="25"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>25</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>不是每個 PR 都一樣危險：單向門與雙向門</h2><p class="slide-lead">大部分 PR 是雙向門，隨時能 revert；要細審的是回不去的、以及爆炸半徑大的——一行設定也可能寄信給六萬人。讓 Agent 在 PR 描述裡先標出來，人就知道力氣該花在哪。</p>
+<section class="slide" id="one-way-door" data-title="單向門與雙向門" data-chapter="附錄" data-folio="24"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>24</b></span></div><p class="eyebrow">附錄 · Review 瓶頸</p><h2>不是每個 PR 都一樣危險：單向門與雙向門</h2><p class="slide-lead">大部分 PR 是雙向門，隨時能 revert；要細審的是回不去的、以及爆炸半徑大的——一行設定也可能寄信給六萬人。讓 Agent 在 PR 描述裡先標出來，人就知道力氣該花在哪。</p>
 <div class="rb-grid c2">
 <div class="rb-card light"><span class="tag">雙向門 · 可以輕審</span><p class="door-def">走錯了可以退回來：合併後隨時能 revert，影響也能完全收回。</p><ul><li>內部重構、UI 文字調整</li><li>有測試覆蓋的一般功能</li></ul><p class="verdict">看摘要與驗證證據即可。</p></div>
 <div class="rb-card full"><span class="tag">單向門 · 一定要細審</span><p class="door-def">走過去就回不來：就算 revert 程式，資料已刪、信已寄出，影響收不回。</p><ul><li>資料 migration、刪除資料</li><li>對外寄信、發通知</li><li>權限、整合與上線設定</li></ul><p class="verdict">逐行看，必要時找人一起看。</p></div>
@@ -1517,7 +1509,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 </div>
 <p class="key-line">單向門每個都要審；雙向門，不用每個都看。</p>
 <p class="source-line">參考：Matt Pocock〈<a href="https://youtu.be/LlgiOCmFG_w" target="_blank" rel="noopener">Fixing the PR Bottleneck</a>〉，AI Engineer 大會演講，依內容整理並對照我們的流程，非講者原圖；單向門／雙向門的分類來自 Amazon。</p></div></section>
-<section class="slide" id="two-flows" data-title="想試兩套流程：一個 Agent 裝一套" data-chapter="附錄" data-folio="26"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>26</b></span></div><p class="eyebrow">附錄 · 兩套流程</p><h2>想試兩套流程？一個 Agent 裝一套，Herdr 同時開</h2><p class="slide-lead">例如今天這套 Matt Pocock Skills，和第 19 頁 Step 3 流程的作者 Poteto 寫的 pstack。兩套裝進同一個 Agent，指令和約定會互相打架；拆開裝、各走各的，再用 Herdr 一起開，就能並排比較。</p>
+<section class="slide" id="two-flows" data-title="想試兩套流程：一個 Agent 裝一套" data-chapter="附錄" data-folio="25"><div class="inner"><div class="slide-mast"><span>06 / APPENDIX</span><span>AGENTIC SDLC <b>25</b></span></div><p class="eyebrow">附錄 · 兩套流程</p><h2>想試兩套流程？一個 Agent 裝一套，Herdr 同時開</h2><p class="slide-lead">例如今天這套 Matt Pocock Skills，和第 19 頁 Step 3 流程的作者 Poteto 寫的 pstack。兩套裝進同一個 Agent，指令和約定會互相打架；拆開裝、各走各的，再用 Herdr 一起開，就能並排比較。</p>
 <div class="dual-flow">
 <div class="dual-top"><b>Herdr</b><span>同時開兩個 Session，一個 Agent 跑一套流程；同一個 Repo，各開一個 Worktree 不互踩</span></div>
 <div class="dual-arrows"><span>↓</span><span>↓</span></div>
