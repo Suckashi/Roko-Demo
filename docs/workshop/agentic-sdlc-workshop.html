@@ -1157,7 +1157,7 @@ html:is([data-workshop-theme="vercel"],[data-workshop-theme="claude"]) .recap-ta
 <section class="slide" id="intent" data-title="同樣的功能，公司內得自己建" data-chapter="開始之前" data-folio="05"><div class="inner"><div class="slide-mast"><span>00 / START</span><span>AGENTIC SDLC <b>05</b></span></div><p class="eyebrow">開始之前</p><h2>同樣的功能，公司內得自己建</h2><p class="slide-lead">公司外，Codex、Claude Code 桌面版裝好就有這些功能；公司內是封閉環境，得靠一些方法和工具，自己一項一項接起來。</p>
 <div class="table-scroll"><table class="evidence-table"><thead><tr><th>需要的功能</th><th>為什麼重要</th><th>公司外 · 桌面版內建</th><th>公司內 · 今天自己接</th></tr></thead><tbody>
 <tr><td>同時開多個 Agent</td><td>只開一個，它在跑時人只能等。<br>一個 Session 塞越多事，Context 越容易腐爛；一件事開一個 Session</td><td>側邊欄直接開多個 Session</td><td>用 Kimi Code、Herdr 開多個 Session</td></tr>
-<tr><td>各做各的，互不干擾</td><td>兩個 Agent 改同一份目錄，會互相蓋檔、測試打架</td><td>內建 Git Worktree，每個 Session 一份獨立目錄</td><td>dev-workflow-tdd 開 Branch 時可選開 Worktree，或直接請 Agent 開</td></tr>
+<tr><td>各做各的，互不干擾</td><td>兩個 Agent 改同一份目錄，會互相蓋檔、測試打架</td><td>內建 Git Worktree，每個 Session 一份獨立目錄</td><td>dev-workflow-tdd 開 Branch 時可選開 Worktree，或直接請 Agent 開</td></tr><tr><td>不用一直按「允許」</td><td>每個指令都要人按允許，人還是離不開螢幕；開再多 Session，也只是輪流等你點</td><td>自動模式：一般操作自動通過，有風險的才問</td><td>Kimi Code <code>/yolo</code>：一般操作自動通過，危險指令、敏感檔案仍會問；再用設定檔的 allow 規則，先核准常用的安全指令</td></tr>
 <tr><td>接上團隊做法與工具</td><td>Agent 不知道團隊的做法和系統，每次都要從頭交代；寫成 Skill、接上 MCP，交代一次就能重複用</td><td>現成 Connector 很多，點選就接</td><td>Connector 用不了，要自己設 Skills 與 MCP</td></tr>
 </tbody></table></div>
 <p class="key-line">今天是交流，不是上課：我分享自己用得順手的做法，大家挑適合自己的拿去用；有更好的做法，隨時打斷我。</p>
@@ -1414,7 +1414,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <div class="archify-slide-map static-diagram loop-diagram">
 <svg viewBox="0 0 1160 410" role="img" aria-labelledby="loopTitle loopDesc" xmlns="http://www.w3.org/2000/svg">
 <title id="loopTitle">Step 3 的 PR 出貨流程</title>
-<desc id="loopDesc">三個泳道。人／外部輸入：Bug 回報與新資訊進入 Project coordinator。Agent 做事：1 Project coordinator 規劃派工，2 多個 agent 實作，3 Verifier agents 實測，4 Agent 自己合併 PR。人只抽查：5 隔天抽查 commit 歷史，6 有問題就改環境；改過的環境回到步驟 2，用在下一輪。</desc>
+<desc id="loopDesc">三個泳道。人／外部輸入：Bug 回報、新資訊與排程進入 Project coordinator。Agent 做事：1 Project coordinator 規劃派工，2 多個 agent 實作，3 Verifier agents 實測，4 Agent 自己合併 PR。人只抽查：5 隔天抽查 commit 歷史，6 有問題就改環境；改過的環境回到步驟 2，用在下一輪。</desc>
 <defs>
 <marker id="lpMain" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7DBCD1"/></marker>
 <marker id="lpHuman" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#D4BA91"/></marker>
@@ -1445,7 +1445,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <rect x="666" y="312" width="230" height="80" rx="10" fill="#35312B" stroke="#D4BA91"/>
 </g>
 <g text-anchor="middle" fill="#EEF5FC" font-size="17" font-weight="700">
-<text x="265" y="49">Bug 回報與新資訊</text>
+<text x="265" y="49">Bug 回報、新資訊與排程</text>
 <text x="265" y="195">1 · Project coordinator</text>
 <text x="523" y="195">2 · 多個 agent 實作</text>
 <text x="781" y="195">3 · Verifier agents 實測</text>
@@ -1474,7 +1474,7 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <tr><td>工程師的把握</td><td>敢不敢放手，取決於測不測得到</td><td>測得到的才放手；抽查發現問題就改環境。要和下一列的測試環境一起看</td></tr>
 <tr><td>測試環境</td><td>還不完整，有些問題要到接近 Production 的環境才測得出來；測不到，工程師就沒把握放手</td><td>按變更類型分：測得到的先放手，碰到整合與權限的照舊人審</td></tr>
 <tr><td>Domain 知識</td><td>Reviewer 在看的業務規則，還有一部分沒寫下來</td><td>grill-with-docs：問清楚就寫進 GLOSSARY.md 與 ADR；驗收條件由人確認，測試從它推出來</td></tr>
-<tr><td>Agent 的環境</td><td>自動驗證還蓋不到 Reviewer 會挑的每一種問題</td><td>用 /retro 回顧 session 和 PR，找出要優化的 Skill、要串的 MCP、要加的 lint 規則；改好環境，下次不用人看</td></tr>
+<tr><td>Agent 的環境</td><td>自動驗證還蓋不到 Reviewer 會挑的每一種問題</td><td>用 /retro 回顧 session 和 PR，找出要優化的 Skill、要串的 MCP、要加的 lint 規則；改好環境，下次不用人看</td></tr><tr><td>Agent 怎麼開工</td><td>每件事都要人開 Session、下 Prompt，Agent 不會自己開始</td><td>先挑重複的維護工作（例如修弱點、清 lint 警告），用排程或事件叫醒 Agent；結果一樣走驗證、隔天抽查</td></tr>
 </tbody></table></div></div></section>
 <section class="slide" id="thanks" data-title="謝謝大家" data-chapter="收尾" data-folio="21"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>21</b></span></div><h2 class="thanks-title">謝謝大家</h2></div></section>
 
