@@ -1467,11 +1467,11 @@ html[data-workshop-theme]:not([data-workshop-theme="ocean"]) .sk-ref{border-colo
 <p class="key-line">人的工作從審每一個 PR，變成抽查結果、把環境改好。</p>
 <p class="source-line">參考：Poteto 的 PR 出貨流程，依 Matt Pocock × Poteto 訪談（2026-10-03）整理，輸入來源換成我們常用的工具，非講者原圖。</p></div></section>
 
-<section class="slide" id="gap-to-step3" data-title="我們離 Step 3 還差什麼" data-chapter="收尾" data-folio="20"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>20</b></span></div><p class="eyebrow">收尾</p><h2>我們離 Step 3 還差什麼</h2><p class="slide-lead">Step 3 的門檻是信任：公司願不願意、工程師敢不敢讓 Agent 合併。信任不是談出來的，是測試環境、Domain 知識、Agent 的環境一項一項補出來的。</p>
+<section class="slide" id="gap-to-step3" data-title="我們離 Step 3 還差什麼" data-chapter="收尾" data-folio="20"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>20</b></span></div><p class="eyebrow">收尾</p><h2>我們離 Step 3 還差什麼</h2><p class="slide-lead">Step 3 的門檻是信任：工程師敢不敢讓 Agent 合併。信任不是談出來的，是測試環境、Domain 知識、Agent 的環境一項一項補出來的。</p>
 <div class="table-scroll"><table class="evidence-table gap-table"><thead><tr><th>哪一層</th><th>為什麼卡住</th><th>怎麼解決</th></tr></thead><tbody>
 <tr><td>測試環境</td><td>工程師敢不敢放手，取決於測不測得到；但測試環境還不完整，有些問題要到接近 Production 的環境才測得出來</td><td>把測試環境建得更完整、更接近 Production：補上整合、權限與真實資料的情境，讓 Agent 自己就能驗證；測得到的先放手，補齊之前碰到整合與權限的照舊人審，抽查發現問題就改環境</td></tr>
 <tr><td>Domain 知識</td><td>Reviewer 在看的業務規則，還有一部分沒寫下來</td><td>grill-with-docs：問清楚就寫進 GLOSSARY.md 與 ADR；驗收條件由人確認，測試從它推出來</td></tr>
-<tr><td>Agent 的環境</td><td>問題還會重複出現</td><td>用 /retro 回顧 session 和 PR，找出要優化的 Skill、要串的 MCP、要加的 lint 規則；改好環境，下次不用人看</td></tr><tr><td>Agent 怎麼開工</td><td>每件事都要人開 Session、下 Prompt，Agent 不會自己開始</td><td>先挑重複的維護工作（例如修弱點、清 lint 警告），用排程或事件叫醒 Agent；結果一樣走驗證、隔天抽查</td></tr>
+<tr><td>Agent 的環境</td><td>同樣的問題一再出現：踩過的坑沒寫回 Skill、MCP 和 lint</td><td>用 /retro 回顧 session 和 PR，找出要優化的 Skill、要串的 MCP、要加的 lint 規則；改好環境，下次不用人看</td></tr><tr><td>Agent 怎麼開工</td><td>每件事都要人開 Session、下 Prompt，Agent 不會自己開始</td><td>先挑重複的維護工作（例如修弱點、清 lint 警告），用排程或事件叫醒 Agent；結果一樣走驗證、隔天抽查</td></tr>
 </tbody></table></div></div></section>
 <section class="slide" id="thanks" data-title="謝謝大家" data-chapter="收尾" data-folio="21"><div class="inner"><div class="slide-mast"><span>05 / NEXT</span><span>AGENTIC SDLC <b>21</b></span></div><h2 class="thanks-title">謝謝大家</h2></div></section>
 
