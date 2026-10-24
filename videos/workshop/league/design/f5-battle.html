@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>f5-battle 對戰選招</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  .band { position: absolute; left: 0; width: 320px; }
+  .r { position: absolute; }                      /* 平塗色塊 */
+  .t { position: absolute; white-space: nowrap; } /* 文字 */
+  /* 遊戲字：深灰字＋右下 1px 淺色硬陰影（GBA/DS 對話字） */
+  .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
+  .gtx.stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+
+  /* 血條框：外框深色、角落兩階像素圓角 */
+  .hpbox { position: absolute; background: #404848;
+    clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 1px, calc(100% - 1px) 1px, calc(100% - 1px) 2px, 100% 2px,
+      100% calc(100% - 2px), calc(100% - 1px) calc(100% - 2px), calc(100% - 1px) calc(100% - 1px), calc(100% - 2px) calc(100% - 1px), calc(100% - 2px) 100%,
+      2px 100%, 2px calc(100% - 1px), 1px calc(100% - 1px), 1px calc(100% - 2px), 0 calc(100% - 2px),
+      0 2px, 1px 2px, 1px 1px, 2px 1px); }
+  .hpbox .in { position: absolute; left: 2px; top: 2px; right: 2px; bottom: 2px; background: #F8F8D8;
+    clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px),
+      calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px); }
+  .hpbox .shade { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: #E0E0B8; }
+  /* HP 膠囊：深色底、黃字 HP、綠色血條 */
+  .cap { position: absolute; height: 12px; background: #505858;
+    clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px),
+      calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px); }
+  .cap .lab { position: absolute; left: 3px; top: 0; line-height: 12px; color: #F8C040; white-space: nowrap; }
+  .cap .trk { position: absolute; left: 19px; right: 2px; top: 3px; height: 6px; background: #F8F8F8; }
+  .cap .trk i { position: absolute; left: 1px; top: 1px; right: 1px; bottom: 1px; background: #58D080; box-shadow: inset 0 1px 0 #90F8B8; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- 天空：階梯色帶 -->
+  <div class="band" style="top: 0; height: 9px; background: #88C0E8"></div>
+  <div class="band" style="top: 9px; height: 8px; background: #98CCF0"></div>
+  <div class="band" style="top: 17px; height: 7px; background: #A8D8F0"></div>
+  <div class="band" style="top: 24px; height: 6px; background: #B8E0F8"></div>
+  <div class="band" style="top: 30px; height: 6px; background: #C8E8F8"></div>
+
+  <!-- 雲（像素塊） -->
+  <svg class="px" style="left: 164px; top: 8px" width="32" height="9" viewBox="0 0 32 9" shape-rendering="crispEdges">
+    <rect x="9" y="0" width="8" height="1" fill="#C8D8E8"/>
+    <rect x="7" y="1" width="2" height="1" fill="#C8D8E8"/><rect x="17" y="1" width="5" height="1" fill="#C8D8E8"/>
+    <rect x="9" y="1" width="8" height="1" fill="#F8F8F8"/>
+    <rect x="3" y="2" width="4" height="1" fill="#C8D8E8"/><rect x="22" y="2" width="3" height="1" fill="#C8D8E8"/>
+    <rect x="7" y="2" width="15" height="1" fill="#F8F8F8"/>
+    <rect x="1" y="3" width="2" height="1" fill="#C8D8E8"/><rect x="25" y="3" width="4" height="1" fill="#C8D8E8"/>
+    <rect x="3" y="3" width="22" height="1" fill="#F8F8F8"/>
+    <rect x="0" y="4" width="1" height="3" fill="#C8D8E8"/><rect x="31" y="4" width="1" height="3" fill="#C8D8E8"/>
+    <rect x="29" y="3" width="1" height="1" fill="#C8D8E8"/><rect x="30" y="3" width="1" height="1" fill="#C8D8E8"/>
+    <rect x="1" y="4" width="30" height="3" fill="#F8F8F8"/>
+    <rect x="1" y="6" width="30" height="1" fill="#E0ECF4"/>
+    <rect x="1" y="7" width="30" height="1" fill="#C8D8E8"/>
+  </svg>
+  <svg class="px" style="left: 284px; top: 3px" width="24" height="7" viewBox="0 0 24 7" shape-rendering="crispEdges">
+    <rect x="6" y="0" width="7" height="1" fill="#C8D8E8"/>
+    <rect x="3" y="1" width="3" height="1" fill="#C8D8E8"/><rect x="13" y="1" width="4" height="1" fill="#C8D8E8"/>
+    <rect x="6" y="1" width="7" height="1" fill="#F8F8F8"/>
+    <rect x="1" y="2" width="2" height="1" fill="#C8D8E8"/><rect x="17" y="2" width="5" height="1" fill="#C8D8E8"/>
+    <rect x="3" y="2" width="14" height="1" fill="#F8F8F8"/>
+    <rect x="0" y="3" width="1" height="2" fill="#C8D8E8"/><rect x="23" y="3" width="1" height="2" fill="#C8D8E8"/>
+    <rect x="22" y="2" width="1" height="1" fill="#C8D8E8"/>
+    <rect x="1" y="3" width="22" height="2" fill="#F8F8F8"/>
+    <rect x="1" y="5" width="22" height="1" fill="#C8D8E8"/>
+  </svg>
+
+  <!-- 遠方樹林：兩排交錯 -->
+  <div class="px" style="left: -8px; top: 22px; width: 336px; height: 16px; background: url('../assets/sprites/tree.svg') 0 0 / 16px 16px repeat-x"></div>
+  <div class="px" style="left: 0; top: 29px; width: 320px; height: 16px; background: url('../assets/sprites/tree.svg') 0 0 / 16px 16px repeat-x"></div>
+
+  <!-- 草地：越近越深的平塗色帶＋透視細線 -->
+  <div class="band" style="top: 44px; height: 12px; background: #C8E8A8"></div>
+  <div class="band" style="top: 44px; height: 1px; background: #98C878"></div>
+  <div class="band" style="top: 56px; height: 18px; background: #C0E4A0"></div>
+  <div class="band" style="top: 56px; height: 1px; background: #B0D890"></div>
+  <div class="band" style="top: 74px; height: 24px; background: #B8E098"></div>
+  <div class="band" style="top: 74px; height: 1px; background: #A8D488"></div>
+  <div class="band" style="top: 98px; height: 32px; background: #A8D888"></div>
+  <div class="band" style="top: 98px; height: 1px; background: #98CC78"></div>
+
+  <!-- 草叢點綴（小草芽） -->
+  <svg class="px" style="left: 0; top: 0" width="320" height="130" viewBox="0 0 320 130" shape-rendering="crispEdges">
+    <g fill="#98C878">
+      <rect x="20" y="50" width="1" height="2"/><rect x="22" y="49" width="1" height="3"/><rect x="24" y="50" width="1" height="2"/>
+      <rect x="172" y="50" width="1" height="2"/><rect x="174" y="49" width="1" height="3"/><rect x="176" y="50" width="1" height="2"/>
+      <rect x="128" y="62" width="1" height="2"/><rect x="130" y="61" width="1" height="3"/><rect x="132" y="62" width="1" height="2"/>
+      <rect x="300" y="82" width="1" height="2"/><rect x="302" y="81" width="1" height="3"/><rect x="304" y="82" width="1" height="2"/>
+    </g>
+    <g fill="#88BC68">
+      <rect x="124" y="86" width="1" height="2"/><rect x="126" y="85" width="1" height="3"/><rect x="128" y="86" width="1" height="2"/>
+      <rect x="150" y="104" width="1" height="3"/><rect x="152" y="103" width="1" height="4"/><rect x="154" y="104" width="1" height="3"/>
+      <rect x="132" y="118" width="1" height="3"/><rect x="134" y="117" width="1" height="4"/><rect x="136" y="118" width="1" height="3"/>
+      <rect x="10" y="80" width="1" height="2"/><rect x="12" y="79" width="1" height="3"/><rect x="14" y="80" width="1" height="2"/>
+    </g>
+  </svg>
+
+  <!-- 對手台座＋引夢貘人（腳踩在台座中央） -->
+  <img src="../assets/sprites/base-foe.svg" style="left: 194px; top: 53px; width: 112px; height: 22px" alt="">
+  <img src="../assets/pokemon/bw-97.png" style="left: 205px; top: -12px; width: 96px; height: 96px" alt="">
+
+  <!-- 我方台座（下緣被訊息框蓋住，像原作）＋ Clawd -->
+  <img src="../assets/sprites/base-player.svg" style="left: 6px; top: 108px; width: 140px; height: 26px" alt="">
+  <img src="../assets/sprites/clawd-front.svg" style="left: 41px; top: 66px; width: 70px; height: 54px" alt="">
+
+  <!-- 對手血條框 -->
+  <div class="hpbox" style="left: 6px; top: 5px; width: 150px; height: 47px">
+    <div class="in"><div class="shade"></div></div>
+    <div class="t gtx" style="left: 8px; top: 2px">引夢貘人</div>
+    <div class="t gtx" style="right: 9px; top: 2px">Lv.1</div>
+    <div class="t gtx stuck" style="left: 8px; top: 16px">卡在：人的注意力</div>
+    <div class="cap" style="left: 42px; top: 31px; width: 100px">
+      <div class="lab">HP</div>
+      <div class="trk"><i></i></div>
+    </div>
+  </div>
+
+  <!-- 我方血條框 -->
+  <div class="hpbox" style="left: 168px; top: 77px; width: 148px; height: 51px">
+    <div class="in"><div class="shade"></div></div>
+    <div class="t gtx" style="left: 8px; top: 2px">Clawd</div>
+    <div class="t gtx" style="right: 9px; top: 2px">Lv.1</div>
+    <div class="cap" style="left: 40px; top: 17px; width: 100px">
+      <div class="lab">HP</div>
+      <div class="trk"><i></i></div>
+    </div>
+    <div class="t gtx" style="right: 9px; top: 28px">20/20</div>
+    <!-- EXP 條 -->
+    <div class="r" style="left: 41px; top: 42px; width: 98px; height: 4px; background: #505858"></div>
+    <div class="r" style="left: 40px; top: 43px; width: 100px; height: 2px; background: #505858"></div>
+    <div class="r" style="left: 42px; top: 43px; width: 96px; height: 2px; background: #F8F8F8"></div>
+    <div class="r" style="left: 42px; top: 43px; width: 24px; height: 2px; background: #48B8F8"></div>
+  </div>
+
+  <!-- 招式選單 -->
+  <div class="msgbox">
+    <svg class="px" style="left: 7px; top: 8px" width="6" height="10" viewBox="0 0 6 10" shape-rendering="crispEdges">
+      <rect x="0" y="0" width="1" height="9" fill="#404040"/><rect x="1" y="1" width="1" height="7" fill="#404040"/>
+      <rect x="2" y="2" width="1" height="5" fill="#404040"/><rect x="3" y="3" width="1" height="3" fill="#404040"/>
+      <rect x="4" y="4" width="1" height="1" fill="#404040"/>
+      <rect x="1" y="8" width="1" height="1" fill="#D0D0C0"/><rect x="2" y="7" width="1" height="1" fill="#D0D0C0"/>
+      <rect x="3" y="6" width="1" height="1" fill="#D0D0C0"/><rect x="4" y="5" width="1" height="1" fill="#D0D0C0"/>
+      <rect x="5" y="4" width="1" height="1" fill="#D0D0C0"/><rect x="0" y="9" width="1" height="1" fill="#D0D0C0"/>
+    </svg>
+    <div class="t gtx" style="left: 18px; top: 6px">連環追問</div>
+    <div class="t gtx" style="left: 110px; top: 6px">Worktree 分身</div>
+    <div class="t gtx" style="left: 18px; top: 24px">自我驗證</div>
+    <div class="t gtx" style="left: 110px; top: 24px">乾等</div>
+
+    <div class="r" style="left: 204px; top: 2px; width: 2px; height: 40px; background: #98B0C8"></div>
+    <div class="t gtx" style="left: 214px; top: 6px">PP</div>
+    <div class="t gtx" style="right: 10px; top: 6px">10/10</div>
+    <div class="t gtx" style="left: 214px; top: 24px">屬性／Skill</div>
+  </div>
+
+</div>
+</body>
+</html>

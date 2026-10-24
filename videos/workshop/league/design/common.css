@@ -1,0 +1,26 @@
+/* 風格圖共用設定：原生 320×180 舞台放大 6 倍（1 原生像素 = 6 螢幕像素） */
+@font-face {
+  font-family: "Fusion Pixel 12px Proportional TC";
+  src: url("../assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2");
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+.stage {
+  position: absolute; left: 0; top: 0; width: 320px; height: 180px;
+  transform: scale(6); transform-origin: 0 0; overflow: hidden;
+  font-family: "Fusion Pixel 12px Proportional TC", sans-serif;
+  font-size: 12px; line-height: 14px; color: #383838;
+}
+.stage img, .stage .px { position: absolute; image-rendering: pixelated; }
+/* 寶可夢式訊息框（底部 320×50） */
+.msgbox {
+  position: absolute; left: 0; top: 130px; width: 320px; height: 50px;
+  background: #F8F8F8; border: 3px solid #485868; box-shadow: inset 0 0 0 2px #98B0C8;
+}
+.msgbox .lines { position: absolute; left: 10px; top: 7px; white-space: nowrap; }
+.hl { color: #2858B0; }      /* 人名、寶可夢名的強調（藍） */
+.stuck { color: #9A5500; }   /* 「卡在：…」 */
+.outline {                    /* 白字黑框，用在畫面上的標籤 */
+  color: #F8F8F8;
+  text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838;
+}

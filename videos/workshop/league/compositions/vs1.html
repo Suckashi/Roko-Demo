@@ -1,0 +1,65 @@
+<template>
+<style>
+  @font-face { font-family: "Fusion Pixel 12px Proportional TC"; src: url("assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2"); }
+  #root { position: absolute; inset: 0; background: #000; overflow: hidden; }
+  .stage { position: absolute; left: 0; top: 0; width: 320px; height: 180px; transform: scale(6); transform-origin: 0 0; overflow: hidden;
+    font-family: "Fusion Pixel 12px Proportional TC", sans-serif; font-size: 12px; line-height: 14px; color: #404040; }
+  .stage img, .stage .px { position: absolute; image-rendering: pixelated; }
+  .bg { left: 0; top: 0; width: 320px; height: 180px; }
+  .t { position: absolute; white-space: nowrap; }
+  .gtx { color: #404040; text-shadow: 1px 0 #D0D0C0, 0 1px #D0D0C0, 1px 1px #D0D0C0; }
+  .stuck { color: #9A5500; text-shadow: 1px 0 #E8D0A0, 0 1px #E8D0A0, 1px 1px #E8D0A0; }
+  .boss { color: #C82020; text-shadow: 1px 0 #F0C0C0, 0 1px #F0C0C0, 1px 1px #F0C0C0; }
+  .key { color: #A03A10; text-shadow: 1px 0 #F0D0B8, 0 1px #F0D0B8, 1px 1px #F0D0B8; }
+  .tip { color: #1E6E3A; text-shadow: 1px 0 #B8E0C0, 0 1px #B8E0C0, 1px 1px #B8E0C0; }
+  .hl { color: #2858B0; text-shadow: 1px 0 #B8C8E8, 0 1px #B8C8E8, 1px 1px #B8C8E8; }
+  .outline { color: #F8F8F8; text-shadow: 1px 0 #383838, -1px 0 #383838, 0 1px #383838, 0 -1px #383838; }
+  .msg { position: absolute; left: 10px; top: 137px; }
+  .line { display: block; width: max-content; white-space: nowrap; margin-bottom: 4px; }
+  .layer { position: absolute; inset: 0; }
+</style>
+<div id="root" data-composition-id="vs1" data-width="1920" data-height="1080">
+<div class="stage">
+<img class="bg" src="assets/pokemon/bg-vs.png" alt="" />
+<img id="vs1-trainer" src="assets/pokemon/trainer-sidney-gen3.png" style="left:220px;top:-8px;width:80px;height:80px" alt="" />
+<img src="assets/sprites/clawd-front.svg" style="left:72px;top:133px;width:35px;height:27px" alt="" />
+<div id="vs1-plate" class="layer">
+  <div class="t outline" style="left:206px;top:84px">四大天王</div>
+  <div class="t gtx" style="left:206px;top:100px;font-size:24px;line-height:26px">花月</div>
+  <div class="t gtx" style="left:256px;top:108px">守 Step 2</div>
+</div>
+<div class="t outline" style="left:110px;top:165px">帶著 3 隻寶可夢</div>
+
+<div id="vs1-flash" class="layer" style="background:#fff"></div>
+</div>
+
+</div>
+<script>
+(function () {
+
+  const tl = gsap.timeline({ paused: true });
+  const $ = (s) => document.querySelector(s);
+  function playSheet(el, frames, fps, w, start, dur, off = 0) {
+    const p = { t: 0 };
+    tl.fromTo(p, { t: 0 }, { t: dur, duration: dur, ease: "none", immediateRender: false,
+      onUpdate: () => { el.style.backgroundPosition = (-((Math.floor(p.t * fps + 1e-6) + off) % frames) * w) + "px 0px"; } }, start);
+  }
+  function type(line, start) {
+    const n = [...line.textContent].length;
+    const d = n * 0.035;
+    tl.fromTo(line, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: d, ease: "steps(" + n + ")" }, start);
+    return start + d;
+  }
+  function typeMsg(sel, start) {
+    let t = start;
+    document.querySelector(sel).querySelectorAll(".line").forEach((l) => { t = type(l, t) + 0.08; });
+  }
+
+  
+  tl.fromTo("#vs1-flash", { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power1.out" }, 0);
+  tl.fromTo("#vs1-trainer", { x: 80 }, { x: 0, duration: 0.3, ease: "power3.out", snap: "x" }, 0.05);
+  tl.fromTo("#vs1-plate", { x: 130 }, { x: 0, duration: 0.3, ease: "power3.out", snap: "x" }, 0.2);
+  window.__timelines["vs1"] = tl;
+})();
+</script>
+</template>

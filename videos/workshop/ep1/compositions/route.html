@@ -1,0 +1,351 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Fusion Pixel 12px Proportional TC";
+      src: url("assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      background: #88c870;
+      overflow: hidden;
+    }
+    /* 原生 320×180 的舞台放大 6 倍；裡面所有尺寸都是原生像素 */
+    #route-stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 320px;
+      height: 180px;
+      transform: scale(6);
+      transform-origin: 0 0;
+      overflow: hidden;
+      font-family: "Fusion Pixel 12px Proportional TC", sans-serif;
+      font-size: 12px;
+      line-height: 14px;
+      color: #383838;
+    }
+    #route-stage img,
+    #route-stage .sprite {
+      position: absolute;
+      image-rendering: pixelated;
+    }
+    #route-world {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1040px;
+      height: 180px;
+      background: url("assets/sprites/grass.svg") repeat;
+      background-size: 8px 8px;
+      image-rendering: pixelated;
+    }
+    .route-path {
+      position: absolute;
+      left: 0;
+      top: 98px;
+      width: 1040px;
+      height: 24px;
+      background: #e8d8a0;
+      border-top: 2px solid #c8b070;
+      border-bottom: 2px solid #c8b070;
+    }
+    .route-tree {
+      position: absolute;
+      top: 0;
+      width: 32px;
+      height: 32px;
+      background: url("assets/sprites/tree.svg") 0 0 / 32px 32px;
+      image-rendering: pixelated;
+    }
+    .route-tall {
+      position: absolute;
+      top: 88px;
+      height: 10px;
+      background: url("assets/sprites/tallgrass.svg") repeat-x;
+      background-size: 16px 10px;
+      image-rendering: pixelated;
+    }
+    .route-sign {
+      position: absolute;
+      top: 60px;
+      width: 44px;
+      height: 18px;
+      background: #c89858;
+      border: 2px solid #3a2410;
+      color: #3a2410;
+      text-align: center;
+      line-height: 14px;
+    }
+    .route-post {
+      position: absolute;
+      top: 80px;
+      width: 4px;
+      height: 18px;
+      background: #8a5a2a;
+      border: 1px solid #3a2410;
+    }
+    .route-label {
+      position: absolute;
+      white-space: nowrap;
+      color: #f8f8f8;
+      text-shadow:
+        1px 0 #383838,
+        -1px 0 #383838,
+        0 1px #383838,
+        0 -1px #383838;
+    }
+    #route-zzz span {
+      position: absolute;
+      display: block;
+    }
+    #route-box {
+      position: absolute;
+      left: 0;
+      top: 130px;
+      width: 320px;
+      height: 50px;
+      background: #f8f8f8;
+      border: 3px solid #485868;
+      box-shadow: inset 0 0 0 2px #98b0c8;
+    }
+    .route-lines {
+      position: absolute;
+      left: 10px;
+      top: 7px;
+    }
+    .route-line {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .route-stuck {
+      color: #9a5500;
+    }
+    #route-alert .route-bubble {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 14px;
+      height: 17px;
+      background: #f8f8f8;
+      border: 2px solid #383838;
+      color: #c82020;
+      text-align: center;
+      line-height: 13px;
+      transform-origin: 50% 100%;
+    }
+    #route-flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      opacity: 0;
+    }
+    #route-bars div {
+      position: absolute;
+      left: 0;
+      width: 320px;
+      height: 23px;
+      background: #000;
+    }
+  </style>
+
+  <div id="root" data-composition-id="route" data-width="1920" data-height="1080">
+    <div id="route-stage">
+      <!-- 整條路線（4 站，每站相隔 240 原生像素），鏡頭移動 = 移動這一層 -->
+      <div id="route-world" data-layout-allow-overflow>
+        <div class="route-path"></div>
+
+        <div class="route-tree" style="left: 4px"></div>
+        <div class="route-tree" style="left: 36px"></div>
+        <div class="route-tree" style="left: 96px"></div>
+        <div class="route-tree" style="left: 236px"></div>
+        <div class="route-tree" style="left: 268px"></div>
+        <div class="route-tree" style="left: 300px"></div>
+        <div class="route-tree" style="left: 520px"></div>
+        <div class="route-tree" style="left: 552px"></div>
+        <div class="route-tree" style="left: 584px"></div>
+        <div class="route-tree" style="left: 740px"></div>
+        <div class="route-tree" style="left: 772px"></div>
+        <div class="route-tree" style="left: 804px"></div>
+        <div class="route-tree" style="left: 980px"></div>
+        <div class="route-tree" style="left: 1012px"></div>
+
+        <!-- Step 1：引夢貘人在草叢裡 -->
+        <div class="route-sign" style="left: 42px">Step 1</div>
+        <div class="route-post" style="left: 62px"></div>
+        <div
+          id="route-hypno"
+          class="sprite"
+          style="left: 147px; top: 36px; width: 67px; height: 62px; background: url('assets/pokemon/hypno-sheet.png') 0 0 / 4288px 62px"
+        ></div>
+        <div class="route-tall" style="left: 128px; width: 112px"></div>
+        <div
+          id="route-clawd"
+          class="sprite"
+          style="left: -30px; top: 98px; width: 26px; height: 20px; background: url('assets/sprites/clawd-walk-sheet.svg') 0 0 / 52px 20px"
+        ></div>
+
+        <!-- Step 2：卡比獸睡在路中間擋路；旗子＝今天走到這裡 -->
+        <div class="route-sign" style="left: 282px">Step 2</div>
+        <div class="route-post" style="left: 302px"></div>
+        <img src="assets/sprites/flag.svg" style="left: 352px; top: 70px; width: 24px; height: 28px" alt="" />
+        <div class="route-label" style="left: 326px; top: 54px">今天走到這裡</div>
+        <div
+          id="route-snorlax"
+          class="sprite"
+          style="left: 395px; top: 45px; width: 74px; height: 75px; background: url('assets/pokemon/snorlax-sheet.png') 0 0 / 6660px 75px"
+        ></div>
+        <div id="route-zzz" class="route-label" style="left: 452px; top: 36px">
+          <span id="route-z1" style="left: 0; top: 8px">Z</span>
+          <span id="route-z2" style="left: 7px; top: 3px">Z</span>
+          <span id="route-z3" style="left: 14px; top: -2px">Z</span>
+        </div>
+
+        <!-- Step 3：百變怪 -->
+        <div class="route-sign" style="left: 522px">Step 3</div>
+        <div class="route-post" style="left: 542px"></div>
+        <div
+          id="route-ditto"
+          class="sprite"
+          style="left: 637px; top: 66px; width: 47px; height: 32px; background: url('assets/pokemon/ditto-sheet.png') 0 0 / 1974px 32px"
+        ></div>
+        <div class="route-tall" style="left: 616px; width: 96px"></div>
+
+        <!-- Step 4：只有剪影 -->
+        <div class="route-sign" style="left: 762px">Step 4</div>
+        <div class="route-post" style="left: 782px"></div>
+        <img src="assets/pokemon/typenull-silhouette.png" style="left: 852px; top: 6px; width: 96px; height: 96px" alt="" />
+        <div class="route-tall" style="left: 840px; width: 128px"></div>
+        <div class="route-label" style="left: 934px; top: 4px; font-size: 24px; line-height: 26px">？</div>
+
+        <!-- 拉回 Step 1 後，引夢貘人發現你 -->
+        <div id="route-alert" class="clip" data-start="10.85" data-duration="1.15" style="position: absolute; left: 172px; top: 16px">
+          <div class="route-bubble">！</div>
+        </div>
+      </div>
+
+      <!-- 訊息框：每站換一段說明 -->
+      <div id="route-box">
+        <div id="route-t1" class="route-lines clip" data-start="0" data-duration="2.7">
+          <div class="route-line">Step 1・引夢貘人</div><br />
+          <div class="route-line route-stuck">卡在：人的注意力</div>
+        </div>
+        <div id="route-t2" class="route-lines clip" data-start="2.7" data-duration="2.9">
+          <div class="route-line">Step 2・卡比獸</div><br />
+          <div class="route-line route-stuck">卡在：Review 多份成果</div>
+        </div>
+        <div id="route-t3" class="route-lines clip" data-start="5.6" data-duration="2.5">
+          <div class="route-line">Step 3・百變怪</div><br />
+          <div class="route-line route-stuck">卡在：驗證可信度</div>
+        </div>
+        <div id="route-t4" class="route-lines clip" data-start="8.1" data-duration="2.3">
+          <div class="route-line">Step 4・？？？</div><br />
+          <div class="route-line route-stuck">卡在：設定邊界</div>
+        </div>
+      </div>
+
+      <!-- 遭遇轉場：白閃兩次，黑條合上 -->
+      <div id="route-flash" class="clip" data-start="11.3" data-duration="0.7"></div>
+      <div id="route-bars" class="clip" data-start="11.6" data-duration="0.4" style="position: absolute; inset: 0">
+        <div style="top: 0; transform-origin: 0 50%"></div>
+        <div style="top: 23px; transform-origin: 100% 50%"></div>
+        <div style="top: 45px; transform-origin: 0 50%"></div>
+        <div style="top: 68px; transform-origin: 100% 50%"></div>
+        <div style="top: 90px; transform-origin: 0 50%"></div>
+        <div style="top: 113px; transform-origin: 100% 50%"></div>
+        <div style="top: 135px; transform-origin: 0 50%"></div>
+        <div style="top: 158px; transform-origin: 100% 50%"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const $ = (s) => document.querySelector(s);
+
+      // 逐格圖：依時間算出第幾格（只看時間，不看上一格）
+      function playSheet(el, frames, fps, w, start, dur) {
+        const p = { t: 0 };
+        tl.fromTo(
+          p,
+          { t: 0 },
+          {
+            t: dur,
+            duration: dur,
+            ease: "none",
+            onUpdate: () => {
+              const f = Math.floor(p.t * fps + 1e-6) % frames;
+              el.style.backgroundPosition = `${-f * w}px 0px`;
+            },
+          },
+          start,
+        );
+      }
+
+      // 打字機：一個字一格
+      function type(line, start) {
+        const n = [...line.textContent].length;
+        const d = n * 0.04;
+        tl.fromTo(
+          line,
+          { clipPath: "inset(0 100% 0 0)" },
+          { clipPath: "inset(0 0% 0 0)", duration: d, ease: `steps(${n})` },
+          start,
+        );
+        return start + d;
+      }
+      [
+        ["#route-t1", 0],
+        ["#route-t2", 2.7],
+        ["#route-t3", 5.6],
+        ["#route-t4", 8.1],
+      ].forEach(([sel, start]) => {
+        const [l1, l2] = document.querySelector(sel).querySelectorAll(".route-line");
+        type(l2, type(l1, start) + 0.05);
+      });
+
+      // 寶可夢的待機動作（黑／白版每格 0.1 秒）
+      playSheet($("#route-hypno"), 64, 10, 67, 0, 12);
+      playSheet($("#route-snorlax"), 90, 10, 74, 0, 12);
+      playSheet($("#route-ditto"), 42, 10, 47, 0, 12);
+
+      // Clawd 走進 Step 1，停在告示牌和引夢貘人之間
+      tl.fromTo("#route-clawd", { x: 0 }, { x: 126, duration: 1.2, ease: "none", snap: "x" }, 0);
+      playSheet($("#route-clawd"), 2, 1 / 0.15, 26, 0, 1.2);
+
+      // 卡比獸頭上的 Z：一個接一個往上飄
+      ["#route-z1", "#route-z2", "#route-z3"].forEach((sel, i) => {
+        const start = i * 0.4;
+        const repeat = Math.max(0, Math.floor((12 - start) / 1.2) - 1);
+        tl.fromTo(sel, { y: 0 }, { y: -8, duration: 1.2, ease: "none", snap: "y", repeat }, start);
+        tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "none", yoyo: true, repeat: repeat * 2 + 1 }, start);
+      });
+
+      // 鏡頭：一站一站往右，最後快速拉回 Step 1
+      // 同一個屬性有多段 fromTo，只有第一段立即套用起始值，否則最後一段會蓋掉第 0 秒的位置
+      const pan = (from, to, at, dur, ease, first = false) =>
+        tl.fromTo("#route-world", { x: from }, { x: to, duration: dur, ease, snap: "x", immediateRender: first }, at);
+      pan(0, -240, 2.5, 0.5, "power2.inOut", true);
+      pan(-240, -480, 5.4, 0.5, "power2.inOut");
+      pan(-480, -720, 7.9, 0.5, "power2.inOut");
+      pan(-720, 0, 10.4, 0.45, "power3.inOut");
+
+      // 「！」跳出來
+      tl.fromTo("#route-alert .route-bubble", { scale: 0 }, { scale: 1, duration: 0.12, ease: "back.out(2)" }, 10.85);
+
+      // 白閃兩次
+      tl.set("#route-flash", { opacity: 1 }, 11.3);
+      tl.set("#route-flash", { opacity: 0 }, 11.38);
+      tl.set("#route-flash", { opacity: 1 }, 11.46);
+      tl.set("#route-flash", { opacity: 0 }, 11.54);
+
+      // 黑條左右交錯合上
+      document.querySelectorAll("#route-bars div").forEach((bar, i) => {
+        tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: 0.18, ease: "power2.in" }, 11.62 + i * 0.02);
+      });
+
+      window.__timelines["route"] = tl;
+    })();
+  </script>
+</template>

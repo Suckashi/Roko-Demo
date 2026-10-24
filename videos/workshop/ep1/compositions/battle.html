@@ -1,0 +1,321 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Fusion Pixel 12px Proportional TC";
+      src: url("assets/fonts/fusion-pixel-12px-proportional-tc.woff2") format("woff2");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      background: #a8d8f0;
+      overflow: hidden;
+    }
+    /* 原生 320×180 的舞台放大 6 倍；裡面所有尺寸都是原生像素 */
+    #battle-stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 320px;
+      height: 180px;
+      transform: scale(6);
+      transform-origin: 0 0;
+      overflow: hidden;
+      font-family: "Fusion Pixel 12px Proportional TC", sans-serif;
+      font-size: 12px;
+      line-height: 14px;
+      color: #383838;
+    }
+    #battle-stage img,
+    #battle-stage .sprite {
+      position: absolute;
+      image-rendering: pixelated;
+    }
+    .battle-band {
+      position: absolute;
+      left: 0;
+      width: 320px;
+    }
+    .battle-layer {
+      position: absolute;
+      inset: 0;
+    }
+    .battle-panel {
+      position: absolute;
+      background: #f8f8e0;
+      border: 2px solid #484848;
+      padding: 3px 7px;
+      clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px);
+    }
+    .battle-right {
+      float: right;
+    }
+    .battle-stuck {
+      color: #9a5500;
+    }
+    .battle-hptag {
+      position: absolute;
+      left: 7px;
+      height: 12px;
+      padding: 0 1px;
+      background: #485850;
+      color: #f8d048;
+      line-height: 12px;
+    }
+    .battle-hpbar {
+      position: absolute;
+      left: 24px;
+      width: 108px;
+      height: 5px;
+      background: #485850;
+      border: 1px solid #383838;
+    }
+    .battle-hpbar i {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #58d058;
+      box-shadow: inset 0 -1px 0 #38a038;
+    }
+    #battle-box {
+      position: absolute;
+      left: 0;
+      top: 130px;
+      width: 320px;
+      height: 50px;
+      background: #f8f8f8;
+      border: 3px solid #485868;
+      box-shadow: inset 0 0 0 2px #98b0c8;
+    }
+    .battle-msg {
+      position: absolute;
+      left: 10px;
+      top: 7px;
+    }
+    .battle-line {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .battle-move {
+      position: absolute;
+      white-space: nowrap;
+    }
+    #battle-cursor {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      color: #383838;
+    }
+    .battle-pp {
+      position: absolute;
+      left: 214px;
+      top: 2px;
+      width: 98px;
+      height: 40px;
+      border-left: 2px solid #98b0c8;
+      padding-left: 8px;
+    }
+    #battle-burst .battle-flash {
+      position: absolute;
+      left: 62px;
+      top: 84px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+    .battle-sign {
+      position: absolute;
+      left: 60px;
+      top: 40px;
+      width: 200px;
+      height: 64px;
+      background: #f8d030;
+      border: 3px solid #383838;
+      box-shadow: inset 0 0 0 2px #f8f8f8;
+      text-align: center;
+    }
+    #battle-bars div {
+      position: absolute;
+      left: 0;
+      width: 320px;
+      height: 23px;
+      background: #000;
+    }
+  </style>
+
+  <div id="root" data-composition-id="battle" data-width="1920" data-height="1080">
+    <div id="battle-stage">
+      <!-- 背景：天空與草地都用平塗色帶 -->
+      <div class="battle-band" style="top: 0; height: 22px; background: #98d0f0"></div>
+      <div class="battle-band" style="top: 22px; height: 22px; background: #a8d8f0"></div>
+      <div class="battle-band" style="top: 44px; height: 22px; background: #b8e0f8"></div>
+      <div class="battle-band" style="top: 66px; height: 22px; background: #c8e8f8"></div>
+      <div class="battle-band" style="top: 88px; height: 42px; background: #b8e098"></div>
+      <div class="battle-band" style="top: 130px; height: 50px; background: #a8d888"></div>
+
+      <!-- 對手：台座與引夢貘人一起從左邊滑入 -->
+      <div id="battle-foe" class="battle-layer">
+        <img src="assets/sprites/base-foe.svg" style="left: 188px; top: 80px; width: 112px; height: 22px" alt="" />
+        <div
+          id="battle-hypno"
+          class="sprite"
+          style="left: 211px; top: 30px; width: 67px; height: 62px; background: url('assets/pokemon/hypno-sheet.png') 0 0 / 4288px 62px"
+        ></div>
+      </div>
+      <!-- 我方台座從右邊滑入 -->
+      <div id="battle-player" class="battle-layer">
+        <img src="assets/sprites/base-player.svg" style="left: 12px; top: 118px; width: 140px; height: 26px" alt="" />
+      </div>
+      <!-- Clawd：開球後跳出來，之後待機上下擺動 -->
+      <div
+        id="battle-clawd"
+        class="sprite"
+        style="left: 47px; top: 76px; width: 70px; height: 54px; background: url('assets/sprites/clawd-battle-sheet.svg') 0 0 / 140px 54px; transform-origin: 50% 100%"
+      ></div>
+
+      <!-- 血條框 -->
+      <div id="battle-foehp" class="battle-panel" style="left: 8px; top: 8px; width: 144px; height: 52px">
+        <div>引夢貘人<span class="battle-right">Lv.1</span></div>
+        <div class="battle-stuck">卡在：人的注意力</div>
+        <span class="battle-hptag" style="top: 31px">HP</span>
+        <div class="battle-hpbar" style="top: 34px"><i></i></div>
+      </div>
+      <div id="battle-php" class="battle-panel" style="left: 172px; top: 84px; width: 144px; height: 44px">
+        <div>Clawd<span class="battle-right">Lv.1</span></div>
+        <span class="battle-hptag" style="top: 16px">HP</span>
+        <div class="battle-hpbar" style="top: 19px"><i></i></div>
+        <div style="position: absolute; right: 7px; top: 26px">20/20</div>
+      </div>
+
+      <!-- 精靈球與開球白光 -->
+      <div id="battle-ball" class="clip" data-start="3" data-duration="0.55" style="position: absolute; inset: 0">
+        <img src="assets/pokemon/pokeball.svg" style="left: 0; top: 0; width: 12px; height: 12px" alt="" />
+      </div>
+      <div id="battle-burst" class="clip" data-start="3.5" data-duration="0.3" style="position: absolute; inset: 0">
+        <div class="battle-flash"></div>
+      </div>
+
+      <!-- 訊息框 -->
+      <div id="battle-box">
+        <div id="battle-m1" class="battle-msg clip" data-start="0.6" data-duration="2.3">
+          <div class="battle-line">野生的引夢貘人出現了！</div>
+        </div>
+        <div id="battle-m2" class="battle-msg clip" data-start="2.9" data-duration="1.3">
+          <div class="battle-line">去吧！Clawd！</div>
+        </div>
+        <div id="battle-m3" class="battle-msg clip" data-start="4.2" data-duration="1.4">
+          <div class="battle-line">Clawd 要怎麼做？</div>
+        </div>
+        <div id="battle-menu" class="clip" data-start="5.6" data-duration="4" style="position: absolute; inset: 0">
+          <div id="battle-cursor">▶</div>
+          <div class="battle-move" style="left: 16px; top: 4px">連環追問</div>
+          <div class="battle-move" style="left: 110px; top: 4px">Worktree 分身</div>
+          <div class="battle-move" style="left: 16px; top: 22px">自我驗證</div>
+          <div class="battle-move" style="left: 110px; top: 22px">乾等</div>
+          <div class="battle-pp">
+            <div style="margin-top: 2px">PP 10/10</div>
+            <div style="margin-top: 4px">屬性／Skill</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 下回分曉 -->
+      <div id="battle-banner" class="clip" data-start="7.3" data-duration="2.3" style="position: absolute; inset: 0">
+        <div class="battle-sign">
+          <div style="font-size: 24px; line-height: 26px; margin-top: 8px">下回分曉！</div>
+          <div style="margin-top: 6px">第 2 集・收尾時揭曉</div>
+        </div>
+      </div>
+
+      <!-- 黑條左右交錯打開 -->
+      <div id="battle-bars" class="clip" data-start="0" data-duration="0.35" style="position: absolute; inset: 0">
+        <div style="top: 0; transform-origin: 100% 50%"></div>
+        <div style="top: 23px; transform-origin: 0 50%"></div>
+        <div style="top: 45px; transform-origin: 100% 50%"></div>
+        <div style="top: 68px; transform-origin: 0 50%"></div>
+        <div style="top: 90px; transform-origin: 100% 50%"></div>
+        <div style="top: 113px; transform-origin: 0 50%"></div>
+        <div style="top: 135px; transform-origin: 100% 50%"></div>
+        <div style="top: 158px; transform-origin: 0 50%"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const $ = (s) => document.querySelector(s);
+
+      // 逐格圖：依時間算出第幾格（只看時間，不看上一格）
+      function playSheet(el, frames, fps, w, start, dur) {
+        const p = { t: 0 };
+        tl.fromTo(
+          p,
+          { t: 0 },
+          {
+            t: dur,
+            duration: dur,
+            ease: "none",
+            onUpdate: () => {
+              const f = Math.floor(p.t * fps + 1e-6) % frames;
+              el.style.backgroundPosition = `${-f * w}px 0px`;
+            },
+          },
+          start,
+        );
+      }
+
+      // 打字機：一個字一格
+      function type(line, start) {
+        const n = [...line.textContent].length;
+        tl.fromTo(
+          line,
+          { clipPath: "inset(0 100% 0 0)" },
+          { clipPath: "inset(0 0% 0 0)", duration: n * 0.04, ease: `steps(${n})` },
+          start,
+        );
+      }
+
+      // 黑條打開
+      document.querySelectorAll("#battle-bars div").forEach((bar, i) => {
+        tl.fromTo(bar, { scaleX: 1 }, { scaleX: 0, duration: 0.18, ease: "power2.out" }, i * 0.02);
+      });
+
+      // 雙方台座等速滑入（寶可夢原作的滑法）
+      tl.fromTo("#battle-foe", { x: -220 }, { x: 0, duration: 0.6, ease: "none", snap: "x" }, 0.1);
+      tl.fromTo("#battle-player", { x: 220 }, { x: 0, duration: 0.6, ease: "none", snap: "x" }, 0.1);
+      playSheet($("#battle-hypno"), 64, 10, 67, 0, 9.6);
+
+      // 野生的引夢貘人出現了！
+      type($("#battle-m1 .battle-line"), 0.6);
+      tl.fromTo("#battle-foehp", { x: -170 }, { x: 0, duration: 0.3, ease: "power2.out", snap: "x" }, 0.75);
+
+      // 去吧！Clawd！精靈球拋物線、開球、Clawd 跳出來
+      type($("#battle-m2 .battle-line"), 2.9);
+      const ball = $("#battle-ball img");
+      tl.fromTo(ball, { x: -12 }, { x: 76, duration: 0.5, ease: "none", snap: "x" }, 3.0);
+      tl.fromTo(ball, { y: 118 }, { y: 66, duration: 0.25, ease: "power2.out", snap: "y" }, 3.0);
+      tl.fromTo(ball, { y: 66 }, { y: 98, duration: 0.25, ease: "power2.in", snap: "y", immediateRender: false }, 3.25);
+      tl.fromTo(ball, { rotation: 0 }, { rotation: 720, duration: 0.5, ease: "steps(16)" }, 3.0);
+      tl.fromTo("#battle-burst .battle-flash", { scale: 0, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.28, ease: "power2.out" }, 3.5);
+      tl.fromTo("#battle-clawd", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(1.7)" }, 3.55);
+      playSheet($("#battle-clawd"), 2, 2.5, 70, 3.85, 5.75);
+      tl.fromTo("#battle-php", { x: 160 }, { x: 0, duration: 0.3, ease: "power2.out", snap: "x" }, 3.8);
+
+      // Clawd 要怎麼做？→ 招式選單，游標依序跳過四招
+      type($("#battle-m3 .battle-line"), 4.2);
+      [
+        [0, 0, 5.6],
+        [94, 0, 6.0],
+        [0, 18, 6.4],
+        [94, 18, 6.8],
+        [0, 0, 7.2],
+      ].forEach(([x, y, at]) => tl.set("#battle-cursor", { x, y }, at));
+
+      // 下回分曉：從上方落下後停住
+      tl.fromTo("#battle-banner .battle-sign", { y: -110 }, { y: 0, duration: 0.4, ease: "back.out(1.4)", snap: "y" }, 7.3);
+
+      window.__timelines["battle"] = tl;
+    })();
+  </script>
+</template>
