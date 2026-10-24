@@ -143,7 +143,7 @@ const WORDS = [
   ["testg", 17, "Test", "green"],
   ["auto", 18, "改完自動跑", "green"],
   ["agent", 18, "或由 Agent 執行", "green"],
-  ["skills", 9, "dev-workflow-tdd", "grey"],
+  ["skills", 9, null, "grey"],
   ["repo", 16, null, "grey"],
   ["perm", 11, "工具權限", "amber"],
   ["branch", 11, "Branch 保護", "amber"],
@@ -297,13 +297,13 @@ init("#scan", { opacity: 0, y: 0 });
 // Guardrails 的擋桿
 fx.push(`<pattern id="${P}stripe" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="10" fill="${C.amber}"/><rect x="5" width="5" height="10" fill="#3A3021"/></pattern>`);
 fx.push(`<g id="bar" opacity="0"><rect x="965" y="327" width="80" height="9" rx="2" fill="url(#${P}stripe)" stroke="${C.amber}" stroke-width="1"/></g>`);
-init("#bar", { opacity: 0, y: -26 });
+init("#bar", { opacity: 0, scale: 1 }, { svgOrigin: "1005 331.5" });
 // 回頭問 Human 的小問號
 fx.push(`<g id="askchip" opacity="0"><circle r="11" fill="#223B47" stroke="${C.blue}" stroke-width="2"/><text y="5.5" text-anchor="middle" font-size="15" font-weight="700" fill="${C.blue}">?</text></g>`);
 init("#askchip", { opacity: 0, x: 425, y: 280, scale: 1 }, { transformOrigin: "50% 50%" });
 // 3 · 工具呼叫 標籤的重跑提示
 state.get("#tx-25").scale = 1;
-js.push('gsap.set("#tx-25", { scale: 1, svgOrigin: "784 216" });');
+js.push('gsap.set("#tx-25", { scale: 1, svgOrigin: "792 224" });');
 init("#ln-L4", { opacity: 1 });
 
 const trailEl = (line, col) => {
@@ -367,9 +367,20 @@ const flash = (b, t, color = "#FFFFFF", n = 2) => {
 // Model 判斷一次：Context 上去、Model 判斷、結果下來
 const think = (t) => {
   go("L2", t, 0.4, "blue");
-  ring("model", t + 0.42, 0.5, 1.1);
-  go("L2d", t + 0.6, 0.4, "blue");
-  return t + 1.05;
+  label(24, true, t);
+  glow("model", true, t + 0.4, 0.15);
+  word("model", true, t + 0.4, 0.15);
+  ring("model", t + 0.45, 0.5, 1.1);
+  go("L2d", t + 0.75, 0.4, "blue");
+  glow("model", false, t + 1.0, 0.2);
+  word("model", false, t + 1.0, 0.2);
+  label(24, false, t + 1.15);
+  return t + 1.2;
+};
+// 有東西進到 Runtime 時，「整理 Context」短亮一下
+const ctxPulse = (x) => {
+  word("ctx", true, x, 0.15);
+  word("ctx", false, x + 0.9);
 };
 
 // ── 5. 分鏡 ──────────────────────────────────────────────────
@@ -380,6 +391,8 @@ init("#d-bare-in-img", { opacity: 1, scale: 1, filter: "blur(0px)" }, { transfor
 init("#d-bare-out-img", { opacity: 0, scale: 1.06, filter: "blur(6px)" }, { transformOrigin: "50% 50%" });
 init("#d-cam", { x: 0 });
 init("#d-mtext", { opacity: 0, filter: "blur(0px)" });
+// 和投影片同姿勢時維持 hidden（與截圖逐像素一致）；全畫面時讓格子從螢幕邊緣出入、光暈不被切
+init("#d-svg", { overflow: "hidden" });
 init("#d-cursor", { opacity: 0 });
 
 const CAPS = [];
@@ -387,15 +400,19 @@ const cap = (t0, t1, html, extra = "") => CAPS.push({ t0, t1, html, extra });
 const SFX = [];
 // sfx(檔名, 起點, 長度, 音量, 從檔案第幾秒開始)；起點已扣掉音效本身的起音時間
 const sfx = (file, t, dur, vol, mediaStart = 0) => SFX.push({ file, t, dur, vol, mediaStart });
+// 總增益：音效多是短促的點綴，乘上去讓整體響度接近另外兩集（約 -22 LUFS）
+const MASTER = 1.6;
 
 // S0 投影片 → 推近架構圖
 const PUSH = 1.5;
 tw("#d-stage", { x: 0, y: 0, scale: 1 }, PUSH + 0.1, 1.3, "power2.inOut");
-tw("#d-bare-in-img", { opacity: 0, scale: 1.06, filter: "blur(6px)" }, PUSH + 0.1, 0.6, "power2.in");
+// 外框必須在 SVG 上緣越過副標（推近約 1.99 秒、拉回約 57.38 秒）之前或之後才可見
+tw("#d-bare-in-img", { opacity: 0, scale: 1.06, filter: "blur(6px)" }, PUSH + 0.1, 0.4, "power1.inOut");
 sfx("whoosh-cinematic", PUSH - 0.6, 2.0, 0.35, 1.5);
 
 // S1 只有 Model
 let t = 3.2;
+set("#d-svg", { overflow: "visible" }, t + 0.1);
 tw("#lines", { opacity: 0 }, t, 0.3, "power1.in");
 tw("#labels", { opacity: 0 }, t, 0.3, "power1.in");
 const AWAY = {
@@ -411,7 +428,7 @@ Object.entries(AWAY).forEach(([b, move], k) => {
 });
 tw("#bx-human", { opacity: 0 }, t + 0.2, 0.4, "power1.in");
 tw("#bx-env", { opacity: 0 }, t + 0.2, 0.4, "power1.in");
-sfx("whoosh-short", t + 0.05, 0.6, 0.45);
+sfx("whoosh-short", t + 0.38, 0.6, 0.45);
 glow("model", true, 4.2, 0.4);
 // Model 只回一行字
 const MTEXT = "呼叫工具：執行測試";
@@ -455,11 +472,16 @@ for (const [k, line] of ["L1", "L2", "L3", "LR", "L4", "L5", "L6", "SK", "RP", "
   tw(tr, { opacity: 0 }, ON + 0.75, 0.5, "power1.out");
   set(tr, { strokeDashoffset: r(len) }, ON + 1.3);
 }
-sfx("impact-bass-1", ON - 0.05, 1.2, 0.22);
 const HARNESS = ["runtime", "tools", "guard", "skills", "repo", "sensors"];
 const F = 11.4;
 cap(F, 15.0, '<span class="f-w" id="f-agent">Agent</span> = <span class="f-w" id="f-model">Model</span> + <span class="f-w" id="f-harness">Harness</span>', "formula");
 const FB = [F + 0.6, F + 1.4, F + 2.2];
+const dimBx = (list, v, at, d = 0.25) => list.forEach((b) => tw(`#bx-${b}`, { opacity: v }, at, d));
+dimBx(["human", "env"], 0.35, FB[0]); // Agent 拍：Human、環境退後
+dimBx(HARNESS, 0.35, FB[1], 0.2); // Model 拍：只剩 Model
+dimBx(HARNESS, 1, FB[2]); // Harness 拍：六格回來
+dimBx(["model"], 0.35, FB[2]); //           Model 退後
+dimBx(["model", "human", "env"], 1, 14.9, 0.35);
 for (const b of ["model", ...HARNESS]) glow(b, true, FB[0], 0.25);
 for (const b of HARNESS) glow(b, false, FB[1], 0.2);
 glow("model", false, FB[2], 0.2);
@@ -479,6 +501,7 @@ cap(t + 0.2, t + 2.7, "1 · 委派任務");
 glow("human", false, t + 2.4);
 word("goal", false, t + 2.4);
 label(23, false, t + 2.4);
+glow("runtime", false, t + 2.4);
 sfx("click-soft", t + 0.45, 0.4, 0.45);
 
 // S4 輔助輸入：流程指引、業務依據
@@ -502,6 +525,7 @@ cap(t + 0.2, t + 2.1, "業務依據");
 brighten("repo", false, t + 1.9);
 word("repo", false, t + 1.9);
 label(21, false, t + 1.9);
+word("ctx", false, t + 1.9);
 sfx("click-soft", 18.55, 0.4, 0.35);
 sfx("click-soft", 20.75, 0.4, 0.35);
 
@@ -534,9 +558,8 @@ word("env", true, t + 1.3);
 flash("env", t + 1.3);
 go("LR", t + 1.9, 0.45, "blue");
 label(26, true, t + 1.9);
-word("ctx", false, t + 1.9, 0.1);
-word("ctx", true, t + 2.35, 0.2);
 ring("runtime", t + 2.35, 0.45, 1.06);
+ctxPulse(t + 2.35);
 word("perm", false, t + 1.0);
 cap(t + 0.2, t + 3.9, '<span class="hl">Harness</span> 負責執行工具、帶回結果');
 for (const b of ["tools", "env"]) glow(b, false, t + 3.7);
@@ -569,6 +592,7 @@ for (const [dt, x] of [[0, 4], [0.05, -3], [0.1, 2], [0.15, 0]]) set("#d-cam", {
 go("L6", t + 2.9, 0.45, "red");
 label(29, true, t + 2.9);
 flash("runtime", t + 3.35, C.red);
+ctxPulse(t + 3.35);
 cap(t + 0.4, t + 2.8, "5 · 跑檢查");
 cap(t + 2.9, t + 5.0, "6 · 驗證回饋");
 sfx("click-soft", t + 0.55, 0.4, 0.35);
@@ -577,14 +601,15 @@ sfx("pop", t + 2.1 - 0.12, 0.5, 0.25);
 sfx("error", t + 2.4 - 0.62, 1.1, 0.9, 0);
 label(28, false, t + 4.8);
 label(29, false, t + 4.8);
+for (const k of ["lint", "build", "auto", "agent"]) word(k, false, t + 4.8);
 
 // S8 沒過：修正後再從工具呼叫跑一輪
 t = 36.0;
 let tt = think(t);
 word("decide", true, tt);
 word("again", true, tt + 0.1);
-cap(t + 0.2, t + 2.2, "未通過就修正後");
-tw("#tx-25", { scale: 1.3, fill: "#FFFFFF" }, t + 1.6, 0.18, "power2.out");
+cap(t, t + 1.5, "未通過就修正後");
+tw("#tx-25", { scale: 1.15, fill: "#FFFFFF" }, t + 1.6, 0.18, "power2.out");
 tw("#tx-25", { scale: 1 }, t + 1.78, 0.3, "power2.inOut");
 t = 38.0;
 go("L3", t, 0.4, "blue");
@@ -595,14 +620,18 @@ label(27, true, t + 0.6);
 flash("env", t + 1.0, "#FFFFFF", 1);
 go("LR", t + 1.2, 0.45, "blue");
 label(26, true, t + 1.2);
-cap(t + 0.3, t + 2.9, "再從工具呼叫跑一輪");
+cap(t - 0.45, t + 2.9, "再從工具呼叫跑一輪");
 go("L5", t + 1.95, 0.45, "green");
 label(28, true, t + 1.95);
+word("auto", true, t + 1.95);
 set("#scan", { opacity: 1, y: 0 }, t + 2.4);
 tw("#scan", { y: 122 }, t + 2.4, 0.5, "power1.inOut");
 set("#scan", { opacity: 0 }, t + 2.92);
+word("lint", true, t + 2.45, 0.15);
+word("build", true, t + 2.7, 0.15);
 word("test", false, t + 2.95, 0.15);
 word("testg", true, t + 2.95, 0.2);
+flash("sensors", t + 2.95, "#FFFFFF", 2);
 ring("sensors", t + 3.0, 0.6, 1.1);
 go("L6", t + 3.3, 0.45, "green");
 label(29, true, t + 3.3);
@@ -626,6 +655,7 @@ word("judge", true, tt + 0.9);
 tw("#askchip", { opacity: 0, scale: 0.6 }, tt + 1.1, 0.2, "power1.in");
 travel("amber", [[310, 280], [425, 280]], tt + 1.8, 0.5);
 ring("runtime", tt + 2.3, 0.45, 1.06);
+ctxPulse(tt + 2.3);
 cap(t + 1.1, t + 4.3, "需要人判斷時回頭向 <span class=\"hl\">Human</span> 提問");
 glow("human", false, t + 4.1);
 word("judge", false, t + 4.1);
@@ -650,8 +680,8 @@ word("approve", true, SLAM + 0.5);
 const STOP = SLAM + 0.3;
 set("#tk-blue", { opacity: 1, x: 1005, y: 320 }, STOP);
 tw("#tk-blue", { y: 326 }, STOP, 0.12, "power2.out");
-set("#bar", { opacity: 1, y: -26 }, STOP);
-tw("#bar", { y: 0 }, STOP, 0.16, "power4.in");
+set("#bar", { opacity: 0, scale: 1.8 }, STOP);
+tw("#bar", { opacity: 1, scale: 1 }, STOP, 0.16, "power4.in");
 flash("tools", STOP + 0.16, C.amber, 3);
 tw("#ln-L4", { opacity: 0.35 }, STOP + 0.1, 0.2);
 for (const [dt, x] of [[0.16, 4], [0.22, -3], [0.28, 2], [0.34, 0]]) set("#d-cam", { x }, STOP + dt);
@@ -665,7 +695,8 @@ brighten("guard", false, SLAM + 2.3);
 for (const k of ["perm", "branch", "approve"]) word(k, false, SLAM + 2.3);
 label(22, false, SLAM + 2.3);
 label(25, false, SLAM + 2.3);
-sfx("impact-bass-1", STOP + 0.16 - 0.05, 0.9, 0.25);
+sfx("whoosh-short", STOP, 0.45, 0.25);
+sfx("impact-bass-1", STOP + 0.16 - 0.05, 0.45, 0.12);
 sfx("click-soft", tt - 0.05, 0.4, 0.35);
 
 // S11 完成一段工作，還要接上專案知識與驗證
@@ -684,21 +715,21 @@ go("RP", t + 1.0, 0.7, "grey", "grey2");
 glow("sensors", true, t + 1.5);
 go("L5", t + 1.7, 0.4, "green");
 go("L6", t + 2.2, 0.4, "green");
-sfx("sparkle", t + 0.7, 1.2, 0.18);
+sfx("sparkle", t + 0.7, 1.2, 0.08);
 const BACK = 55.8;
 for (const b of DIM) tw(`#bx-${b}`, { opacity: 1 }, BACK, 0.4);
 tw("#lines", { opacity: 1 }, BACK, 0.4);
 tw("#labels", { opacity: 1 }, BACK, 0.4);
-for (const b of ["skills", "repo", "sensors", "runtime"]) glow(b, false, BACK, 0.4);
-word("ctx", false, BACK);
+for (const b of ["skills", "repo", "sensors"]) glow(b, false, BACK, 0.4);
 brighten("skills", false, BACK);
 brighten("repo", false, BACK);
 
 // S12 拉回投影片
 const PULL = 56.4;
 tw("#d-stage", { x: SLIDE.x, y: SLIDE.y, scale: SLIDE.scale }, PULL, 1.4, "power2.inOut");
-tw("#d-bare-out-img", { opacity: 1, scale: 1, filter: "blur(0px)" }, PULL + 0.6, 0.8, "power2.out");
-sfx("whoosh-cinematic", PULL - 1.0, 2.0, 0.3, 1.5);
+set("#d-svg", { overflow: "hidden" }, PULL + 0.4);
+tw("#d-bare-out-img", { opacity: 1, scale: 1, filter: "blur(0px)" }, PULL + 1.0, 0.4, "power2.out");
+sfx("whoosh-cinematic", PULL - 0.6, 2.0, 0.3, 1.5);
 const CUT = r(PULL + 1.6);
 const END = r(CUT + 1.2);
 
@@ -821,7 +852,7 @@ window.__timelines["captions"] = tl;
 
 const audio = SFX.map(
   (s, i) =>
-    `    <audio id="sfx-${i + 1}" class="clip" src="assets/sfx/${s.file}.mp3" data-start="${r(Math.max(0, s.t))}" data-duration="${r(s.dur)}"${s.mediaStart ? ` data-media-start="${r(s.mediaStart)}"` : ""} data-volume="${s.vol}" data-fade-out="${r(Math.min(0.15, s.dur / 3))}" data-track-index="${10 + (i % 4)}"></audio>`,
+    `    <audio id="sfx-${i + 1}" class="clip" src="assets/sfx/${s.file}.mp3" data-start="${r(Math.max(0, s.t))}" data-duration="${r(s.dur)}"${s.mediaStart ? ` data-media-start="${r(s.mediaStart)}"` : ""} data-volume="${r(s.vol * MASTER)}" data-fade-out="${r(Math.min(0.15, s.dur / 3))}" data-track-index="${10 + (i % 4)}"></audio>`,
 ).join("\n");
 
 const index = `<!doctype html>
